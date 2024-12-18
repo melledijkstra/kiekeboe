@@ -5,7 +5,8 @@
   "type": "module",
   "main": ".dist/main.js",
   "scripts": {
-    "build": "node build.js"
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,10 @@
   },
   "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
   "devDependencies": {
-    "dotenv": "^16.4.7"
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vite-plugin-static-copy": "^2.2.0"
   }
 }
