@@ -1,24 +1,23 @@
 <script lang="ts">
   import { getDailyImage } from './unsplash';
-  import { getTime, getWelcomeMessage } from './ui';
+  import { getWelcomeMessage } from './ui';
   import { fetchPhotos } from './photos';
   import { fetchTasks } from './tasks';
   import { onMount } from 'svelte';
+  import Clock from './Clock.svelte';
 
-  let imageUrl = $state('');
   let loaded = $state(false);
   let welcomeMsg = $state('');
 
   onMount(() => {
     setBackgroundImage();
-  }); 
+  });
 
   async function setBackgroundImage () {
     const url = await getDailyImage();
     if (url) {
       const image = new Image();
       image.onload = () => {
-        imageUrl = url;
         document.body.style.setProperty('--background-image', `url(${url})`);
         loaded = true;
         image.remove();
@@ -54,7 +53,7 @@
 </style>
 
 <div class="curtain {loaded ? 'loaded' : ''}"></div>
-<h1 class="time">{getTime()}</h1>
+<Clock />
 <h2 class="welcome">{welcomeMsg}</h2>
 <button class="photos" onclick={fetchPhotos}>Google Photos</button>
 <button class="tasks" onclick={fetchTasks}>Tasks</button>

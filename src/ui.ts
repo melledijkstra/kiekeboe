@@ -1,3 +1,9 @@
+function getBrowserLocale(): string {
+  if (navigator.languages !== undefined)
+    return navigator.languages[0];
+  return navigator.language;
+}
+
 export async function getWelcomeMessage(): Promise<string> {
   const hours = new Date().getHours();
   let { name } = await chrome.storage.local.get('name');
@@ -18,8 +24,9 @@ export async function getWelcomeMessage(): Promise<string> {
 }
 
 export function getTime(): string {
+  const locale = getBrowserLocale();
   const date = new Date();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+  return date.toLocaleTimeString(locale, {
+    hour: '2-digit', minute: '2-digit'
+  });
 }
