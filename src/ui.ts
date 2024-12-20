@@ -1,4 +1,4 @@
-export async function getWelcomeMessage() {
+export async function getWelcomeMessage(): Promise<string> {
   const hours = new Date().getHours();
   let { name } = await chrome.storage.local.get('name');
 
@@ -17,7 +17,7 @@ export async function getWelcomeMessage() {
   }
 }
 
-export function getTime() {
+export function getTime(): string {
   const date = new Date();
   const hours = date.getHours();
   const minutes = date.getMinutes();

@@ -1,8 +1,10 @@
 import { loadEnv } from 'vite'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default ({ mode }) => ({
   plugins: [
+    svelte(),
     viteStaticCopy({
       targets: [
         {

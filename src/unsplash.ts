@@ -1,7 +1,6 @@
-const IMAGE_KEY = 'dailyImage';
-const UNSPLASH_PROXY_URL = 'https://e96kk3t1rh.execute-api.eu-north-1.amazonaws.com/proxy';
+import { IMAGE_KEY, UNSPLASH_PROXY_URL } from "./constants";
 
-export async function getDailyImage() {
+export async function getDailyImage(): Promise<string | null> {
   const today = new Date().getDate();
   const { [IMAGE_KEY]: storageImage } = await chrome.storage.local.get([IMAGE_KEY]);
 

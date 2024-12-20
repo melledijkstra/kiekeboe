@@ -1,5 +1,7 @@
+import { getAuthToken } from "./auth";
 
-export function fetchTasks(token) {
+export async function fetchTasks() {
+  const token = await getAuthToken();
   fetch('https://tasks.googleapis.com/tasks/v1/lists/@default/tasks', {
     headers: {
       Authorization: `Bearer ${token}`,

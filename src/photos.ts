@@ -1,5 +1,8 @@
+import { getAuthToken } from "./auth";
 
-export function fetchPhotos(token) {
+export async function fetchPhotos() {
+  const token = await getAuthToken();
+
   fetch('https://photoslibrary.googleapis.com/v1/mediaItems', {
     headers: {
       Accept: 'application/json',
