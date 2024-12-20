@@ -1,10 +1,11 @@
 <script lang="ts">
   import { getDailyImage } from './unsplash';
   import { getWelcomeMessage } from './ui';
-  import { fetchPhotos } from './photos';
-  import { fetchTasks } from './tasks';
   import { onMount } from 'svelte';
   import Clock from './Clock.svelte';
+  import Curtain from './Curtain.svelte';
+  import Tasks from './Tasks.svelte';
+  import Account from './Account.svelte';
 
   let loaded = $state(false);
   let welcomeMsg = $state('');
@@ -33,28 +34,21 @@
   });
 </script>
 
-<style>
-  .curtain {
-    position: absolute;
-    background-color: #000;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    height: 100%;
-    width: 100%;
+<Curtain {loaded} />
 
-    transition: opacity 0.2s ease-in-out;
-    opacity: 1;
-  }
-
-  .curtain.loaded {
-    opacity: 0.1;
-  }
-</style>
-
-<div class="curtain {loaded ? 'loaded' : ''}"></div>
-<Clock />
-<h2 class="welcome">{welcomeMsg}</h2>
-<button class="photos" onclick={fetchPhotos}>Google Photos</button>
-<button class="tasks" onclick={fetchTasks}>Tasks</button>
+<div class="grid h-full grid-rows-3 grid-rows">
+  <!-- TOP --->
+  <div class="justify-self-end">
+    <Account />
+  </div>
+  <!-- MIDDLE --->
+  <div class="justify-self-center self-center text-center">
+    <Clock />
+    <h2>{welcomeMsg}</h2>
+  </div>
+  <!-- BOTTOM -->
+  <div class="justify-self-end self-end"> 
+    <Tasks />
+  </div>
+</div>
 

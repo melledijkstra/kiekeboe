@@ -1,9 +1,10 @@
 import { IMAGE_KEY, UNSPLASH_PROXY_URL } from "./constants";
 
 export async function getDailyImage(): Promise<string | null> {
-  const today = new Date().getDate();
   const { [IMAGE_KEY]: storageImage } = await chrome.storage.local.get([IMAGE_KEY]);
-
+  
+  const today = new Date().getDate();
+  
   if (storageImage && storageImage.date === today) {
     console.log('retrieved image from cache');
     return storageImage.url;
