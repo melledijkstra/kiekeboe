@@ -1,6 +1,5 @@
-
 export function log(...data: any[]) {
   if (import.meta.env.MODE === 'development') {
-    console.log(...data);
+    console.log(...data)
   }
 }

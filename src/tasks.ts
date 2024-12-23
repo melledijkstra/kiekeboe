@@ -1,4 +1,5 @@
-import { getAuthToken } from './auth'
+import { getAuthToken } from './google/auth'
+import { log } from './logger'
 
 export type Task = {
   id: string
@@ -24,7 +25,7 @@ export async function fetchTasks(): Promise<Task[] | undefined> {
       }
     )
     const data = (await response.json()) as { items: Task[] }
-    console.log('Tasks:', data)
+    log('Tasks:', data)
 
     return data.items
   } catch (error) {

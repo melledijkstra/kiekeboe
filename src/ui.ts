@@ -5,25 +5,31 @@ function getBrowserLocale(): string {
   return navigator.language
 }
 
-export async function getWelcomeMessage(): Promise<string> {
-  const hours = new Date().getHours()
+export async function retrieveUsername(): Promise<string | null> {
   let { [NAME_STORAGE_KEY]: name } = await chrome.storage.local.get(
     NAME_STORAGE_KEY
   )
 
-  while (!name) {
-    const givenName = prompt('What is your name?')
-    await chrome.storage.local.set({ [NAME_STORAGE_KEY]: givenName })
-    name = givenName
-  }
+  return name
+}
+
+export async function storeUsername(name: string): Promise<void> {
+  await chrome.storage.local.set({ [NAME_STORAGE_KEY]: name })
+}
+
+export function getWelcomeMessage(name: string): string {
+  const hours = new Date().getHours()
+  let momentOfDay: string
 
   if (hours < 12) {
-    return `Good morning, ${name}`
+    momentOfDay = 'morning'
   } else if (hours < 18) {
-    return `Good afternoon, ${name}`
+    momentOfDay = 'afternoon'
   } else {
-    return `Good evening, ${name}`
+    momentOfDay = 'evening'
   }
+
+  return `Good ${momentOfDay}, ${name}`
 }
 
 export function getTime(): string {

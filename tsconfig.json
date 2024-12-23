@@ -4,6 +4,7 @@
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "ESNext",
+    "strictNullChecks": true,
     "lib": ["ESNext", "DOM"],
     "types": ["vite/client", "@types/chrome"],
     /**

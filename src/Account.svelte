@@ -25,15 +25,15 @@
   });
 </script>
 
-<style lang="postcss">
-  .account-info {
-    @apply self-end m-5 size-12;
-  }
-</style>
-
-<div class="account-info">
+<div class="self-end m-5 size-12">
   {#if accountInfo}
-  <img class="rounded-full" src={accountInfo.picture} alt={accountInfo.name} />
+  <a
+    href="https://myaccount.google.com/" target="_blank">
+    <img
+      class="rounded-full border-2 border-white/80"
+      src={accountInfo.picture}
+      alt={accountInfo.name} />
+  </a>
   {/if}
 </div>
 

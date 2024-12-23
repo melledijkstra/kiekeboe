@@ -1,4 +1,5 @@
-import { getAuthToken } from '../auth'
+import { log } from '../logger'
+import { getAuthToken } from './auth'
 
 export type Account = {
   name: string
@@ -19,7 +20,7 @@ export async function fetchAccountInfo() {
       }
     )
     const data = (await response.json()) as Account
-    console.log('Profile Image URL:', data.picture)
+    log('Profile Image URL:', data.picture)
 
     return data
   } catch (error) {
