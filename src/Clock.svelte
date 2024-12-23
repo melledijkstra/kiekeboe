@@ -15,4 +15,10 @@
   });
 </script>
 
+<style>
+  h1 {
+    @apply text-white text-9xl;
+  }
+</style>
+
 <h1 class="time">{time}</h1>

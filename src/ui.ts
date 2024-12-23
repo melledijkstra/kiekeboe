@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
 
 function getBrowserLocale(): string {
@@ -6,15 +7,15 @@ function getBrowserLocale(): string {
 }
 
 export async function retrieveUsername(): Promise<string | null> {
-  let { [NAME_STORAGE_KEY]: name } = await chrome.storage.local.get(
+  let { [NAME_STORAGE_KEY]: name } = (await browser.storage.local.get(
     NAME_STORAGE_KEY
-  )
+  )) as { name: string }
 
   return name
 }
 
 export async function storeUsername(name: string): Promise<void> {
-  await chrome.storage.local.set({ [NAME_STORAGE_KEY]: name })
+  await browser.storage.local.set({ [NAME_STORAGE_KEY]: name })
 }
 
 export function getWelcomeMessage(name: string): string {

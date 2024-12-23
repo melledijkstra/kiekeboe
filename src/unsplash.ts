@@ -3,6 +3,7 @@ import {
   NEXT_IMAGE_KEY,
   UNSPLASH_PROXY_URL
 } from './constants'
+import browser from 'webextension-polyfill'
 import { formatDate } from './date'
 import { log } from './logger'
 import type { UnsplashResponse } from './types'
@@ -16,7 +17,7 @@ type Image = {
 async function fetchRandomUnsplashImage(): Promise<UnsplashResponse> {
   const response = await fetch(UNSPLASH_PROXY_URL, {
     headers: {
-      'X-Extension-ID': chrome.runtime.id
+      'X-Extension-ID': browser.runtime.id
     }
   })
 
@@ -31,7 +32,7 @@ async function retrieveNextImage(): Promise<Image> {
     url: data.urls.full
   }
 
-  await chrome.storage.local.set({
+  await browser.storage.local.set({
     [NEXT_IMAGE_KEY]: nextDailyImage
   })
 
@@ -42,7 +43,7 @@ export async function getDailyImage(): Promise<string | null> {
   const {
     [DAILY_IMAGE_KEY]: storageImage,
     [NEXT_IMAGE_KEY]: storageNextImage
-  } = (await chrome.storage.local.get([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])) as {
+  } = (await browser.storage.local.get([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])) as {
     [DAILY_IMAGE_KEY]: Image | undefined
     [NEXT_IMAGE_KEY]: Image | undefined
   }
@@ -66,7 +67,7 @@ export async function getDailyImage(): Promise<string | null> {
     if (storageNextImage) {
       log('next image exists, use that one instead')
       // swap the next image to be the current image
-      await chrome.storage.local.set({
+      await browser.storage.local.set({
         [DAILY_IMAGE_KEY]: {
           ...storageNextImage,
           date: today
@@ -91,7 +92,7 @@ export async function getDailyImage(): Promise<string | null> {
 
     log('retrieved response, storing in cache', dailyImage.url)
 
-    await chrome.storage.local.set({
+    await browser.storage.local.set({
       [DAILY_IMAGE_KEY]: dailyImage
     })
 

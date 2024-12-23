@@ -1,22 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ACCOUNT_CACHE_KEY } from './constants';
+  import browser from 'webextension-polyfill';
   import { fetchAccountInfo, type Account } from "./google/account";
 
   let accountInfo = $state<Account>();
 
   async function getAccountInfo() {
-    const { [ACCOUNT_CACHE_KEY]: cachedAccountInfo } = await chrome.storage.local.get([ACCOUNT_CACHE_KEY]);
+    const { [ACCOUNT_CACHE_KEY]: cachedAccountInfo } = await browser.storage.local.get([ACCOUNT_CACHE_KEY]);
 
     if (cachedAccountInfo) {
-      accountInfo = cachedAccountInfo
+      accountInfo = cachedAccountInfo as Account
       return
     }
 
     const fetchedAccountInfo = await fetchAccountInfo()
     if (fetchedAccountInfo) {
       accountInfo = fetchedAccountInfo
-      chrome.storage.local.set({ [ACCOUNT_CACHE_KEY]: fetchedAccountInfo })
+      browser.storage.local.set({ [ACCOUNT_CACHE_KEY]: fetchedAccountInfo })
     }
   }
 
