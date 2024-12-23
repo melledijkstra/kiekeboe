@@ -1,9 +1,16 @@
 <script lang="ts">
   import Clock from './Clock.svelte'
   import Curtain from './Curtain.svelte'
-  import Tasks from './Tasks.svelte'
   import Account from './Account.svelte'
   import Welcome from './Welcome.svelte'
+  import { onMount, type Component } from 'svelte'
+
+  let TasksComponent: Component | null = null;
+
+  onMount(async () => {
+    const module = await import('./Tasks.svelte')
+    TasksComponent = module.default
+  })
 </script>
 
 <Curtain />
@@ -20,7 +27,9 @@
   </div>
   <!-- BOTTOM -->
   <div class="justify-self-end self-end"> 
-    <Tasks />
+    {#if TasksComponent}
+      <TasksComponent />
+    {/if}
   </div>
 </div>
 
