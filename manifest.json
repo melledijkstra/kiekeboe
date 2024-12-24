@@ -3,7 +3,7 @@
   "manifest_version": 3,
   "name": "Kiekeboe",
   "description": "Personal Homepage",
-  "version": "%VERSION%",
+  "version": "0.1.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7tGxlMljx5nABy/CzM2kLJj/JlrrRQ4hk5Q5M48064SzM7zKlz1UYG6to2OEXbrPA6bhKWIz/URWkPmYHwPOQVGFm2oVhLaQ9QvX85SnNJ5OFbf+iB2AItpf8UGSbt/VHocl3+vyrQZNBVNFSZlpYu/ZJvLB7uC0y5jB5/h53lk+HZuLXfFLsmoZbxZDwTyA87GP1Xs8ywe7c+Qa0hV6jt0c6s10QiLmmoVRf7TA82lWKLif9e7L+ezKoEByaOF2mVtGoXgqMO69Dgbvt3U/ptQlF8/MK00vfikhlsbfS1Wn1pjgoJq61zgxcYsyLc2ikFRaNh6ictW2J2DI05H5owIDAQAB",
   "chrome_url_overrides": {
     "newtab": "index.html"

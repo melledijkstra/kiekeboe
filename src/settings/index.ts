@@ -11,6 +11,7 @@ export type Settings = {
 export const SETTINGS_KEY = 'settings' as const
 export const DEFAULT_SETTINGS: Settings = {
   modules: {
+    command_center: true,
     google_tasks: false
   }
 }
@@ -23,10 +24,6 @@ export async function getSettings(): Promise<Settings> {
   const { settings: storageSettings } = (await browser.storage.sync.get(
     SETTINGS_KEY
   )) as { settings: Settings }
-
-  log({
-    storageSettings
-  })
 
   if (storageSettings) {
     return storageSettings

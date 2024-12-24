@@ -1,17 +1,9 @@
 import { defineConfig, loadEnv } from 'vite'
-import type { Manifest } from 'webextension-polyfill'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import packageJson from './package.json'
 
-type ExtendedManifest = Manifest.WebExtensionManifest & {
-  oauth2?: {
-    client_id?: string
-    scopes?: string[]
-  }
-}
-
-export default ({ mode }) =>
+export default defineConfig(({ mode }) =>
   defineConfig({
     plugins: [
       svelte(),
@@ -35,7 +27,13 @@ export default ({ mode }) =>
         input: {
           home: './index.html',
           options: './options.html'
+        },
+        output: {
+          entryFileNames: '[name].js',
+          chunkFileNames: 'scripts/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash][extname]'
         }
       }
     }
   })
+)
