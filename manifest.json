@@ -15,7 +15,7 @@
   },
   "permissions": ["storage", "identity"],
   "oauth2": {
-    "client_id": "%CLIENT_ID%",
+    "client_id": "%VITE_CLIENT_ID%",
     "scopes": [
       "https://www.googleapis.com/auth/photoslibrary.readonly",
       "https://www.googleapis.com/auth/tasks.readonly",

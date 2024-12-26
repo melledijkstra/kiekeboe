@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { log } from "../logger"
-
-  let inputRef: HTMLInputElement
+  import { log } from "../../logger"
+  
   let open = $state(false)
   let input = $state('')
 
@@ -22,25 +21,11 @@
     }
   }
 
-  function handleClose(event: Event) {
-    if (
-      event instanceof MouseEvent ||
-      (event instanceof KeyboardEvent &&
-      event.key === 'Escape')
-    ) {
-      open = false
-    }
-  }
-
   function handleKeypress(event: KeyboardEvent) {
-    log('key event', {
-      meta: event.metaKey,
-      code: event.code
-    })
-    // Check if metaKey (Mac) or ctrlKey (Windows/Linux) is pressed and key is "p"
+    // Check if metaKey (Mac) or ctrlKey (Windows/Linux) is pressed
     if ((event.metaKey || event.ctrlKey) && event.key === "p") {
-      event.preventDefault(); // Prevents the browser's print dialog
-      open = true
+      event.preventDefault(); // prevents the browser's print dialog
+      open = !open
     }
 
     if (event.key === 'Escape') {

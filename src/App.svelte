@@ -19,37 +19,19 @@
 
     if (appSettings.modules.google_tasks) {
       const file = 'Tasks' as const
-      const module = await import(`./${file}.svelte`)
+      const module = await import(`./modules/google-tasks/${file}.svelte`)
       log('module loaded', file)
       TasksComponent = module.default
     }
 
     if (appSettings.modules.command_center) {
       const file = 'CommandCenter' as const
-      const module = await import(`./command-center/${file}.svelte`)
+      const module = await import(`./modules/command-center/${file}.svelte`)
       log('module loaded', file)
       CommandCenter = module.default
     }
   })
 </script>
-
-<style lang="postcss">
-  :root {
-    --background-image: url();
-  }
-
-  :global {
-    body {
-      @apply flex flex-col relative h-screen w-screen overflow-hidden;
-
-      background-color: #000;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-image: var(--background-image);
-    }
-  }
-</style>
 
 <Curtain />
 

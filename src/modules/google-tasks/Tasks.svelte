@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fetchTasks, type Task } from "./tasks";
+  import { fetchTasks, type Task } from "../../google/tasks";
 
   let newTask = $state('');
   let tasks = $state<Task[]>([]);

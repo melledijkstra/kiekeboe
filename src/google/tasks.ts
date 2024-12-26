@@ -1,14 +1,14 @@
-import { getAuthToken } from './google/auth'
-import { log } from './logger'
+import { getAuthToken } from './auth'
+import { log } from '../logger'
 
 export type Task = {
   id: string
+  title: string
   kind?: string
   links?: string[]
   position?: string
   selfLink?: string
   status?: 'needsAction'
-  title: string
   updated?: string
   webViewLink?: string
 }

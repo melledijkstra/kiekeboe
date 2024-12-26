@@ -13,8 +13,11 @@ export default defineConfig(({ mode }) =>
             src: 'manifest.json',
             dest: '.',
             transform: (content) => {
-              const envVars = loadEnv(mode, process.cwd(), '')
-              content = content.replace('%CLIENT_ID%', envVars.CLIENT_ID)
+              const envVars = loadEnv(mode, process.cwd())
+              content = content.replace(
+                '%VITE_CLIENT_ID%',
+                envVars.VITE_CLIENT_ID
+              )
               content = content.replace('%VERSION%', packageJson.version)
               return content
             }
