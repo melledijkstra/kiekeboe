@@ -1,24 +1,41 @@
-<script>
-  import { onMount } from "svelte";
-  import { getTime } from "./ui";
+<script lang="ts">
+  import { onMount } from "svelte"
+  import { getTime, getTimePercentage } from "./ui"
+  import { log } from "./logger"
   
-  let time = $state(getTime());
+  type ClockMode = 'percentage' | 'time'
+
+  const CLOCK_STORAGE_KEY = 'clockMode'
+
+  let time = $state()
+  let mode = $state<ClockMode>()
+
+  function getDisplayTime() {
+    return mode === 'time' ? getTime() : getTimePercentage()
+  }
+
+  function toggleMode() {
+    mode = mode === 'percentage' ? 'time' : 'percentage'
+    localStorage.setItem(CLOCK_STORAGE_KEY, mode)
+    time = getDisplayTime()
+  }
 
   function startClock() {
     setInterval(() => {
-      time = getTime();
+      time = getDisplayTime()
     }, 1000);
   }
 
-  onMount(() => {
-    startClock();
+  onMount(async () => {
+    const clockMode = localStorage.getItem(CLOCK_STORAGE_KEY) as ClockMode
+    log({
+      clockMode
+    })
+    mode = clockMode ?? 'time'
+    startClock()
   });
 </script>
 
-<style>
-  h1 {
-    @apply text-white text-9xl;
-  }
-</style>
-
-<h1 class="time">{time}</h1>
+<h1
+  onclick={toggleMode}
+  class="empty:min-h-32 time text-white text-9xl drop-shadow-xl cursor-pointer">{time}</h1>

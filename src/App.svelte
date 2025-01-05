@@ -7,6 +7,7 @@
   import { getSettings } from './settings'
   import { log } from './logger'
   import { appState } from './app-state.svelte'
+  import WellBeing from './modules/well-being/WellBeing.svelte'
 
   let TasksComponent: Component | null = $state(null);
   let CommandCenter: Component | null = $state(null);
@@ -41,7 +42,8 @@
 
 <div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
   <!-- TOP --->
-  <div class="justify-self-end">
+  <div class="flex flex-row justify-self-end">
+    <WellBeing />
     <Account />
   </div>
   <!-- MIDDLE --->

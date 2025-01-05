@@ -14,18 +14,8 @@
   })
 </script>
 
-<style>
-  h2 {
-    @apply text-white text-5xl;
-  }
-
-  /** make sure to render some space when loading in the welcome message to avoid flickering */
-  h2:empty {
-    @apply min-h-12;
-  }
-</style>
-
-<h2>
+<!-- make sure to render some space when loading in the welcome message to avoid flickering -->
+<h2 class="text-white text-5xl empty:min-h-12 drop-shadow-xl">
 {#if name}
   {getWelcomeMessage(name)}
 {:else if nameLoaded}

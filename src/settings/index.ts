@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill'
 import type { Module } from '../constants'
-import { log } from '../logger'
 
 export type Settings = {
   modules: {
