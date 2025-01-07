@@ -11,7 +11,8 @@ export const SETTINGS_KEY = 'settings' as const
 export const DEFAULT_SETTINGS: Settings = {
   modules: {
     command_center: true,
-    google_tasks: false
+    google_tasks: false,
+    well_being: true
   }
 }
 

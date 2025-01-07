@@ -21,6 +21,8 @@
   }
 
   function startClock() {
+    // run the clock 1 time when executed, then update every second
+    time = getDisplayTime()
     setInterval(() => {
       time = getDisplayTime()
     }, 1000);
@@ -36,6 +38,6 @@
   });
 </script>
 
-<h1
+<button
   onclick={toggleMode}
-  class="empty:min-h-32 time text-white text-9xl drop-shadow-xl cursor-pointer">{time}</h1>
+  class="empty:min-h-32 time text-white text-9xl drop-shadow-xl cursor-pointer">{time}</button>

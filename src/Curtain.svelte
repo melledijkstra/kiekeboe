@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte"
-  import { getDailyImage } from "./unsplash"
+  import { getDailyImage, loadImage } from "./unsplash"
 
   let loaded = $state(false);
 
@@ -12,13 +12,9 @@
     const url = await getDailyImage();
 
     if (url) {
-      const image = new Image();
-      image.onload = () => {
-        document.body.style.setProperty('--background-image', `url(${url})`);
+      loadImage(url, () => {
         loaded = true;
-        image.remove();
-      };
-      image.src = url;
+      });
     }
   }
 </script>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition'
   import Clock from './Clock.svelte'
   import Curtain from './Curtain.svelte'
   import Account from './Account.svelte'
@@ -7,10 +8,24 @@
   import { getSettings } from './settings'
   import { log } from './logger'
   import { appState } from './app-state.svelte'
-  import WellBeing from './modules/well-being/WellBeing.svelte'
+  import Button from './components/Button.svelte'
+  import Icon from './components/Icon.svelte'
+  import { mdiCameraRetakeOutline } from '@mdi/js'
+  import { loadImage, refreshDailyImage } from './unsplash'
 
+  const appModes = ['default', 'breathing', 'pomodoro', 'focus'] as const
+
+  type AppMode = typeof appModes[number]
+  
   let TasksComponent: Component | null = $state(null);
   let CommandCenter: Component | null = $state(null);
+  let WellBeing: Component | null = $state(null);
+
+  let currentMode = $state<AppMode>('default')
+
+  function switchMode(mode: AppMode) {
+    currentMode = mode
+  }
 
   onMount(async () => {
     const appSettings = await getSettings()
@@ -31,7 +46,21 @@
       log('module loaded', file)
       CommandCenter = module.default
     }
+
+    if (appSettings.modules.well_being) {
+      const file = 'WellBeing' as const
+      const module = await import(`./modules/well-being/${file}.svelte`)
+      log('module loaded', file)
+      WellBeing = module.default
+    }
   })
+
+  async function refreshBackround() {
+    const url = await refreshDailyImage()
+    if (url) {
+      loadImage(url)
+    }
+  }
 </script>
 
 <Curtain />
@@ -42,20 +71,51 @@
 
 <div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
   <!-- TOP --->
-  <div class="flex flex-row justify-self-end">
-    <WellBeing />
+  <div class="flex flex-row justify-self-end items-start">
+    {#each appModes as mode}
+      <Button
+        onclick={() => switchMode(mode)}
+        className={currentMode === mode ? 'font-bold' : ''}
+      >
+        {mode}
+      </Button>
+    {/each}
+    {#if WellBeing}
+      <WellBeing onclick={() => {switchMode('breathing');return true;}} />
+    {/if}
     <Account />
   </div>
   <!-- MIDDLE --->
-  <div class="justify-self-center self-center text-center">
-    <Clock />
-    <Welcome />
-  </div>
+  {#key currentMode}
+    <div
+      transition:fade={{ duration: 200 }}
+      class="justify-self-center self-center text-center"
+      style="grid-row: 2; grid-column: 1">
+      {#if currentMode === 'default'}
+        <Clock />
+        <Welcome />
+      {:else}
+        <p class="text-white text-lg">Not yet implemented!</p>
+      {/if}
+    </div>
+  {/key}
   <!-- BOTTOM -->
-  <div class="justify-self-end self-end"> 
-    {#if TasksComponent}
-      <TasksComponent />
-    {/if}
+  <div class="flex flex-row justify-between content-end items-end">
+    <!-- BOTTOM LEFT -->
+    <div class="flex flex-row p-5">
+      <button onclick={refreshBackround}>
+        <Icon
+          class="text-slate-400 hover:text-white cursor-pointer"
+          size={48}
+          path={mdiCameraRetakeOutline} />
+      </button>
+    </div>
+    <!-- BOTTOM RIGHT -->
+    <div>
+      {#if TasksComponent}
+        <TasksComponent />
+      {/if}
+    </div>
   </div>
 </div>
 

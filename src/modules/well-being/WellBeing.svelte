@@ -4,6 +4,8 @@
   import { Timer } from "./timer"
   import { log } from "../../logger"
 
+  const props = $props()
+
   let timer = $state<Timer | null>(null)
   let breathingActive = $state(false)
   let duration = 1000 * 60 * 1 // 5 minutes
@@ -45,6 +47,9 @@
   }
 
   function toggleBreathing() {
+    if (props.onclick?.()) {
+      return
+    }
     if (breathingActive) {
       breathingActive = false
       timer?.stop()

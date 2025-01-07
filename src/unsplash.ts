@@ -102,3 +102,17 @@ export async function getDailyImage(): Promise<string | null> {
     return null
   }
 }
+
+export async function refreshDailyImage(): Promise<string | null> {
+  await browser.storage.local.remove(DAILY_IMAGE_KEY)
+  return await getDailyImage()
+}
+
+export function loadImage(url: string, callback?: () => void): void {
+  const image = new Image()
+  image.src = url
+  image.onload = () => {
+    callback?.()
+    document.body.style.backgroundImage = `url(${url})`
+  }
+}
