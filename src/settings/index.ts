@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import type { Module } from '../constants'
+import type { Module } from '@/constants'
 
 export type Settings = {
   modules: {

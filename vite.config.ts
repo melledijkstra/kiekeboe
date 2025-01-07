@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import packageJson from './package.json'
+import path from 'node:path'
 
 export default defineConfig(({ mode }) =>
   defineConfig({
@@ -36,6 +37,11 @@ export default defineConfig(({ mode }) =>
           chunkFileNames: 'scripts/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash][extname]'
         }
+      }
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '/src')
       }
     }
   })

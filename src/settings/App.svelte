@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { MODULE_TITLES, MODULES } from '../constants'
-  import '../app.css'
+  import { MODULE_TITLES, MODULES } from '@/constants'
+  import '@/app.css'
   import { type Settings, DEFAULT_SETTINGS, getSettings, saveSettings } from './index'
 
   let settings = $state<Settings>(DEFAULT_SETTINGS)

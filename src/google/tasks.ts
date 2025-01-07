@@ -1,5 +1,5 @@
 import { getAuthToken } from './auth'
-import { log } from '../logger'
+import { log } from '@/logger'
 
 export type Task = {
   id: string

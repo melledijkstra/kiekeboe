@@ -1,4 +1,4 @@
-import { log } from '../logger'
+import { log } from '@/logger'
 import { getAuthToken } from './auth'
 
 export type Account = {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { mdiSpa } from "@mdi/js"
-  import Icon from "../../components/Icon.svelte"
+  import Icon from "@/components/Icon.svelte"
+  import { log } from "@/logger"
   import { Timer } from "./timer"
-  import { log } from "../../logger"
 
   const props = $props()
 

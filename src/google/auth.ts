@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import manifest from '../../manifest.json'
-import { log } from '../logger'
+import { log } from '@/logger'
 
 const OAUTH2_STORAGE_KEY = 'oauth2'
 

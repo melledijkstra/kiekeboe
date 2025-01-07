@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { log } from "../../logger"
+  import { log } from "@/logger"
   
   let open = $state(false)
   let input = $state('')
