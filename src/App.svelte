@@ -17,9 +17,10 @@
 
   type AppMode = typeof appModes[number]
   
-  let TasksComponent: Component | null = $state(null);
-  let CommandCenter: Component | null = $state(null);
-  let WellBeing: Component | null = $state(null);
+  let ModTasks: Component | null = $state(null);
+  let ModCommandCenter: Component | null = $state(null);
+  let ModWellBeing: Component | null = $state(null);
+  let ModSpotify: Component | null = $state(null);
 
   let currentMode = $state<AppMode>('default')
 
@@ -37,21 +38,28 @@
       const file = 'Tasks' as const
       const module = await import(`./modules/google-tasks/${file}.svelte`)
       log('module loaded', file)
-      TasksComponent = module.default
+      ModTasks = module.default
     }
 
     if (appSettings.modules.command_center) {
       const file = 'CommandCenter' as const
       const module = await import(`./modules/command-center/${file}.svelte`)
       log('module loaded', file)
-      CommandCenter = module.default
+      ModCommandCenter = module.default
     }
 
     if (appSettings.modules.well_being) {
       const file = 'WellBeing' as const
       const module = await import(`./modules/well-being/${file}.svelte`)
       log('module loaded', file)
-      WellBeing = module.default
+      ModWellBeing = module.default
+    }
+
+    if (appSettings.modules.spotify) {
+      const file = 'Spotify' as const
+      const module = await import(`./modules/spotify/${file}.svelte`)
+      log('module loaded', file)
+      ModSpotify = module.default
     }
   })
 
@@ -65,8 +73,8 @@
 
 <Curtain />
 
-{#if CommandCenter}
-  <CommandCenter />
+{#if ModCommandCenter}
+  <ModCommandCenter />
 {/if}
 
 <div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
@@ -80,8 +88,11 @@
         {mode}
       </Button>
     {/each}
-    {#if WellBeing}
-      <WellBeing onclick={() => {switchMode('breathing');return true;}} />
+    {#if ModSpotify}
+      <ModSpotify />
+    {/if}
+    {#if ModWellBeing}
+      <ModWellBeing onclick={() => {switchMode('breathing');return true;}} />
     {/if}
     <Account />
   </div>
@@ -112,8 +123,8 @@
     </div>
     <!-- BOTTOM RIGHT -->
     <div>
-      {#if TasksComponent}
-        <TasksComponent />
+      {#if ModTasks}
+        <ModTasks />
       {/if}
     </div>
   </div>

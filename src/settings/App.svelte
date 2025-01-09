@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { MODULE_TITLES, MODULES } from '@/constants'
+  import { MODULE_TITLES, MODULES } from '@/modules'
   import '@/app.css'
   import { type Settings, DEFAULT_SETTINGS, getSettings, saveSettings } from './index'
 

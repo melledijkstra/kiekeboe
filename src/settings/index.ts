@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill'
-import type { Module } from '@/constants'
+import { DEFAULT_MODULE_SETTINGS } from '@/modules'
+import type { Module } from '@/modules'
 
 export type Settings = {
   modules: {
@@ -9,11 +10,7 @@ export type Settings = {
 
 export const SETTINGS_KEY = 'settings' as const
 export const DEFAULT_SETTINGS: Settings = {
-  modules: {
-    command_center: true,
-    google_tasks: false,
-    well_being: true
-  }
+  modules: DEFAULT_MODULE_SETTINGS
 }
 
 export function saveSettings(settings: Settings) {

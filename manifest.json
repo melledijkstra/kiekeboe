@@ -13,6 +13,12 @@
     "page": "options.html",
     "open_in_tab": true
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["spotify-sdk.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "permissions": ["storage", "identity"],
   "oauth2": {
     "client_id": "%VITE_CLIENT_ID%",
