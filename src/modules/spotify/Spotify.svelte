@@ -30,7 +30,7 @@
 <div class="relative">
   <button
     onclick={token ? toggleDisplay : authenticate}
-    class="size-12 mx-2 my-5 cursor-pointer">
+    class="cursor-pointer">
     <Icon class="text-white" path={mdiSpotify} size={48} />
   </button>
   <div class="absolute right-0 {token && open ? 'block' : 'hidden'}">

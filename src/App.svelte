@@ -21,6 +21,7 @@
   let ModCommandCenter: Component | null = $state(null);
   let ModWellBeing: Component | null = $state(null);
   let ModSpotify: Component | null = $state(null);
+  let ModWorldClocks: Component | null = $state(null);
 
   let currentMode = $state<AppMode>('default')
 
@@ -61,6 +62,13 @@
       log('module loaded', file)
       ModSpotify = module.default
     }
+
+    if (appSettings.modules.world_clocks) {
+      const file = 'WorldClocks' as const
+      const module = await import(`./modules/world-clocks/${file}.svelte`)
+      log('module loaded', file)
+      ModWorldClocks = module.default
+    }
   })
 
   async function refreshBackround() {
@@ -79,7 +87,7 @@
 
 <div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
   <!-- TOP --->
-  <div class="flex flex-row justify-self-end items-start">
+  <div class="flex flex-row gap-10 p-5 justify-self-end items-start">
     {#each appModes as mode}
       <Button
         onclick={() => switchMode(mode)}
@@ -88,6 +96,9 @@
         {mode}
       </Button>
     {/each}
+    {#if ModWorldClocks}
+      <ModWorldClocks />
+    {/if}
     {#if ModSpotify}
       <ModSpotify />
     {/if}

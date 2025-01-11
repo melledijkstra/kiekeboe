@@ -26,7 +26,7 @@
   });
 </script>
 
-<div class="size-12 m-5">
+<div class="size-12">
   {#if accountInfo}
   <a
     href="https://myaccount.google.com/" target="_blank">

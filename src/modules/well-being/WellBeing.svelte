@@ -2,7 +2,7 @@
   import { mdiSpa } from "@mdi/js"
   import Icon from "@/components/Icon.svelte"
   import { log } from "@/logger"
-  import { Timer } from "./timer"
+  import { Timer } from "@/time/timer"
 
   const props = $props()
 
@@ -60,7 +60,7 @@
   }
 </script>
 
-<button onclick={toggleBreathing} class="size-12 m-5 transition-colors duration-1000 {color} cursor-pointer">
+<button onclick={toggleBreathing} class="size-12 transition-colors duration-1000 {color} cursor-pointer">
   <Icon class={breathingActive ? 'animate-pulse' : ''} size={48} path={mdiSpa} />
   {#if breathingActive}
     <span>{remainingTime}</span>
