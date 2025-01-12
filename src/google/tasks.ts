@@ -1,4 +1,4 @@
-import { getAuthToken } from './auth'
+import { getAuthToken } from '../oauth2/auth'
 import { log } from '@/logger'
 
 export type Task = {
@@ -15,7 +15,7 @@ export type Task = {
 
 export async function fetchTasks(): Promise<Task[] | undefined> {
   try {
-    const token = await getAuthToken()
+    const token = await getAuthToken('google')
     const response = await fetch(
       'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks',
       {

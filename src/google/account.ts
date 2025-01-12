@@ -1,5 +1,5 @@
 import { log } from '@/logger'
-import { getAuthToken } from './auth'
+import { getAuthToken } from '../oauth2/auth'
 
 export type Account = {
   name: string
@@ -9,7 +9,7 @@ export type Account = {
 
 export async function fetchAccountInfo() {
   try {
-    const token = await getAuthToken()
+    const token = await getAuthToken('google')
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       {

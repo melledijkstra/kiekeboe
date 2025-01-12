@@ -37,4 +37,4 @@
   }
 </style>
 
-<div class="absolute h-full w-full bg-black transition-opacity duration-300 top-0 left-0 -z-10 {loaded ? 'opacity-10' : 'opacity-100'}"></div>
+<div class="absolute h-full w-full bg-black transition-opacity duration-300 top-0 left-0 -z-10 {loaded ? 'opacity-20' : 'opacity-100'}"></div>

@@ -12,6 +12,7 @@
   import Icon from './components/Icon.svelte'
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { loadImage, refreshDailyImage } from './unsplash'
+  import Fitbit from './modules/fitbit/Fitbit.svelte'
 
   const appModes = ['default', 'breathing', 'pomodoro', 'focus'] as const
 
@@ -96,6 +97,7 @@
         {mode}
       </Button>
     {/each}
+    <Fitbit />
     {#if ModWorldClocks}
       <ModWorldClocks />
     {/if}
