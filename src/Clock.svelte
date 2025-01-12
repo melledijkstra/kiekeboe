@@ -1,14 +1,18 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import { getTime, getTimePercentage } from "./ui"
   import { log } from "./logger"
+  import { repeatEvery } from "./time/utils"
   
+  const ONE_MINUTE = 60 * 1000 // in ms
+
   type ClockMode = 'percentage' | 'time'
 
   const CLOCK_STORAGE_KEY = 'clockMode'
 
   let time = $state()
   let mode = $state<ClockMode>()
+  let cancelTick = $state<() => void>()
 
   function getDisplayTime() {
     return mode === 'time' ? getTime() : getTimePercentage()
@@ -23,9 +27,9 @@
   function startClock() {
     // run the clock 1 time when executed, then update every second
     time = getDisplayTime()
-    setInterval(() => {
+    cancelTick =  repeatEvery(() => {
       time = getDisplayTime()
-    }, 1000);
+    }, ONE_MINUTE)
   }
 
   onMount(async () => {
@@ -36,6 +40,10 @@
     mode = clockMode ?? 'time'
     startClock()
   });
+
+  onDestroy(() => {
+    cancelTick?.()
+  })
 </script>
 
 <button

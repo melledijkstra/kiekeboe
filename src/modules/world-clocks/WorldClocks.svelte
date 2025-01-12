@@ -2,7 +2,7 @@
   import Icon from '@/components/Icon.svelte'
   import Card from "@/components/Card.svelte"
   import { getBrowserLocale } from '@/ui'
-  import { mdiClock, mdiDelete } from '@mdi/js'
+  import { mdiClockPlusOutline, mdiDeleteClock, mdiWebClock } from '@mdi/js'
   import { onDestroy, onMount } from 'svelte';
   import { log } from '@/logger'
   import { repeatEvery } from '@/time/utils'
@@ -66,7 +66,7 @@
 
 <div class="relative">
   <button onclick={toggleDisplay}>
-    <Icon class="text-white cursor-pointer" path={mdiClock} size={48}  />
+    <Icon class="text-white cursor-pointer" path={mdiWebClock} size={48}  />
   </button>
   {#if open}
     <Card class="absolute right-0">
@@ -79,7 +79,7 @@
               <h2 class="text-sm text-zinc-100">{clock.name}</h2>
             </div>
             <button onclick={() => deleteClock(i)}>
-              <Icon path={mdiDelete} size={24} class="cursor-pointer"  />
+              <Icon path={mdiDeleteClock} size={24} class="cursor-pointer"  />
             </button>
           </div>
         {/each}
@@ -90,20 +90,18 @@
         inputName = '';
         inputTimezone = '';
       }}>
-        <div class="flex flex-row justify-between items-center gap-3">
-          <label for="timezone">Timezone</label>
-          <select class="text-black p-2" required bind:value={inputTimezone}>
-            <option disabled>Select timezone</option>
-            {#each Intl.supportedValuesOf('timeZone') as timezone}
-              <option value={timezone}>{timezone}</option>
-            {/each}
-          </select>
-        </div>
-        <div class="flex flex-row justify-between items-center gap-3">
-          <label for="name">Name</label>
-          <input class="text-black p-2" required type="text" bind:value={inputName} />
-        </div>
-        <button class="mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded" type="submit">Add Clock</button>
+        <label for="timezone">Timezone</label>
+        <select class="text-black p-2 rounded" required bind:value={inputTimezone}>
+          <option value="" disabled selected>Select timezone</option>
+          {#each Intl.supportedValuesOf('timeZone') as timezone}
+            <option value={timezone}>{timezone}</option>
+          {/each}
+        </select>
+        <label for="name">Name</label>
+        <input class="text-black p-2 rounded" placeholder="World Clock Name" required type="text" bind:value={inputName} />
+        <button class="flex items-center justify-center gap-1 mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded" type="submit">
+          <Icon size={16} path={mdiClockPlusOutline} /> Add Clock
+        </button>
       </form>
     </Card>
   {/if}

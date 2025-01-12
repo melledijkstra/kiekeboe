@@ -4,6 +4,6 @@
 
 <div
   {...props}
-  class="{props.class} min-w-80 w-fit max-w-96 overflow-hidden rounded-xl border-b-2 border-t-2 border-white/20 bg-neutral-400/50 p-5 text-white shadow-md">
+  class="{props.class} z-40 min-w-80 w-fit max-w-96 overflow-hidden rounded-2xl border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-sm">
   {@render children()}
 </div>

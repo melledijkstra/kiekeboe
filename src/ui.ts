@@ -7,7 +7,7 @@ export function getBrowserLocale(): string {
 }
 
 export async function retrieveUsername(): Promise<string | null> {
-  let { [NAME_STORAGE_KEY]: name } = (await browser.storage.local.get(
+  let { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
     NAME_STORAGE_KEY
   )) as { name: string }
 
@@ -15,7 +15,7 @@ export async function retrieveUsername(): Promise<string | null> {
 }
 
 export async function storeUsername(name: string): Promise<void> {
-  await browser.storage.local.set({ [NAME_STORAGE_KEY]: name })
+  await browser.storage.sync.set({ [NAME_STORAGE_KEY]: name })
 }
 
 export function getWelcomeMessage(name: string): string {

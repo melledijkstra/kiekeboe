@@ -9,6 +9,16 @@ Kiekeboe is a personal homepage extension that enhances your new tab page with a
 ## Features
 
 - **Unplash Images**: Beautiful background images from Unsplash.
+- **Modules**: Enable and disable different modules from the settings page only when you need it!
+
+### Modules
+
+- Google Tasks: Enables Google Tasks integration for viewing and adding tasks.
+- Command Center: Shows a handy dashboard with quick actions. Use `cmd+p` within the homepage to open command center
+- Well Being: Provides a guided breathing exercise.
+- Spotify: Offers in-page Spotify playback controls.
+- World Clocks: Displays local times from multiple time zones.
+- Fitbit: Retrieves your daily sleep statistics.
 
 ## Installation
 

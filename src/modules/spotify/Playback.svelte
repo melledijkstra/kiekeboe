@@ -5,6 +5,7 @@
   import Icon from "@/components/Icon.svelte"
   import { mdiPause, mdiPlay, mdiReload, mdiShuffleVariant, mdiSkipNext, mdiSkipPrevious } from "@mdi/js"
   import { millisecondsToTime } from "./utils"
+  import Card from "@/components/Card.svelte"
 
   let EMPTY: undefined;
 
@@ -96,7 +97,7 @@
   })
 </script>
 
-<div class="min-w-80 w-fit max-w-96 overflow-hidden rounded-xl border-b-2 border-t-2 border-white/20 bg-neutral-400/50 p-5 text-white shadow-md">
+<Card>
   {#if currentTrack}
   <div class="flex flex-row gap-4">
     <img class="size-20 rounded" src={currentTrack.album.images[0].url} alt={currentTrack.name} />
@@ -134,5 +135,4 @@
     <p class="mt-2">This is currently not the active device, transfer playback to this device</p>
     <button onclick={forceActivateDevice} class="my-2 p-2 bg-zinc-900 hover:bg-zinc-600 rounded">Force activate this device</button>
   {/if}
-  
-</div>
+</Card>
