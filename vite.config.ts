@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) =>
             transform: (content) => {
               const envVars = loadEnv(mode, process.cwd())
               content = content.replace(
-                '%VITE_CLIENT_ID%',
-                envVars.VITE_CLIENT_ID
+                '%CLIENT_ID%',
+                envVars.VITE_GOOGLE_EXTENSION_CLIENT_ID
               )
               content = content.replace('%VERSION%', packageJson.version)
               return content

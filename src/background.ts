@@ -5,7 +5,7 @@ log('Hello from background!')
 
 browser.runtime.onInstalled.addListener(({ reason }) => {
   log('Extension installed:', reason)
-  if (reason === 'update') {
+  if (reason === 'install') {
     browser.notifications.create({
       type: 'basic',
       title: 'Thanks for installing!',
