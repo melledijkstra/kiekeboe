@@ -13,13 +13,17 @@
     "page": "options.html",
     "open_in_tab": true
   },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "web_accessible_resources": [
     {
       "resources": ["spotify-sdk.min.js"],
       "matches": ["<all_urls>"]
     }
   ],
-  "permissions": ["storage", "identity"],
+  "permissions": ["storage", "identity", "alarms", "notifications"],
   "oauth2": {
     "client_id": "%VITE_CLIENT_ID%",
     "scopes": [

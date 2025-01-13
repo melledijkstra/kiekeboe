@@ -30,7 +30,8 @@ export default defineConfig(({ mode }) =>
       rollupOptions: {
         input: {
           home: './index.html',
-          options: './options.html'
+          options: './options.html',
+          background: './src/background.ts'
         },
         output: {
           entryFileNames: '[name].js',
