@@ -6,6 +6,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { log } from '@/logger'
   import { repeatEvery } from '@/time/utils'
+  import { clickOutside } from '@/actions/click-outside'
 
   const UPDATE_TIME = 60 * 1000 // every minute
 
@@ -31,6 +32,10 @@
     }
   })
 
+  onDestroy(() => {
+    cancelTick?.()
+  })
+
   function startClockTick() {
     cancelTick = repeatEvery(() => {
       log('updating clocks')
@@ -49,10 +54,6 @@
     }
   }
 
-  onDestroy(() => {
-    cancelTick?.()
-  })
-
   function addClock(name: string, timeZone: string) {
     clocks = [...clocks, { name, timeZone }];
     localStorage.setItem('worldClocks', JSON.stringify(clocks));
@@ -64,7 +65,7 @@
   }
 </script>
 
-<div class="relative">
+<div class="relative" use:clickOutside={() => open = false}>
   <button onclick={toggleDisplay}>
     <Icon class="text-white cursor-pointer" path={mdiWebClock} size={48}  />
   </button>

@@ -4,6 +4,7 @@
   import { getAuthToken, getTokenFromStoreOrRefreshToken } from "@/oauth2/auth"
   import Playback from "./Playback.svelte"
   import { onMount } from "svelte"
+  import { clickOutside } from "@/actions/click-outside"
 
   let open = $state(false);
   let token = $state<string>();
@@ -27,7 +28,7 @@
   })
 </script>
 
-<div class="relative">
+<div class="relative" use:clickOutside={() => open = false}>
   <button
     onclick={token ? toggleDisplay : authenticate}
     class="cursor-pointer">

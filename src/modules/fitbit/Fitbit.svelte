@@ -5,6 +5,7 @@
   import { onMount } from "svelte"
   import Card from "@/components/Card.svelte"
   import { getSleep } from "./api"
+  import { clickOutside } from "@/actions/click-outside"
 
   let open = $state(false);
   let token = $state<string>();
@@ -30,7 +31,7 @@
   })
 </script>
 
-<div class="relative">
+<div class="relative" use:clickOutside={() => open = false}>
   <button
     onclick={token ? toggleDisplay : authenticate}
     class="cursor-pointer">
