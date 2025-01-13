@@ -4,7 +4,7 @@
   import { initializeSpotifyPlayer, transferPlaybackDevice } from "./player"
   import Icon from "@/components/Icon.svelte"
   import { mdiPause, mdiPlay, mdiReload, mdiShuffleVariant, mdiSkipNext, mdiSkipPrevious } from "@mdi/js"
-  import { millisecondsToTime } from "./utils"
+  import { millisecondsToTime } from "@/time/utils"
   import Card from "@/components/Card.svelte"
 
   let EMPTY: undefined;

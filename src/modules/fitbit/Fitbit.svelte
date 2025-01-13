@@ -37,7 +37,7 @@
     <Icon class="text-white" path={mdiCounter} size={48} />
   </button>
   <Card class="absolute right-0 {token && open ? 'block' : 'hidden'}">
-    <span class="text-xl">Sleep: {sleepMinutes === 0 ? 0 : sleepMinutes / 60}h{sleepMinutes % 60}m</span>
+    <span class="text-xl">Sleep: {Math.floor(sleepMinutes === 0 ? 0 : sleepMinutes / 60)}h{sleepMinutes % 60}m</span>
   </Card>
 </div>
 

@@ -1,3 +1,7 @@
+import { log } from '@/logger'
+
+export type TimerTick = (remainingTime: number, tickCount: number) => void
+
 export type TimerCallback = (remainingTime: number) => void
 
 export type TimerOptions = {
@@ -12,9 +16,11 @@ export type TimerOptions = {
 export type TimerEvent = 'tick' | 'start' | 'stop' | 'complete'
 
 export class Timer {
+  private id: number
   private duration: number
   private interval: number
-  private onTick?: TimerCallback
+  private tickCount: number = 1
+  private onTick?: TimerTick
   private onStart?: TimerCallback
   private onStop?: TimerCallback
   private onComplete?: TimerCallback
@@ -23,6 +29,7 @@ export class Timer {
   private remainingTime: number = 0
 
   constructor(options: TimerOptions) {
+    this.id = Math.floor(Math.random() * 10000)
     this.duration = options.duration
     this.interval = options.interval ?? 1000
     this.onTick = options.onTick
@@ -37,37 +44,32 @@ export class Timer {
       return // timer is already running
     }
 
-    if (this.onStart) {
-      this.onStart(this.remainingTime)
-    }
+    this.onStart?.(this.remainingTime)
 
     this.startTime = Date.now()
     this.remainingTime = this.duration
-    this.timerId = setTimeout(() => this.runTick(), this.interval - 5)
+    this.runTick()
   }
 
   // self adjusting timer, read the below article to understand why
   // @link https://www.sitepoint.com/creating-accurate-timers-in-javascript/
   private runTick() {
-    const currentTime = Date.now()
-    const elapsedTime = currentTime - this.startTime
+    const now = Date.now()
+    const elapsedTime = now - this.startTime
     this.remainingTime = Math.max(this.duration - elapsedTime, 0)
 
-    if (this.onTick) {
-      this.onTick(this.remainingTime)
-    }
+    this.onTick?.(this.remainingTime, this.tickCount)
 
     if (this.remainingTime <= 0) {
       this.stop()
-      if (this.onComplete) {
-        this.onComplete(0)
-      }
+      this.onComplete?.(0)
     } else {
-      const elapsedTime = currentTime - this.startTime
-      const drift = elapsedTime % this.interval
+      const drift = Math.min(elapsedTime % this.interval, 200)
       const delay = this.interval - drift
       this.timerId = setTimeout(() => this.runTick(), delay)
     }
+
+    this.tickCount++
   }
 
   static formatRemainingTime(milliseconds: number) {
@@ -77,30 +79,33 @@ export class Timer {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
-  on(event: TimerEvent, callback: TimerCallback) {
+  on(event: 'tick', callback: TimerTick): void
+  on(event: Exclude<TimerEvent, 'tick'>, callback: TimerCallback): void
+
+  on(event: TimerEvent, callback: TimerCallback | TimerTick) {
     switch (event) {
       case 'start':
-        this.onStart = callback
+        this.onStart = callback as TimerCallback
         break
       case 'stop':
-        this.onStop = callback
+        this.onStop = callback as TimerCallback
         break
       case 'tick':
-        this.onTick = callback
+        this.onTick = callback as TimerTick
         break
       case 'complete':
-        this.onComplete = callback
+        this.onComplete = callback as TimerCallback
         break
     }
   }
 
   stop() {
     if (this.timerId) {
+      clearTimeout(this.timerId)
+      this.timerId = null
       if (this.onStop) {
         this.onStop(this.remainingTime)
       }
-      clearTimeout(this.timerId)
-      this.timerId = null
     }
   }
 

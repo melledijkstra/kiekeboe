@@ -10,24 +10,28 @@
   import { appState } from './app-state.svelte'
   import Button from './components/Button.svelte'
   import Icon from './components/Icon.svelte'
-  import { mdiCameraRetakeOutline } from '@mdi/js'
+  import { mdiCameraRetakeOutline, mdiHomeClock } from '@mdi/js'
   import { loadImage, refreshDailyImage } from './unsplash'
   import Fitbit from './modules/fitbit/Fitbit.svelte'
 
-  const appModes = ['default', 'breathing', 'pomodoro', 'focus'] as const
+  const STORAGE_KEY = 'appMode'
+
+  const appModes = ['default', 'breathing'] as const
 
   type AppMode = typeof appModes[number]
   
-  let ModTasks: Component | null = $state(null);
-  let ModCommandCenter: Component | null = $state(null);
-  let ModWellBeing: Component | null = $state(null);
-  let ModSpotify: Component | null = $state(null);
-  let ModWorldClocks: Component | null = $state(null);
+  let ModTasks: Component | null = $state(null)
+  let ModCommandCenter: Component | null = $state(null)
+  let ModWellBeing: Component | null = $state(null)
+  let ModBreathing: Component | null = $state(null)
+  let ModSpotify: Component | null = $state(null)
+  let ModWorldClocks: Component | null = $state(null)
 
-  let currentMode = $state<AppMode>('default')
+  let currentMode = $state<AppMode>(localStorage.getItem(STORAGE_KEY) as AppMode ?? 'default')
 
   function switchMode(mode: AppMode) {
     currentMode = mode
+    localStorage.setItem(STORAGE_KEY, mode)
   }
 
   onMount(async () => {
@@ -52,9 +56,10 @@
 
     if (appSettings.modules.well_being) {
       const file = 'WellBeing' as const
-      const module = await import(`./modules/well-being/${file}.svelte`)
+      const module = await import(`./modules/well-being/index.ts`)
       log('module loaded', file)
-      ModWellBeing = module.default
+      ModWellBeing = module.WellBeing
+      ModBreathing = module.Scene
     }
 
     if (appSettings.modules.spotify) {
@@ -89,23 +94,20 @@
 <div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
   <!-- TOP --->
   <div class="flex flex-row gap-10 p-5 justify-self-end items-start">
-    {#each appModes as mode}
-      <Button
-        onclick={() => switchMode(mode)}
-        className={currentMode === mode ? 'font-bold' : ''}
-      >
-        {mode}
-      </Button>
-    {/each}
-    <Fitbit />
+    <button 
+      class="text-white cursor-pointer"
+      onclick={() => switchMode('default')}>
+      <Icon path={mdiHomeClock} size={48} />
+    </button>
     {#if ModWorldClocks}
-      <ModWorldClocks />
+    <ModWorldClocks />
     {/if}
+    <Fitbit />
     {#if ModSpotify}
       <ModSpotify />
     {/if}
     {#if ModWellBeing}
-      <ModWellBeing onclick={() => {switchMode('breathing');return true;}} />
+      <ModWellBeing onclick={() => switchMode('breathing')} />
     {/if}
     <Account />
   </div>
@@ -118,6 +120,8 @@
       {#if currentMode === 'default'}
         <Clock />
         <Welcome />
+      {:else if currentMode === 'breathing'}
+        <ModBreathing />
       {:else}
         <p class="text-white text-lg">Not yet implemented!</p>
       {/if}
