@@ -10,13 +10,13 @@
   import { appState } from './app-state.svelte'
   import Button from './components/Button.svelte'
   import Icon from './components/Icon.svelte'
-  import { mdiCameraRetakeOutline, mdiHomeClock } from '@mdi/js'
+  import { mdiCameraRetakeOutline, mdiHomeClock, mdiRocketLaunch } from '@mdi/js'
   import { loadImage, refreshDailyImage } from './unsplash'
   import Fitbit from './modules/fitbit/Fitbit.svelte'
 
   const STORAGE_KEY = 'appMode'
 
-  const appModes = ['default', 'breathing'] as const
+  const appModes = ['default', 'breathing', 'pomodoro'] as const
 
   type AppMode = typeof appModes[number]
   
@@ -26,6 +26,7 @@
   let ModBreathing: Component | null = $state(null)
   let ModSpotify: Component | null = $state(null)
   let ModWorldClocks: Component | null = $state(null)
+  let ModPomodoro: Component | null = $state(null)
 
   let currentMode = $state<AppMode>(localStorage.getItem(STORAGE_KEY) as AppMode ?? 'default')
 
@@ -75,6 +76,13 @@
       log('module loaded', file)
       ModWorldClocks = module.default
     }
+
+    if (appSettings.modules.pomodoro) {
+      const file = 'Pomodoro' as const
+      const module = await import(`./modules/pomodoro/${file}.svelte`)
+      log('module loaded', file)
+      ModPomodoro = module.default
+    }
   })
 
   async function refreshBackround() {
@@ -91,10 +99,10 @@
   <ModCommandCenter />
 {/if}
 
-<div class="grid h-full grid-rows-3 grid-rows animate-fade-in">
+<div class="grid h-full animate-fade-in">
   <!-- TOP --->
   <div class="flex flex-row gap-10 p-5 justify-self-end items-start">
-    <button 
+    <button
       class="text-white cursor-pointer"
       onclick={() => switchMode('default')}>
       <Icon path={mdiHomeClock} size={48} />
@@ -104,7 +112,14 @@
     {/if}
     <Fitbit />
     {#if ModSpotify}
-      <ModSpotify />
+    <ModSpotify />
+    {/if}
+    {#if ModPomodoro}
+      <button 
+        class="text-white cursor-pointer"
+        onclick={() => switchMode('pomodoro')}>
+        <Icon path={mdiRocketLaunch} size={48} />
+      </button>
     {/if}
     {#if ModWellBeing}
       <ModWellBeing onclick={() => switchMode('breathing')} />
@@ -122,6 +137,8 @@
         <Welcome />
       {:else if currentMode === 'breathing'}
         <ModBreathing />
+      {:else if currentMode === 'pomodoro'}
+        <ModPomodoro />
       {:else}
         <p class="text-white text-lg">Not yet implemented!</p>
       {/if}

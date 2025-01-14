@@ -1,5 +1,3 @@
-import { log } from '@/logger'
-
 export type TimerTick = (remainingTime: number, tickCount: number) => void
 
 export type TimerCallback = (remainingTime: number) => void
@@ -16,7 +14,6 @@ export type TimerOptions = {
 export type TimerEvent = 'tick' | 'start' | 'stop' | 'complete'
 
 export class Timer {
-  private id: number
   private duration: number
   private interval: number
   private tickCount: number = 1
@@ -103,10 +100,20 @@ export class Timer {
     if (this.timerId) {
       clearTimeout(this.timerId)
       this.timerId = null
-      if (this.onStop) {
-        this.onStop(this.remainingTime)
-      }
     }
+    this.remainingTime = this.duration
+    if (this.onStop) {
+      this.onStop(this.remainingTime)
+    }
+  }
+
+  setDuration(duration: number) {
+    this.duration = duration
+    this.remainingTime = duration
+  }
+
+  formatRemainingTime() {
+    return Timer.formatRemainingTime(this.remainingTime)
   }
 
   reset(newDuration?: number) {

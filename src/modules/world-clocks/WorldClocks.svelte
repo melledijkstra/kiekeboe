@@ -79,8 +79,8 @@
               <h1 class="text-2xl font-bold">{new Date().toLocaleString(browserLocale, { timeStyle: 'short', timeZone: clock.timeZone })}</h1>
               <h2 class="text-sm text-zinc-100">{clock.name}</h2>
             </div>
-            <button onclick={() => deleteClock(i)}>
-              <Icon path={mdiDeleteClock} size={24} class="cursor-pointer"  />
+            <button onclick={() => deleteClock(i)} class="cursor-pointer">
+              <Icon path={mdiDeleteClock} size={24}  />
             </button>
           </div>
         {/each}

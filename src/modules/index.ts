@@ -4,7 +4,8 @@ export const MODULES = [
   'well_being',
   'spotify',
   'world_clocks',
-  'metrics'
+  'metrics',
+  'pomodoro'
 ] as const
 
 export type Module = (typeof MODULES)[number]
@@ -17,14 +18,16 @@ export const MODULE_TITLES: {
   well_being: 'Well Being',
   spotify: 'Spotify',
   world_clocks: 'World Clocks',
-  metrics: 'Metrics'
+  metrics: 'Metrics',
+  pomodoro: 'Pomodoro'
 } as const
 
 export const DEFAULT_MODULE_SETTINGS: { [key in Module]: boolean } = {
   command_center: true,
   well_being: true,
   world_clocks: true,
-  google_tasks: false,
   metrics: true,
+  pomodoro: true,
+  google_tasks: false,
   spotify: false
 }

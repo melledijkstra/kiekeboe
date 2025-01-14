@@ -54,6 +54,9 @@
   }
 
   async function forceActivateDevice() {
+    // if (player) {
+    //   player.activateElement()
+    // }
     if (deviceId) {
       const result = await transferPlaybackDevice(deviceId, token)
       isActive = result
@@ -82,6 +85,8 @@
     player.connect().then((success) => {
       if (!success) {
         throw new Error('Failed to connect')
+      } else {
+        log('Connected to Spotify Web Playback SDK')
       }
     })
   })

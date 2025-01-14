@@ -13,7 +13,7 @@
   });
 </script>
 
-<div class="inline-block m-2 p-4 bottom-5 right-5 rounded-lg bg-slate-950/80">
+<div class="absolute inline-block m-2 p-4 bottom-5 right-5 rounded-lg bg-slate-950/80">
   <h3 class="text-lg text-white">Tasks</h3>
   <ul class="task-list">
     {#each tasks as task}
