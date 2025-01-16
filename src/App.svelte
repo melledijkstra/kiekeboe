@@ -8,10 +8,9 @@
   import { getSettings } from './settings'
   import { log } from './logger'
   import { appState } from './app-state.svelte'
-  import Button from './components/Button.svelte'
   import Icon from './components/Icon.svelte'
-  import { mdiCameraRetakeOutline, mdiHomeClock, mdiRocketLaunch } from '@mdi/js'
-  import { loadImage, refreshDailyImage } from './unsplash'
+  import { mdiCameraRetakeOutline, mdiHomeClock, mdiRocketLaunch, mdiSend } from '@mdi/js'
+  import { loadImage, refreshDailyImage } from '@/api/unsplash'
   import Fitbit from './modules/fitbit/Fitbit.svelte'
 
   const STORAGE_KEY = 'appMode'

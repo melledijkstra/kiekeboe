@@ -6,11 +6,10 @@
   let nameInput = $state('')
   let name = $state<string | null>(null)
 
-  onMount(() => {
-    retrieveUsername().then((username) => {
-      name = username
-      nameLoaded = true
-    })
+  onMount(async () => {
+    const username = await retrieveUsername()
+    name = username
+    nameLoaded = true
   })
 </script>
 

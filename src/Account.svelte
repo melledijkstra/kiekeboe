@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { ACCOUNT_CACHE_KEY } from './constants';
   import browser from 'webextension-polyfill';
-  import { fetchAccountInfo, type Account } from "./google/account";
+  import { fetchAccountInfo, type Account } from "@/api/google/account";
 
   let accountInfo = $state<Account>();
 

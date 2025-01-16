@@ -2,11 +2,11 @@ import {
   DAILY_IMAGE_KEY,
   NEXT_IMAGE_KEY,
   UNSPLASH_PROXY_URL
-} from './constants'
+} from '@/constants'
 import browser from 'webextension-polyfill'
-import { formatDate } from './date'
-import { log } from './logger'
-import type { UnsplashResponse } from './types'
+import { formatDate } from '@/date'
+import { log } from '@/logger'
+import type { UnsplashResponse } from '@/types'
 
 type Image = {
   id: string

@@ -1,5 +1,5 @@
 import { log } from '@/logger'
-import { getAuthToken } from '../oauth2/auth'
+import { getAuthToken } from '@/oauth2/auth'
 
 export async function fetchPhotos() {
   const token = await getAuthToken('google')

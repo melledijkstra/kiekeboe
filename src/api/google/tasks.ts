@@ -1,4 +1,4 @@
-import { getAuthToken } from '../oauth2/auth'
+import { getAuthToken } from '@/oauth2/auth'
 import { log } from '@/logger'
 
 export type Task = {

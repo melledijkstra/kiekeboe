@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import { getDailyImage, loadImage } from "./unsplash"
+  import { getDailyImage, loadImage } from "@/api/unsplash"
 
   let loaded = $state(false);
 
