@@ -1,13 +1,19 @@
 import browser from 'webextension-polyfill'
 import { PomodoroService } from '@/modules/pomodoro/service'
-import { log } from './logger'
+import { Logger } from './logger'
+
+export const logger = new Logger('background')
 
 declare global {
   function r(): void
 }
 
+export interface BackgroundService {}
+
+const services = []
+
 browser.runtime.onInstalled.addListener(({ reason }) => {
-  log('Extension installed:', reason)
+  logger.log('Extension installed:', reason)
   if (reason === 'install') {
     browser.notifications.create({
       type: 'basic',
@@ -20,13 +26,13 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 })
 
 browser.notifications.onClicked.addListener((notificationId) => {
-  log('Notification clicked:', notificationId)
+  logger.log('Notification clicked:', notificationId)
   browser.tabs.create({ url: '/index.html' })
 })
 
 self.addEventListener('activate', () => {
-  log('Service worker activated')
-  const pomodoro = new PomodoroService()
+  logger.log('Service worker activated')
+  services.push(new PomodoroService())
 })
 
 if (import.meta.env.DEV) {

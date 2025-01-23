@@ -6,7 +6,7 @@ import {
 import browser from 'webextension-polyfill'
 import { formatDate } from '@/date'
 import { log } from '@/logger'
-import type { UnsplashResponse } from '@/types'
+import type { UnsplashResponse } from '@/api/definitions/unsplash'
 
 type Image = {
   id: string

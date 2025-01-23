@@ -23,7 +23,13 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "permissions": ["storage", "identity", "alarms", "notifications"],
+  "permissions": [
+    "storage",
+    "identity",
+    "alarms",
+    "notifications",
+    "geolocation"
+  ],
   "oauth2": {
     "client_id": "%CLIENT_ID%",
     "scopes": [

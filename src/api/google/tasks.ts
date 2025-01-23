@@ -1,34 +1,37 @@
-import { getAuthToken } from '@/oauth2/auth'
-import { log } from '@/logger'
+import { BaseClient } from '../baseclient'
+import type { TaskList, Task } from '@/api/definitions/google'
 
-export type Task = {
-  id: string
-  title: string
-  kind?: string
-  links?: string[]
-  position?: string
-  selfLink?: string
-  status?: 'needsAction'
-  updated?: string
-  webViewLink?: string
-}
+const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
-export async function fetchTasks(): Promise<Task[] | undefined> {
-  try {
-    const token = await getAuthToken('google')
-    const response = await fetch(
-      'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    )
-    const data = (await response.json()) as { items: Task[] }
-    log('Tasks:', data)
+export class TasksClient extends BaseClient {
+  public taskLists: TaskList[] = []
+  public tasks: Task[] = []
 
-    return data.items
-  } catch (error) {
-    console.error('Error fetching tasks:', error)
+  constructor(token: string) {
+    super(BASE_URL, token)
+  }
+
+  async fetchTasks(taskListId?: string): Promise<Task[] | undefined> {
+    try {
+      const response = await this.request<{ items: Task[] }>(
+        `/lists/${taskListId ?? '@default'}/tasks`
+      )
+
+      return response?.items ?? []
+    } catch (error) {
+      console.error('Error fetching tasks:', error)
+    }
+  }
+
+  async getTaskLists(): Promise<TaskList[] | undefined> {
+    try {
+      const response = await this.request<{ items: TaskList[] }>(
+        '/users/@me/lists'
+      )
+
+      return response?.items ?? []
+    } catch (error) {
+      console.error('Error fetching task lists:', error)
+    }
   }
 }

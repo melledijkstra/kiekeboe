@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { MODULE_TITLES, MODULES } from '@/modules'
+  import { MODULE_CONFIG } from '@/modules'
   import '@/app.css'
   import { type Settings, DEFAULT_SETTINGS, getSettings, saveSettings } from './index'
 
@@ -23,16 +23,16 @@
     <hr />
     <h2 class="text-xl mt-2 font-bold">Modules</h2>
     <p class="mb-4 text-gray-400">Enable or disable modules</p>
-    {#each MODULES as moduleKey}
+    {#each MODULE_CONFIG as { id, title } (id)}
       <p class="font-bold">
-        <span class="mr-2 text-base">{MODULE_TITLES[moduleKey]}</span>
+        <span class="mr-2 text-base">{title}</span>
         <input
           disabled={!settingsLoaded}
           class="scale-150" type="checkbox"
-          bind:checked={settings.modules[moduleKey]}
+          bind:checked={settings.modules[id]}
           onchange={() => saveSettings(settings)} />
       </p>
-      <p class="text-gray-400">{moduleKey}: {settings.modules[moduleKey]} (default: {DEFAULT_SETTINGS.modules?.[moduleKey]})</p>
+      <p class="text-gray-400">{id}: {settings.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})</p>
     {/each}
   </div>
 </div>

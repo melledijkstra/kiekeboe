@@ -108,6 +108,7 @@ export class Timer {
   }
 
   setDuration(duration: number) {
+    this.stop()
     this.duration = duration
     this.remainingTime = duration
   }

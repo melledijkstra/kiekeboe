@@ -1,11 +1,22 @@
 import browser from 'webextension-polyfill'
-import { DEFAULT_MODULE_SETTINGS } from '@/modules'
-import type { Module } from '@/modules'
+import type { ModuleID } from '@/modules'
 
 export type Settings = {
   modules: {
-    [key in Module]: boolean
+    [key in ModuleID]: boolean
   }
+}
+
+export const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
+  command_center: true,
+  well_being: true,
+  world_clocks: true,
+  metrics: true,
+  pomodoro: true,
+  countdown: true,
+  weather: false,
+  google_tasks: false,
+  spotify: false
 }
 
 export const SETTINGS_KEY = 'settings' as const

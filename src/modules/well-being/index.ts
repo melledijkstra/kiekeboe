@@ -1,2 +1,8 @@
-export { default as WellBeing } from './WellBeing.svelte'
-export { default as Scene } from './Breathing.svelte'
+import type { Module } from '@/modules'
+import Wellbeing from './WellBeing.svelte'
+import Breathing from './Breathing.svelte'
+
+export default {
+  component: Wellbeing,
+  scene: Breathing
+} satisfies Module

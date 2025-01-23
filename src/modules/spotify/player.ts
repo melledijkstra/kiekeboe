@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill'
 import { log } from '@/logger'
 
 const BASE_URL = 'https://api.spotify.com/v1'
@@ -9,7 +10,7 @@ const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
  */
 export function loadSpotifySDK(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    const sdkFile = chrome.runtime.getURL(SPOTIFY_SDK_FILE)
+    const sdkFile = browser.runtime.getURL(SPOTIFY_SDK_FILE)
     // check if the script is already loaded
     if (document.querySelector(`script[src="${sdkFile}"]`)) {
       resolve()

@@ -6,12 +6,14 @@
   import Welcome from './Welcome.svelte'
   import { onMount, type Component } from 'svelte'
   import { getSettings } from './settings'
-  import { log } from './logger'
-  import { appState } from './app-state.svelte'
+  import { Logger, log } from './logger'
+  import { appStore } from '@/stores/app-store.svelte.ts'
   import Icon from './components/Icon.svelte'
-  import { mdiCameraRetakeOutline, mdiHomeClock, mdiRocketLaunch, mdiSend } from '@mdi/js'
+  import { mdiCameraRetakeOutline, mdiHomeClock, mdiRocketLaunch } from '@mdi/js'
   import { loadImage, refreshDailyImage } from '@/api/unsplash'
   import Fitbit from './modules/fitbit/Fitbit.svelte'
+  import Card from './components/Card.svelte'
+  import { loadModule } from './modules/index.ts'
 
   const STORAGE_KEY = 'appMode'
 
@@ -26,6 +28,8 @@
   let ModSpotify: Component | null = $state(null)
   let ModWorldClocks: Component | null = $state(null)
   let ModPomodoro: Component | null = $state(null)
+  let ModCountdown: Component | null = $state(null)
+  let ModWeather: Component | null = $state(null)
 
   let currentMode = $state<AppMode>(localStorage.getItem(STORAGE_KEY) as AppMode ?? 'default')
 
@@ -36,51 +40,51 @@
 
   onMount(async () => {
     const appSettings = await getSettings()
-    appState.settings = appSettings
+    appStore.settings = appSettings
 
     log({ appSettings })
 
     if (appSettings.modules.google_tasks) {
-      const file = 'Tasks' as const
-      const module = await import(`./modules/google-tasks/${file}.svelte`)
-      log('module loaded', file)
-      ModTasks = module.default
+      const module = await loadModule('google_tasks')
+      ModTasks = module.component
     }
 
     if (appSettings.modules.command_center) {
-      const file = 'CommandCenter' as const
-      const module = await import(`./modules/command-center/${file}.svelte`)
-      log('module loaded', file)
-      ModCommandCenter = module.default
+      const module = await loadModule('command_center')
+      ModCommandCenter = module.component
     }
 
     if (appSettings.modules.well_being) {
-      const file = 'WellBeing' as const
-      const module = await import(`./modules/well-being/index.ts`)
-      log('module loaded', file)
-      ModWellBeing = module.WellBeing
-      ModBreathing = module.Scene
+      const module = await loadModule('well_being')
+      ModWellBeing = module.component
+      if (module.scene) {
+        ModBreathing = module.scene
+      }
     }
 
     if (appSettings.modules.spotify) {
-      const file = 'Spotify' as const
-      const module = await import(`./modules/spotify/${file}.svelte`)
-      log('module loaded', file)
-      ModSpotify = module.default
+      const module = await loadModule('spotify')
+      ModSpotify = module.component
     }
 
     if (appSettings.modules.world_clocks) {
-      const file = 'WorldClocks' as const
-      const module = await import(`./modules/world-clocks/${file}.svelte`)
-      log('module loaded', file)
-      ModWorldClocks = module.default
+      const module = await loadModule('world_clocks')
+      ModWorldClocks = module.component
     }
 
     if (appSettings.modules.pomodoro) {
-      const file = 'Pomodoro' as const
-      const module = await import(`./modules/pomodoro/${file}.svelte`)
-      log('module loaded', file)
-      ModPomodoro = module.default
+      const module = await loadModule('pomodoro')
+      ModPomodoro = module.component
+    }
+
+    if (appSettings.modules.countdown) {
+      const module = await loadModule('countdown')
+      ModCountdown = module.component
+    }
+
+    if (appSettings.modules.weather) {
+      const module = await loadModule('weather')
+      ModWeather = module.component
     }
   })
 
@@ -98,7 +102,7 @@
   <ModCommandCenter />
 {/if}
 
-<div class="grid h-full animate-fade-in">
+<div class="grid h-screen animate-fade-in">
   <!-- TOP --->
   <div class="flex flex-row gap-10 p-5 justify-self-end items-start">
     <button
@@ -106,6 +110,9 @@
       onclick={() => switchMode('default')}>
       <Icon path={mdiHomeClock} size={48} />
     </button>
+    {#if ModCountdown}
+    <ModCountdown />
+    {/if}
     {#if ModWorldClocks}
     <ModWorldClocks />
     {/if}
@@ -122,6 +129,9 @@
     {/if}
     {#if ModWellBeing}
       <ModWellBeing onclick={() => switchMode('breathing')} />
+    {/if}
+    {#if ModWeather}
+    <ModWeather />
     {/if}
     <Account />
   </div>
@@ -154,12 +164,32 @@
           path={mdiCameraRetakeOutline} />
       </button>
     </div>
-    <!-- BOTTOM RIGHT -->
-    <div>
-      {#if ModTasks}
-        <ModTasks />
-      {/if}
-    </div>
   </div>
 </div>
+
+<!-- <div class="container m-auto">
+  <div class="grid grid-cols-4 gap-3">
+    {#if ModTasks}
+      <ModTasks />
+    {/if}
+    <Card>
+      <iframe title="calendar" src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FMadrid&showPrint=0&src=bWVsbGUuZHlrc3RyYUBnbWFpbC5jb20&color=%23a78344" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+    </Card>
+    <Card>
+      <p>Card 3</p>
+    </Card>
+    <Card>
+      <p>Card 4</p>
+    </Card>
+    <Card>
+      <p>Card 5</p>
+    </Card>
+    <Card>
+      <p>Card 6</p>
+    </Card>
+    <Card>
+      <p>Card 7</p>
+    </Card>
+  </div>
+</div> -->
 

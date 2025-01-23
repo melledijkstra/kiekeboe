@@ -1,13 +1,15 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte"
-  import { log } from "@/logger"
+  import { Logger } from "@/logger"
   import { initializeSpotifyPlayer, transferPlaybackDevice } from "./player"
   import Icon from "@/components/Icon.svelte"
   import { mdiPause, mdiPlay, mdiReload, mdiShuffleVariant, mdiSkipNext, mdiSkipPrevious } from "@mdi/js"
   import { millisecondsToTime } from "@/time/utils"
   import Card from "@/components/Card.svelte"
 
-  let EMPTY: undefined;
+  let EMPTY: undefined
+
+  const logger = new Logger('spotify')
 
   const { token } = $props()
   let deviceId = $state<string | null>(null)
@@ -25,7 +27,7 @@
   let playbackLoop = $state<number>()
 
   async function playerStateChanged(state: Spotify.PlaybackState) {
-    log('state change', state)
+    logger.log('state change', state)
     if (!state) {
       if (isActive) {
         isActive = false
@@ -41,7 +43,7 @@
     if (!state.paused) {
       if (!playbackLoop) {
         playbackLoop = setInterval(() => {
-          log('updating time')
+          logger.log('updating time')
           position += 1000
         }, 1000)
       }
@@ -54,9 +56,6 @@
   }
 
   async function forceActivateDevice() {
-    // if (player) {
-    //   player.activateElement()
-    // }
     if (deviceId) {
       const result = await transferPlaybackDevice(deviceId, token)
       isActive = result
@@ -67,12 +66,12 @@
     player = await initializeSpotifyPlayer(token)
 
     player.addListener('ready', ({ device_id }) => {
-      console.log('Ready with Device ID', device_id)
+      logger.log('ready with Device ID', device_id)
       deviceId = device_id
     })
 
     player.addListener('not_ready', ({ device_id }) => {
-      console.log('Device ID has gone offline', device_id)
+      logger.log('device ID has gone offline', device_id)
       deviceId = null
     })
 
@@ -86,7 +85,7 @@
       if (!success) {
         throw new Error('Failed to connect')
       } else {
-        log('Connected to Spotify Web Playback SDK')
+        logger.log('Connected to Spotify Web Playback SDK')
       }
     })
   })

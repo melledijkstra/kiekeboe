@@ -76,8 +76,10 @@ const base64encode = (input: ArrayBuffer) => {
 
 const storageKey = (provider: string) => `${OAUTH2_STORAGE_KEY}.${provider}`
 
-async function getAuthTokenChrome(): Promise<string | undefined> {
-  const oauth2 = await chrome.identity.getAuthToken({ interactive: true })
+export async function getAuthTokenChrome(
+  interactive = true
+): Promise<string | undefined> {
+  const oauth2 = await chrome.identity.getAuthToken({ interactive })
   return oauth2.token
 }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte"
   import { getTime, getTimePercentage } from "./ui"
-  import { log } from "./logger"
   import { repeatEvery } from "./time/utils"
   
   const ONE_MINUTE = 60 * 1000 // in ms
@@ -34,9 +33,6 @@
 
   onMount(async () => {
     const clockMode = localStorage.getItem(CLOCK_STORAGE_KEY) as ClockMode
-    log({
-      clockMode
-    })
     mode = clockMode ?? 'time'
     startClock()
   });
@@ -48,4 +44,4 @@
 
 <button
   onclick={toggleMode}
-  class="empty:min-h-32 time text-white text-9xl drop-shadow-xl cursor-pointer">{time}</button>
+  class="empty:min-h-32 time text-white text-10xl drop-shadow-xl cursor-pointer">{time}</button>

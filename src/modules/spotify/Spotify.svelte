@@ -6,8 +6,8 @@
   import { onMount } from "svelte"
   import { clickOutside } from "@/actions/click-outside"
 
-  let open = $state(false);
-  let token = $state<string>();
+  let open = $state(false)
+  let token = $state<string>()
 
   function toggleDisplay() {
     open = !open

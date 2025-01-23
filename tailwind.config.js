@@ -11,7 +11,13 @@ export default {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 }
         }
-      })
+      }),
+      fontSize: {
+        '10xl': ['9.5rem', '1'],
+        '11xl': ['10rem', '1'],
+        '12xl': ['12rem', '1'],
+        '13xl': ['14rem', '1']
+      }
     }
   },
   plugins: []
