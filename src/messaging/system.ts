@@ -1,3 +1,4 @@
+import { log } from '@/logger'
 import browser from 'webextension-polyfill'
 
 type Message = {
@@ -16,6 +17,7 @@ const isMessage = (msg: unknown): msg is Message => {
 export function createMessage<Request, Response>(identifier: string) {
   return {
     async send(data: Request): Promise<Response> {
+      log('Sending message:', identifier)
       const response = await browser.runtime.sendMessage<Message, Response>({
         identifier,
         data

@@ -1,8 +1,7 @@
 import type { Module } from '@/modules'
-import Wellbeing from './WellBeing.svelte'
 import Breathing from './Breathing.svelte'
 
 export default {
-  component: Wellbeing,
+  component: Breathing,
   scene: Breathing
 } satisfies Module

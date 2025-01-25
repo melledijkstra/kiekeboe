@@ -2,11 +2,12 @@
   import Icon from '@/components/Icon.svelte'
   import Card from "@/components/Card.svelte"
   import { getBrowserLocale } from '@/ui'
-  import { mdiClockPlusOutline, mdiDeleteClock, mdiWebClock } from '@mdi/js'
+  import { mdiClockPlusOutline, mdiDeleteClock, mdiWeb, mdiWebClock } from '@mdi/js'
   import { onDestroy, onMount } from 'svelte';
   import { log } from '@/logger'
   import { repeatEvery } from '@/time/utils'
   import { clickOutside } from '@/actions/click-outside'
+  import ModeButton from '@/components/ModeButton.svelte'
 
   const UPDATE_TIME = 60 * 1000 // every minute
 
@@ -66,9 +67,7 @@
 </script>
 
 <div class="relative" use:clickOutside={() => open = false}>
-  <button onclick={toggleDisplay}>
-    <Icon class="text-white cursor-pointer" path={mdiWebClock} size={48}  />
-  </button>
+  <ModeButton onclick={toggleDisplay} icon={mdiWebClock} />
   {#if open}
     <Card class="absolute right-0">
       <h2 class="text-lg mb-3">World Clocks 🌎</h2>

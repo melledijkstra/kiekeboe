@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import { getWelcomeMessage, retrieveUsername, storeUsername } from "./ui"
-  import { startPomodoro } from "./modules/pomodoro/messages"
 
   let nameLoaded = $state(false)
   let nameInput = $state('')
@@ -11,7 +10,6 @@
     const username = await retrieveUsername()
     name = username
     nameLoaded = true
-    startPomodoro.send()
   })
 </script>
 

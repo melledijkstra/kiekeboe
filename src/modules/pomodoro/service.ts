@@ -37,7 +37,6 @@ export class PomodoroService implements BackgroundService {
   }
 
   onTick(remainingTime: number) {
-    logger.log('state update', this.state)
     this.state.timeRemaining = remainingTime
     this.sendUpdate()
   }

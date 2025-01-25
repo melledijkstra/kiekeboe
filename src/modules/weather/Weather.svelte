@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import { WeatherClient, type WeatherInfo } from "@/api/weather"
   import Icon from "@/components/Icon.svelte"
   import { mdiCloudOff } from "@mdi/js"
-  import { onMount } from "svelte"
   import { weatherToMdiIcon } from "./utils"
 
   let currentWeather = $state<WeatherInfo>()
@@ -16,13 +16,9 @@
   function formatCelcius(kelvin: number): string {
     return `${Math.round(kelvin - 273.15)}℃`;
   }
-
-  async function getCurrentWeather() {
-    currentWeather = await client?.getWeather()
-  }
 </script>
 
-<button class="flex flex-col items-end text-white" onclick={getCurrentWeather}>
+<div class="flex flex-col items-end text-white bg-black/30 py-1 px-2 rounded-lg backdrop-blur-sm">
   {#if currentWeather}
   <div class="flex flex-row items-center gap-1">
     <Icon path={weatherToMdiIcon(currentWeather.icon)} size={24} />
@@ -32,4 +28,4 @@
   {:else}
     <Icon path={mdiCloudOff} size={46} />
   {/if}
-</button>
+</div>
