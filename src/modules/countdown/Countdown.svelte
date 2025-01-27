@@ -4,7 +4,7 @@
   import { mdiCalendarOutline, mdiCalendarPlusOutline, mdiDelete } from '@mdi/js'
   import { onMount } from 'svelte'
   import { clickOutside } from '@/actions/click-outside'
-  import ModeButton from '@/components/ModeButton.svelte'
+  import IconButton from '@/components/IconButton.svelte'
 
   const STORAGE_KEY = 'counters'
 
@@ -59,7 +59,7 @@
 </script>
 
 <div class="relative {props.class}" use:clickOutside={() => open = false}>
-  <ModeButton onclick={toggleDisplay} icon={mdiCalendarOutline} />
+  <IconButton onclick={toggleDisplay} icon={mdiCalendarOutline} />
   {#if open}
     <Card class="absolute right-0">
       <h2 class="text-lg mb-3">Countdowns 🗓️</h2>

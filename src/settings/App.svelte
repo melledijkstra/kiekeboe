@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { MODULE_CONFIG } from '@/modules'
-  import '@/app.css'
   import { type Settings, DEFAULT_SETTINGS, getSettings, saveSettings } from './index'
+  import '@/app.css'
 
   let settings = $state<Settings>(DEFAULT_SETTINGS)
   let settingsLoaded = $state(false)

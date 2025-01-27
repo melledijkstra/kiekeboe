@@ -6,15 +6,19 @@
   import { onMount, type Component } from 'svelte'
   import { getSettings } from './settings'
   import { appState } from '@/app-state.svelte.ts'
-  import Icon from './components/Icon.svelte'
-  import { mdiCameraRetakeOutline } from '@mdi/js'
+  import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
   import { loadImage, refreshDailyImage } from '@/api/unsplash'
   import { loadModule } from './modules/index.ts'
   import TopBar from './components/TopBar.svelte'
+  import IconButton from './components/IconButton.svelte'
+  import SettingsMenu from './settings/Menu.svelte'
+  import { clickOutside } from './actions/click-outside.ts'
   
   let ModCommandCenter: Component | null = $state(null)
   let ModBreathing: Component | null = $state(null)
   let ModPomodoro: Component | null = $state(null)
+
+  let settingsOpen = $state(false)
 
   onMount(async () => {
     const appSettings = await getSettings()
@@ -75,14 +79,13 @@
     </main>
   {/key}
   <!-- BOTTOM -->
-  <footer class="flex flex-row justify-between content-end items-end">
+  <footer class="flex flex-row content-end items-end gap-5 p-5">
     <!-- BOTTOM LEFT -->
-    <button class="p-5" onclick={refreshBackround}>
-      <Icon
-        class="text-slate-400 hover:text-white cursor-pointer"
-        size={48}
-        path={mdiCameraRetakeOutline} />
-    </button>
+    <div class="relative" use:clickOutside={() => settingsOpen = false}>
+      <IconButton onclick={() => settingsOpen = !settingsOpen} icon={mdiTuneVertical} />
+      <SettingsMenu open={settingsOpen} />
+    </div>
+    <IconButton onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
   </footer>
 </div>
 

@@ -6,6 +6,6 @@
 
 <button
   {...props}
-  class="{props.class} text-white/70 transition-colors hover:text-white cursor-pointer">
+  class="block text-white/70 transition-colors hover:text-white cursor-pointer {props.class}">
   <Icon path={icon} size={48} />
 </button>

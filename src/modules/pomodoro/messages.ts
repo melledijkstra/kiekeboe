@@ -13,4 +13,6 @@ export const stateUpdate = createMessage<PomodoroState, void>(
   'pomodoroStateUpdate'
 )
 
+export const pomodoroComplete = createMessage<void, void>('pomodoroComplete')
+
 export const switchMode = createMessage<Mode, boolean>('pomodoroSwitchMode')

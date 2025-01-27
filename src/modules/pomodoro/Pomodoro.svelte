@@ -4,7 +4,7 @@
   import { Timer } from "@/time/timer"
   import { onMount } from "svelte"
   import { fade } from "svelte/transition"
-  import { getPomodoroState, startPomodoro, stateUpdate, stopPomodoro, switchMode as switchPomodoroMode } from './messages'
+  import { getPomodoroState, pomodoroComplete, startPomodoro, stateUpdate, stopPomodoro, switchMode as switchPomodoroMode } from './messages'
   import type { PomodoroState } from './types'
 
   let pState = $state<PomodoroState>({
@@ -44,6 +44,7 @@
     audio.src = browser.runtime.getURL('audio/happy-bell.wav')
     pState = await getPomodoroState.send()
     stateUpdate.on(onStateUpdate)
+    pomodoroComplete.on(onComplete)
   });
 </script>
 

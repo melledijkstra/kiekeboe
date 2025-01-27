@@ -5,7 +5,7 @@
   import Playback from "./Playback.svelte"
   import { onMount } from "svelte"
   import { clickOutside } from "@/actions/click-outside"
-  import ModeButton from "@/components/ModeButton.svelte"
+  import IconButton from "@/components/IconButton.svelte"
 
   let open = $state(false)
   let token = $state<string>()
@@ -30,7 +30,7 @@
 </script>
 
 <div class="relative" use:clickOutside={() => open = false}>
-  <ModeButton onclick={token ? toggleDisplay : authenticate} icon={mdiSpotify} />
+  <IconButton onclick={token ? toggleDisplay : authenticate} icon={mdiSpotify} />
   <div class="absolute right-0 {token && open ? 'block' : 'hidden'}">
     {#if token}
       <Playback token={token} />

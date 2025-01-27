@@ -3,10 +3,10 @@
   import { onMount, type Component } from "svelte"
   import { mdiHomeOutline, mdiRocketLaunch, mdiSpa } from "@mdi/js"
   import { log } from "@/logger"
-  import { appState, switchAppMode } from "@/app-state.svelte"
+  import { switchAppMode } from "@/app-state.svelte"
   import Fitbit from "@/modules/fitbit/Fitbit.svelte"
   import Account from "@/Account.svelte"
-  import ModeButton from "./ModeButton.svelte"
+  import IconButton from "./IconButton.svelte"
   import { getSettings, type Settings } from "@/settings"
 
   let ModSpotify: Component | null = $state(null)
@@ -45,12 +45,12 @@
 
 <header class="w-full p-5">
   <div class="float-left flex flex-row items-start justify-start align-middle gap-5">
-    <ModeButton onclick={() => switchAppMode('default')} icon={mdiHomeOutline} />
+    <IconButton onclick={() => switchAppMode('default')} icon={mdiHomeOutline} />
     {#if appSettings?.modules.pomodoro}
-      <ModeButton onclick={() => switchAppMode('pomodoro')} icon={mdiRocketLaunch} />
+      <IconButton onclick={() => switchAppMode('pomodoro')} icon={mdiRocketLaunch} />
     {/if}
     {#if appSettings?.modules.well_being}
-      <ModeButton onclick={() => switchAppMode('breathing')} icon={mdiSpa} />
+      <IconButton onclick={() => switchAppMode('breathing')} icon={mdiSpa} />
     {/if}
   </div>
   <div class="float-right flex flex-row items-start justify-end align-middle gap-5">

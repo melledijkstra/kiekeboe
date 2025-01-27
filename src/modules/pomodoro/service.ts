@@ -3,6 +3,7 @@ import type { BackgroundService } from '@/background'
 import { logger } from '@/background'
 import {
   getPomodoroState,
+  pomodoroComplete,
   startPomodoro,
   stateUpdate,
   stopPomodoro,
@@ -49,9 +50,9 @@ export class PomodoroService implements BackgroundService {
       message: `Pomodoro timer done for: ${this.state.mode}`,
       iconUrl: browser.runtime.getURL('icons/bell.png')
     })
+    pomodoroComplete.send()
     this.state.isRunning = false
     this.switchMode(this.state.mode === 'work' ? 'break' : 'work')
-    this.sendUpdate()
   }
 
   sendUpdate() {

@@ -7,7 +7,7 @@
   import { log } from '@/logger'
   import { repeatEvery } from '@/time/utils'
   import { clickOutside } from '@/actions/click-outside'
-  import ModeButton from '@/components/ModeButton.svelte'
+  import IconButton from '@/components/IconButton.svelte'
 
   const UPDATE_TIME = 60 * 1000 // every minute
 
@@ -67,7 +67,7 @@
 </script>
 
 <div class="relative" use:clickOutside={() => open = false}>
-  <ModeButton onclick={toggleDisplay} icon={mdiWebClock} />
+  <IconButton onclick={toggleDisplay} icon={mdiWebClock} />
   {#if open}
     <Card class="absolute right-0">
       <h2 class="text-lg mb-3">World Clocks 🌎</h2>
