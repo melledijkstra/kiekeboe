@@ -1,4 +1,3 @@
-import { log } from '@/logger'
 import { getAuthToken } from '@/oauth2/auth'
 
 export type Account = {
@@ -20,7 +19,6 @@ export async function fetchAccountInfo() {
       }
     )
     const data = (await response.json()) as Account
-    log('Profile Image URL:', data.picture)
 
     return data
   } catch (error) {

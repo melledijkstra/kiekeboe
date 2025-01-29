@@ -4,11 +4,11 @@
   import Curtain from './Curtain.svelte'
   import Welcome from './Welcome.svelte'
   import { onMount, type Component } from 'svelte'
-  import { getSettings } from './settings'
+  import { settingsStore, syncSettingsStoreWithStorage } from './settings'
   import { appState } from '@/app-state.svelte.ts'
   import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
   import { loadImage, refreshDailyImage } from '@/api/unsplash'
-  import { loadModule } from './modules/index.ts'
+  import { loadModule, type ModuleID } from '@/modules'
   import TopBar from './components/TopBar.svelte'
   import IconButton from './components/IconButton.svelte'
   import SettingsMenu from './settings/Menu.svelte'
@@ -18,28 +18,37 @@
   let ModBreathing: Component | null = $state(null)
   let ModPomodoro: Component | null = $state(null)
 
+  let isLoading = $state<Partial<Record<ModuleID, boolean>>>({})
+
   let settingsOpen = $state(false)
+  
+  $effect(() => {
+    if ($settingsStore.modules.command_center && !isLoading.command_center) {
+      isLoading.command_center = true
+      loadModule('command_center').then(module => {
+        ModCommandCenter = module.component
+      })
+    }
+
+    if ($settingsStore.modules.pomodoro && !isLoading.pomodoro) {
+      isLoading.pomodoro = true
+      loadModule('pomodoro').then(module => {
+        ModPomodoro = module.component
+      })
+    }
+
+    if ($settingsStore.modules.well_being && !isLoading.well_being) {
+      isLoading.well_being = true
+      loadModule('well_being').then(module => {
+        if (module.scene) {
+          ModBreathing = module.scene
+        }
+      })
+    }
+  })
 
   onMount(async () => {
-    const appSettings = await getSettings()
-    appState.settings = appSettings
-
-    if (appSettings.modules.command_center) {
-      const module = await loadModule('command_center')
-      ModCommandCenter = module.component
-    }
-
-    if (appSettings.modules.pomodoro) {
-      const module = await loadModule('pomodoro')
-      ModPomodoro = module.component
-    }
-
-    if (appSettings.modules.well_being) {
-      const module = await loadModule('well_being')
-      if (module.scene) {
-        ModBreathing = module.scene
-      }
-    }
+    await syncSettingsStoreWithStorage()
   })
 
   async function refreshBackround() {
@@ -52,7 +61,7 @@
 
 <Curtain />
 
-{#if ModCommandCenter}
+{#if $settingsStore.modules.command_center}
   <ModCommandCenter />
 {/if}
 

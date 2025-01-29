@@ -31,10 +31,8 @@
 
 <div class="relative" use:clickOutside={() => open = false}>
   <IconButton onclick={token ? toggleDisplay : authenticate} icon={mdiSpotify} />
-  <div class="absolute right-0 {token && open ? 'block' : 'hidden'}">
-    {#if token}
-      <Playback token={token} />
-    {/if}
-  </div>
+  {#if token}
+    <Playback {open} token={token} />
+  {/if}
 </div>
 

@@ -1,11 +1,15 @@
 <script lang="ts">
   import Icon from "./Icon.svelte"
 
-  const { icon, ...props } = $props()
+  const { icon, children = null, ...props } = $props()
 </script>
 
 <button
   {...props}
-  class="block text-white/70 transition-colors hover:text-white cursor-pointer {props.class}">
-  <Icon path={icon} size={48} />
+  class={[
+    props.class,
+    "block text-white/70 transition-colors hover:text-white cursor-pointer"
+  ]}>
+  <Icon path={icon} size={!children ? 48 : 24} />
+  {@render children?.()}
 </button>

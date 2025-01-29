@@ -46,8 +46,8 @@ export const MODULE_CONFIG = [
     import: () => import('./spotify/index.ts')
   },
   {
-    id: 'metrics',
-    title: 'Metrics',
+    id: 'fitbit',
+    title: 'Fitbit',
     import: () => import('./fitbit/index.ts')
   },
   {
@@ -73,6 +73,8 @@ function isValidModule(module: unknown): module is Module {
   return typeof module === 'object' && module !== null && 'component' in module
 }
 
+let loadedModules: Partial<Record<ModuleID, Module>> = {}
+
 export async function loadModule(id: ModuleID): Promise<Module> {
   const module = MODULE_CONFIG.find((m) => m.id === id)
 
@@ -80,14 +82,21 @@ export async function loadModule(id: ModuleID): Promise<Module> {
     throw new Error(`Module ${id} not found`)
   }
 
+  if (loadedModules[id]) {
+    logger.log(`Module "${id}" already loaded, returning from cache`)
+    return loadedModules[id]
+  }
+
   const loadedModule = await module.import()
-  logger.log(`Loaded module: ${id}`, loadedModule)
+  logger.log(`Loaded module: ${id}`)
 
   if (!isValidModule(loadedModule.default)) {
     throw new Error(
       `Loaded module "${id}" does not conform to the Module interface`
     )
   }
+
+  loadedModules[id] = loadedModule.default
 
   return loadedModule.default
 }

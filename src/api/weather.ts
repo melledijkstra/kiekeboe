@@ -1,8 +1,10 @@
 import lscache from 'lscache'
 import { BaseClient } from './baseclient'
-import { log } from '@/logger'
+import { Logger } from '@/logger'
 import { getCurrentPosition } from '@/modules/weather/geolocation'
 import type { WeatherResponse } from '@/api/definitions/openweathermap'
+
+const logger = new Logger('weather')
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5'
 
@@ -17,7 +19,7 @@ export class WeatherClient extends BaseClient {
   }): Promise<WeatherInfo | undefined> {
     const data = lscache.get('weather')
     if (data) {
-      log('weather data from lscache')
+      logger.log('weather data from lscache')
       return data as WeatherInfo
     }
 
@@ -35,7 +37,7 @@ export class WeatherClient extends BaseClient {
     )
 
     if (response) {
-      log('retrieved weather data from API, storing in cache')
+      logger.log('retrieved weather data from API, storing in cache')
       const info: WeatherInfo = {
         location: response.name,
         temperature: response.main.temp,

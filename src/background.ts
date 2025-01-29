@@ -30,10 +30,8 @@ browser.notifications.onClicked.addListener((notificationId) => {
   browser.tabs.create({ url: '/index.html' })
 })
 
-self.addEventListener('activate', () => {
-  logger.log('Service worker activated')
-  services.push(new PomodoroService())
-})
+logger.log('Service worker activated')
+services.push(new PomodoroService())
 
 if (import.meta.env.DEV) {
   // add global r() function to make development easier reloading

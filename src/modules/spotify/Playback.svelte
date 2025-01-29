@@ -11,7 +11,7 @@
 
   const logger = new Logger('spotify')
 
-  const { token } = $props()
+  const { open, token } = $props()
   let deviceId = $state<string | null>(null)
   let player = $state<Spotify.Player | null>(null)
   let isActive = $state(false)
@@ -101,7 +101,10 @@
   })
 </script>
 
-<Card>
+<Card class={[
+  open ? "block" : "hidden",
+  "absolute right-0 min-w-96"
+]}>
   {#if currentTrack}
   <div class="flex flex-row gap-4">
     <img class="size-20 rounded" src={currentTrack.album.images[0].url} alt={currentTrack.name} />

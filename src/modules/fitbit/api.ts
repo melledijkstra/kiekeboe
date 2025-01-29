@@ -20,7 +20,5 @@ export async function getSleep(token: string): Promise<number> {
 
   const body = await response.json()
 
-  log('fitbit api', body)
-
   return body.summary.totalMinutesAsleep
 }

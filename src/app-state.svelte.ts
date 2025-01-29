@@ -1,5 +1,3 @@
-import { DEFAULT_SETTINGS, type Settings } from './settings'
-
 const STORAGE_KEY = 'appMode'
 
 export const appModes = ['default', 'breathing', 'pomodoro'] as const
@@ -7,12 +5,10 @@ export const appModes = ['default', 'breathing', 'pomodoro'] as const
 export type AppMode = (typeof appModes)[number]
 
 export type AppState = {
-  settings: Settings
   mode: AppMode
 }
 
 export const appState = $state<AppState>({
-  settings: DEFAULT_SETTINGS,
   mode: (localStorage.getItem(STORAGE_KEY) as AppMode) ?? 'default'
 })
 

@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import manifest from '../../manifest.json'
-import { log } from '@/logger'
+import { log, Logger } from '@/logger'
 
 type OauthProvider = 'google' | 'spotify' | 'fitbit'
 
@@ -10,6 +10,8 @@ type AuthConfig = {
   authEndpoint: string
   tokenEndpoint: string
 }
+
+const logger = new Logger('auth')
 
 const oauthConfig: Record<OauthProvider, AuthConfig> = {
   google: {
@@ -110,12 +112,12 @@ export async function getTokenFromStoreOrRefreshToken(
 
   let { access_token, refresh_token, expires_at } = storeToken ?? {}
 
-  log(provider, 'token in storage?', { storeToken })
+  logger.log(provider, 'token in storage?', { storeToken })
 
   // Subtract some buffer (60 seconds) to ensure we refresh before actual expiry
   const isTokenExpired = !expires_at || Date.now() > expires_at - 60_000
 
-  log(provider, 'expired?', { isTokenExpired, refresh_token })
+  logger.log(provider, 'expired?', { isTokenExpired, refresh_token })
 
   if (isTokenExpired && refresh_token) {
     // Refresh the token
@@ -126,7 +128,7 @@ export async function getTokenFromStoreOrRefreshToken(
 
     access_token = newTokens.access_token
 
-    log(provider, 'refreshed new access token, storing it and continue')
+    logger.log(provider, 'refreshed new access token, storing it and continue')
     cacheAuthToken(
       provider,
       newTokens.access_token,
@@ -166,7 +168,7 @@ async function refreshAccessToken(
     }
 
     const tokenData = (await response.json()) as TokenResponse
-    log(provider, 'refreshed token data', tokenData)
+    logger.log(provider, 'refreshed token data', tokenData)
 
     return tokenData
   } catch (error) {
@@ -199,13 +201,13 @@ export async function getAuthToken(
   const storedToken = await getTokenFromStoreOrRefreshToken(provider)
 
   if (storedToken) {
-    log(provider, 'we have a refreshed or stored token, lets use it', {
+    logger.log(provider, 'we have a refreshed or stored token, lets use it', {
       storedToken
     })
     return storedToken
   }
 
-  log(
+  logger.log(
     provider,
     'no token retrieved in any way, continue with normal oauth2 flow...'
   )
@@ -229,7 +231,7 @@ export async function getAuthToken(
   const authUrl = new URL(config.authEndpoint)
   authUrl.search = queryParams.toString()
 
-  log({
+  logger.log({
     provider,
     redirectUrl,
     authUrl: authUrl.toString()
@@ -240,7 +242,7 @@ export async function getAuthToken(
     interactive: true
   })
 
-  log(provider, 'responseUrl', responseUrl)
+  logger.log(provider, 'responseUrl', responseUrl)
 
   if (browser.runtime.lastError || !responseUrl) {
     console.error(
@@ -256,7 +258,7 @@ export async function getAuthToken(
   const responseError = responseParams.get('error')
   const responseState = responseParams.get('state')
 
-  log(provider, 'auth code', authCode)
+  logger.log(provider, 'auth code', authCode)
 
   if (responseError) {
     console.error('Error during authentication:', responseError)

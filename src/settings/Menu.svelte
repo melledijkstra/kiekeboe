@@ -2,16 +2,14 @@
   import browser, { type Manifest } from 'webextension-polyfill'
   import { onMount } from "svelte"
   import { MODULE_CONFIG } from "@/modules"
-  import { DEFAULT_SETTINGS, getSettings, type Settings } from "@/settings"
+  import { DEFAULT_SETTINGS, saveSettingsToStorage, settingsStore } from "@/settings"
   import FloatMenu from "@/components/FloatMenu.svelte"
 
   let { open } = $props()
   let tab = $state(0)
-  let settings = $state<Settings>()
   let manifest = $state<Manifest.WebExtensionManifest>()
 
   onMount(async () => {
-    settings = await getSettings()
     manifest = browser.runtime.getManifest()
   })
 </script>
@@ -34,19 +32,19 @@
     {#if tab === 0}
       <h1 class="text-xl">General Settings</h1>
     {/if}
-    {#if tab === 1 && settings}
+    {#if tab === 1 && $settingsStore}
       <h1 class="text-xl">Modules Settings</h1>
       <p class="mb-4 text-gray-400">Enable or disable modules</p>
       {#each MODULE_CONFIG as { id, title } (id)}
         <p class="font-bold">
           <input
-            disabled
             class="scale-150 mr-2" type="checkbox"
-            bind:checked={settings.modules[id]}
+            onchange={() => saveSettingsToStorage($settingsStore)}
+            bind:checked={$settingsStore.modules[id]}
             />
           <span class="text-base">{title}</span>
         </p>
-        <p class="text-gray-400">{id}: {settings.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})</p>
+        <p class="text-gray-400">{id}: {$settingsStore.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})</p>
       {/each}
     {/if}
     {#if tab === 2}

@@ -1,20 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { MODULE_CONFIG } from '@/modules'
-  import { type Settings, DEFAULT_SETTINGS, getSettings, saveSettings } from './index'
+  import { settingsStore, DEFAULT_SETTINGS, saveSettingsToStorage, syncSettingsStoreWithStorage } from './index'
   import '@/app.css'
 
-  let settings = $state<Settings>(DEFAULT_SETTINGS)
   let settingsLoaded = $state(false)
 
   async function loadSettings() {
-    settings = await getSettings()
+    await syncSettingsStoreWithStorage()
     settingsLoaded = true
   }
 
-  onMount(() => {
-    loadSettings()
-  })
+  onMount(loadSettings)
 </script>
 
 <div class="bg-black min-h-screen text-white">
@@ -29,10 +26,10 @@
         <input
           disabled={!settingsLoaded}
           class="scale-150" type="checkbox"
-          bind:checked={settings.modules[id]}
-          onchange={() => saveSettings(settings)} />
+          bind:checked={$settingsStore.modules[id]}
+          onchange={() => saveSettingsToStorage($settingsStore)} />
       </p>
-      <p class="text-gray-400">{id}: {settings.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})</p>
+      <p class="text-gray-400">{id}: {$settingsStore.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})</p>
     {/each}
   </div>
 </div>
