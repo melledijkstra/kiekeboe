@@ -1,36 +1,53 @@
 <script lang="ts">
   import browser, { type Manifest } from 'webextension-polyfill'
-  import { onMount } from "svelte"
   import { MODULE_CONFIG } from "@/modules"
-  import { DEFAULT_SETTINGS, saveSettingsToStorage, settingsStore } from "@/settings"
-  import FloatMenu from "@/components/FloatMenu.svelte"
+  import { DEFAULT_SETTINGS, saveSettingsToStorage, settingsStore, syncSettingsStoreWithStorage } from "@/settings"
+  import { onMount } from "svelte"
+  import Toggle from '@/components/Toggle.svelte'
 
-  let { open } = $props()
-  let tab = $state(0)
   let manifest = $state<Manifest.WebExtensionManifest>()
+  let tab = $state(getSelectedTabFromUrl())
+  let settingsLoaded = $state(false)
 
-  onMount(async () => {
+  function getSelectedTabFromUrl() {
+    const parsed = parseInt(document.location.hash.replace('#', ''))
+    return isNaN(parsed) ? 0 : parsed
+  }
+
+  function selectTab(index: number) {
+    tab = index
+    document.location.hash = index.toString()
+  }
+
+  onMount(() => {
+    syncSettingsStoreWithStorage().then(() => settingsLoaded = true)
     manifest = browser.runtime.getManifest()
   })
 </script>
 
 <style>
   .scrollbar-white {
-    scrollbar-color: #ddd #ddd;
+    scrollbar-color: #ddd #000;
     scrollbar-width: thin;
   }
 </style>
 
-<FloatMenu open={open} nopadding class="flex flex-row overflow-hidden w-[500px] h-96">
+<div class="flex flex-row items-stretch text-white w-full">
   <nav class="border-r-[1px] p-5 border-slate-500">
-    <button class={[tab === 0 && 'text-white', "block text-lg font-bold"]} onclick={() => tab = 0}>General</button>
-    <button class={[tab === 1 && 'text-white', "block text-lg font-bold"]} onclick={() => tab = 1}>Modules</button>
-    <button class={[tab === 2 && 'text-white', "block text-lg font-bold"]} onclick={() => tab = 2}>Appearance</button>
-    <button class={[tab === 3 && 'text-white', "block text-lg font-bold"]} onclick={() => tab = 3}>About</button>
+    <button class={[tab === 0 && 'text-white', "block text-lg font-bold"]} onclick={() => selectTab(0)}>General</button>
+    <button class={[tab === 1 && 'text-white', "block text-lg font-bold"]} onclick={() => selectTab(1)}>Modules</button>
+    <button class={[tab === 2 && 'text-white', "block text-lg font-bold"]} onclick={() => selectTab(2)}>Appearance</button>
+    <button class={[tab === 3 && 'text-white', "block text-lg font-bold"]} onclick={() => selectTab(3)}>About</button>
   </nav>
-  <div class="p-5 w-full overflow-y-auto text-white scrollbar-white">
+  <div class="flex-1 p-5 overflow-y-auto scrollbar-white">
     {#if tab === 0}
       <h1 class="text-xl">General Settings</h1>
+      <Toggle
+        disabled={!settingsLoaded}
+        label="Show currently focussed task (required Google Tasks)" 
+        parentClass="my-2"
+        onchange={() => saveSettingsToStorage($settingsStore)}
+        bind:checked={$settingsStore.ui.showCurrentTask} />
     {/if}
     {#if tab === 1 && $settingsStore}
       <h1 class="text-xl">Modules Settings</h1>
@@ -38,6 +55,7 @@
       {#each MODULE_CONFIG as { id, title } (id)}
         <p class="font-bold">
           <input
+            disabled={!settingsLoaded}
             class="scale-150 mr-2" type="checkbox"
             onchange={() => saveSettingsToStorage($settingsStore)}
             bind:checked={$settingsStore.modules[id]}
@@ -52,10 +70,9 @@
     {/if}
     {#if tab === 3}
       <h1 class="text-xl">About</h1>
-      <hr class="mb-4" />
       <p class="text-sm"><strong>Extension Name:</strong> {manifest?.name}</p>
       <p class="text-sm"><strong>Description:</strong> {manifest?.description}</p>
       <p class="text-sm"><strong>Version:</strong> {manifest?.version}</p>
     {/if}
   </div>
-</FloatMenu>
+</div>

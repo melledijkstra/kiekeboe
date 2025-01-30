@@ -1,5 +1,6 @@
 <script lang="ts">
   import { log } from "@/logger"
+  import { addToast } from "@/stores/toasts.svelte"
   
   let open = $state(false)
   let input = $state('')
@@ -14,6 +15,9 @@
           const chatgptUrl = `https://chat.openai.com/?prompt=${encodedPrompt}`
           window.open(chatgptUrl, '_blank')
         }
+      } else if (command.startsWith('/toast')) {
+        const message = command.slice(6).trim()
+        addToast(message)
       }
       // Clear input
       input = ''

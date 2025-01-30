@@ -6,7 +6,7 @@ export function getBrowserLocale(): string {
   return navigator.language
 }
 
-export async function retrieveUsername(): Promise<string | null> {
+export async function retrieveUsername(): Promise<string | undefined> {
   let { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
     NAME_STORAGE_KEY
   )) as { name: string }

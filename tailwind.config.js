@@ -13,10 +13,11 @@ export default {
         }
       }),
       fontSize: {
+        '5xl': ['3rem', 'normal'],
         '10xl': ['9.5rem', '1'],
-        '11xl': ['10rem', '1'],
-        '12xl': ['12rem', '1'],
-        '13xl': ['14rem', '1']
+        '11xl': ['10rem', 'normal'],
+        '12xl': ['12rem', 'normal'],
+        '13xl': ['14rem', 'normal']
       }
     }
   },

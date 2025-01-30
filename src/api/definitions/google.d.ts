@@ -14,7 +14,7 @@ export type Task = {
   links?: string[]
   position?: string
   selfLink?: string
-  status?: 'needsAction'
+  status?: 'needsAction' | 'completed'
   updated?: string
   webViewLink?: string
 }

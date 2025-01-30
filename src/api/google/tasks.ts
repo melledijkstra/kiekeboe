@@ -34,4 +34,59 @@ export class TasksClient extends BaseClient {
       console.error('Error fetching task lists:', error)
     }
   }
+
+  async setTaskStatus(
+    task: string | Task,
+    status: Task['status'] = 'completed',
+    taskListId?: string
+  ): Promise<Task | undefined> {
+    const id = typeof task === 'string' ? task : task.id
+    const taskData: Partial<Task> = {
+      status
+    }
+    try {
+      const response = await this.request<Task>(
+        `/lists/${taskListId ?? '@default'}/tasks/${id}?alt=json`,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'PATCH',
+          body: JSON.stringify(taskData)
+        }
+      )
+
+      if (response) {
+        return response
+      }
+    } catch (error) {
+      console.error('Error completing task', error)
+    }
+  }
+
+  async updateTask(task: Task) {
+    throw new Error('Not implemented yet!')
+  }
+
+  async createTask(
+    title: string,
+    taskListId?: string
+  ): Promise<Task | undefined> {
+    const taskData = JSON.stringify({ title })
+    try {
+      const response = await this.request<Task>(
+        `/lists/${taskListId ?? '@default'}/tasks`,
+        {
+          method: 'POST',
+          body: taskData
+        }
+      )
+
+      if (response) {
+        return response
+      }
+    } catch (error) {
+      console.error('Error creating a task', error)
+    }
+  }
 }

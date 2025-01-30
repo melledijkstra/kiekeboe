@@ -13,39 +13,13 @@
   import IconButton from './components/IconButton.svelte'
   import SettingsMenu from './settings/Menu.svelte'
   import { clickOutside } from './actions/click-outside.ts'
+  import { tasks } from './stores/tasks.svelte.ts'
+  import Toasts from './components/Toasts.svelte'
+  import FloatMenu from './components/FloatMenu.svelte'
   
-  let ModCommandCenter: Component | null = $state(null)
-  let ModBreathing: Component | null = $state(null)
-  let ModPomodoro: Component | null = $state(null)
-
-  let isLoading = $state<Partial<Record<ModuleID, boolean>>>({})
+  let currentTask = $derived($tasks.find((task) => task.status === 'needsAction'))
 
   let settingsOpen = $state(false)
-  
-  $effect(() => {
-    if ($settingsStore.modules.command_center && !isLoading.command_center) {
-      isLoading.command_center = true
-      loadModule('command_center').then(module => {
-        ModCommandCenter = module.component
-      })
-    }
-
-    if ($settingsStore.modules.pomodoro && !isLoading.pomodoro) {
-      isLoading.pomodoro = true
-      loadModule('pomodoro').then(module => {
-        ModPomodoro = module.component
-      })
-    }
-
-    if ($settingsStore.modules.well_being && !isLoading.well_being) {
-      isLoading.well_being = true
-      loadModule('well_being').then(module => {
-        if (module.scene) {
-          ModBreathing = module.scene
-        }
-      })
-    }
-  })
 
   onMount(async () => {
     await syncSettingsStoreWithStorage()
@@ -61,9 +35,7 @@
 
 <Curtain />
 
-{#if $settingsStore.modules.command_center}
-  <ModCommandCenter />
-{/if}
+<Toasts position="top-left" />
 
 <!-- Grid playground: https://play.tailwindcss.com/qTwjNWVyU1 -->
 <div class="grid h-screen animate-fade-in">
@@ -78,24 +50,50 @@
       {#if appState.mode === 'default'}
         <Clock />
         <Welcome />
+        <div class="mt-4 text-lg empty:h-7">
+          {#if $settingsStore.ui.showCurrentTask && currentTask}
+            <input type="checkbox" class="scale-150 text-white mr-1" disabled />
+            <span class="text-white text-lg">{currentTask.title}</span>
+          {/if}
+        </div>
       {:else if appState.mode === 'breathing'}
-        <ModBreathing />
+        {#await loadModule('well_being') then Module}
+          <Module.scene />
+        {/await}
       {:else if appState.mode === 'pomodoro'}
-        <ModPomodoro />
+        {#await loadModule('pomodoro') then Module}
+          <Module.scene />
+        {/await}
       {:else}
         <p class="text-white text-lg">Not yet implemented!</p>
       {/if}
     </main>
   {/key}
   <!-- BOTTOM -->
-  <footer class="flex flex-row content-end items-end gap-5 p-5">
+  <footer class="flex flex-row justify-between content-end items-end p-5">
     <!-- BOTTOM LEFT -->
-    <div class="relative" use:clickOutside={() => settingsOpen = false}>
-      <IconButton onclick={() => settingsOpen = !settingsOpen} icon={mdiTuneVertical} />
-      <SettingsMenu open={settingsOpen} />
+    <div class="flex flex-row gap-3">
+      <div class="relative" use:clickOutside={() => settingsOpen = false}>
+        <IconButton onclick={() => settingsOpen = !settingsOpen} icon={mdiTuneVertical} />
+        <FloatMenu open={settingsOpen} nopadding class="flex flex-row overflow-hidden w-[500px] h-96">
+          <SettingsMenu />
+        </FloatMenu>
+      </div>
+      <IconButton onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
     </div>
-    <IconButton onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
+    {#if $settingsStore.modules.google_tasks}
+      {#await loadModule('google_tasks') then Module}
+        <Module.component />
+      {/await}
+    {/if}
   </footer>
 </div>
+
+{#if $settingsStore.modules.command_center}
+  {#await loadModule('command_center') then Module}
+    {@const CommandCenter = Module.component}
+    <CommandCenter />
+  {/await}
+{/if}
 
 

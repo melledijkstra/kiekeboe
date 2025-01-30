@@ -1,7 +1,13 @@
 <script lang="ts">
-  const { children, className = '', ...props } = $props()
+  const { children, ...props } = $props()
 </script>
 
-<button class="{className} text-slate-200 hover:text-white text-sm capitalize" {...props}>
+<button
+  type="button"
+  {...props}
+  class={[
+    "text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2",
+    props.class
+  ]}>
   {@render children()}
 </button>

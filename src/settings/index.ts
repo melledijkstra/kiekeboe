@@ -11,6 +11,9 @@ export type Settings = {
   modules: {
     [key in ModuleID]: boolean
   }
+  ui: {
+    showCurrentTask: boolean
+  }
 }
 
 const SETTINGS_KEY = 'settings' as const
@@ -28,7 +31,10 @@ const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  modules: DEFAULT_MODULE_SETTINGS
+  modules: DEFAULT_MODULE_SETTINGS,
+  ui: {
+    showCurrentTask: false
+  }
 }
 
 export const settingsStore = writable<Settings>(DEFAULT_SETTINGS)
@@ -70,10 +76,13 @@ export async function syncSettingsStoreWithStorage() {
     SETTINGS_KEY
   )) as { settings: Settings }
 
+  const settings = { ...DEFAULT_SETTINGS, ...storageSettings }
+
+  settingsStore.set(settings)
+
   logger.log('syncing settings store with storage', {
-    storageSettings
+    settings
   })
-  settingsStore.set({ ...DEFAULT_SETTINGS, ...storageSettings })
 
   if (!changeListenersSet) {
     browser.storage.sync.onChanged.addListener(onStorageSettingsChanged)
