@@ -3,12 +3,12 @@
   import Clock from './Clock.svelte'
   import Curtain from './Curtain.svelte'
   import Welcome from './Welcome.svelte'
-  import { onMount, type Component } from 'svelte'
+  import { onMount } from 'svelte'
   import { settingsStore, syncSettingsStoreWithStorage } from './settings'
   import { appState } from '@/app-state.svelte.ts'
   import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
   import { loadImage, refreshDailyImage } from '@/api/unsplash'
-  import { loadModule, type ModuleID } from '@/modules'
+  import { loadModule } from '@/modules'
   import TopBar from './components/TopBar.svelte'
   import IconButton from './components/IconButton.svelte'
   import SettingsMenu from './settings/Menu.svelte'
@@ -16,8 +16,10 @@
   import { tasks } from './stores/tasks.svelte.ts'
   import Toasts from './components/Toasts.svelte'
   import FloatMenu from './components/FloatMenu.svelte'
-  
-  let currentTask = $derived($tasks.find((task) => task.status === 'needsAction'))
+
+  let currentTask = $derived(
+    $tasks.find((task) => task.status === 'needsAction')
+  )
 
   let settingsOpen = $state(false)
 
@@ -46,7 +48,8 @@
     <main
       transition:fade={{ duration: 200 }}
       style="grid-area: 2 / 1"
-      class="text-center place-self-center">
+      class="text-center place-self-center"
+    >
       {#if appState.mode === 'default'}
         <Clock />
         <Welcome />
@@ -73,9 +76,16 @@
   <footer class="flex flex-row justify-between content-end items-end p-5">
     <!-- BOTTOM LEFT -->
     <div class="flex flex-row gap-3">
-      <div class="relative" use:clickOutside={() => settingsOpen = false}>
-        <IconButton onclick={() => settingsOpen = !settingsOpen} icon={mdiTuneVertical} />
-        <FloatMenu open={settingsOpen} nopadding class="flex flex-row overflow-hidden w-[500px] h-96">
+      <div class="relative" use:clickOutside={() => (settingsOpen = false)}>
+        <IconButton
+          onclick={() => (settingsOpen = !settingsOpen)}
+          icon={mdiTuneVertical}
+        />
+        <FloatMenu
+          open={settingsOpen}
+          nopadding
+          class="flex flex-row overflow-hidden w-[500px] h-96"
+        >
           <SettingsMenu />
         </FloatMenu>
       </div>
@@ -95,5 +105,3 @@
     <CommandCenter />
   {/await}
 {/if}
-
-
