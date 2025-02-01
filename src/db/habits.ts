@@ -1,4 +1,4 @@
-import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
+import { dbPromise } from '@/db'
 
 export type Habit = {
   name: string
@@ -6,34 +6,10 @@ export type Habit = {
   dateCreated: Date
 }
 
-export interface PersonalExtensionDB extends DBSchema {
-  habits: {
-    key: string
-    value: Habit
-    indexes: { id: number }
-  }
-}
-
-export async function openDatabase(): Promise<
-  IDBPDatabase<PersonalExtensionDB>
-> {
-  const db = await openDB<PersonalExtensionDB>('PersonalExtensionDB', 1, {
-    upgrade: (db) => {
-      const store = db.createObjectStore('habits', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      store.createIndex('id', 'id')
-    }
-  })
-
-  return db
-}
-
 export async function addHabit(
-  db: IDBPDatabase<PersonalExtensionDB>,
   habit: Habit
 ) {
+  const db = await dbPromise
   const tx = db.transaction('habits', 'readwrite')
 
   await tx.store.add(habit)
@@ -41,8 +17,7 @@ export async function addHabit(
   await tx.done
 }
 
-export async function getAllHabits(
-  db: IDBPDatabase<PersonalExtensionDB>
-): Promise<Habit[]> {
+export async function getAllHabits(): Promise<Habit[]> {
+  const db = await dbPromise
   return await db.getAll('habits')
 }

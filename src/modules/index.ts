@@ -26,6 +26,11 @@ export const MODULE_CONFIG = [
     import: () => import('./google-tasks/index.ts')
   },
   {
+    id: 'notes',
+    title: 'Quick Notes',
+    import: () => import('./notes/index.ts')
+  },
+  {
     id: 'world_clocks',
     title: 'World Clocks',
     import: () => import('./world-clocks/index.ts')

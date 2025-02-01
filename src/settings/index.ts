@@ -27,6 +27,7 @@ const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
   countdown: false,
   weather: false,
   google_tasks: false,
+  notes: false,
   spotify: false
 }
 

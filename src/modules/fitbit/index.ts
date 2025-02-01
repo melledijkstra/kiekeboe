@@ -1,8 +1,6 @@
 import type { Module } from '@/modules'
 import Fitbit from './Fitbit.svelte'
 
-const module: Module = {
+export default {
   component: Fitbit
-}
-
-export default module
+} satisfies Module

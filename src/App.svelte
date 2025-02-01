@@ -93,11 +93,18 @@
       </div>
       <IconButton onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
     </div>
-    {#if $settingsStore.modules.google_tasks}
-      {#await loadModule('google_tasks') then Module}
-        <Module.component />
-      {/await}
-    {/if}
+    <div class="flex flex-row gap-5">
+      {#if $settingsStore.modules.notes}
+        {#await loadModule('notes') then Module}
+          <Module.component />
+        {/await}
+      {/if}
+      {#if $settingsStore.modules.google_tasks}
+        {#await loadModule('google_tasks') then Module}
+          <Module.component />
+        {/await}
+      {/if}
+    </div>
   </footer>
 </div>
 
