@@ -7,7 +7,6 @@
   let open = $state(false)
   let inputTitle = $state('')
   let inputText = $state('')
-  let selectedNote = $state()
 
   function createNote() {
     addNewNote({

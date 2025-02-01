@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { loadModule, type Module, type ModuleID } from '@/modules'
-  import { type Component } from 'svelte'
+  import { loadModule, type ModuleID } from '@/modules'
   import {
     mdiHomeOutline,
     mdiPlus,
@@ -16,57 +15,20 @@
   import Icon from './Icon.svelte'
   import { fade } from 'svelte/transition'
 
-  let ModSpotify: Component | null = $state(null)
-  let ModWorldClocks: Component | null = $state(null)
-  let ModCountdown: Component | null = $state(null)
-  let ModWeather: Component | null = $state(null)
-  let ModFitbit: Component | null = $state(null)
-
-  let isLoading = $state<Partial<Record<ModuleID, boolean>>>({})
-
   let addMetricDialogOpen = $state(false)
 
   type Metric = { title: string; counter: number }
 
   let metrics = $state<Array<Metric>>([])
-
-  $effect(() => {
-    if ($settingsStore.modules.spotify && !isLoading.spotify) {
-      isLoading.spotify = true
-      loadModule('spotify').then((module) => {
-        ModSpotify = module.component
-      })
-    }
-
-    if ($settingsStore.modules.world_clocks && !isLoading.world_clocks) {
-      isLoading.world_clocks = true
-      loadModule('world_clocks').then((module) => {
-        ModWorldClocks = module.component
-      })
-    }
-
-    if ($settingsStore.modules.countdown && !isLoading.countdown) {
-      isLoading.countdown = true
-      loadModule('countdown').then((module) => {
-        ModCountdown = module.component
-      })
-    }
-
-    if ($settingsStore.modules.weather && !isLoading.weather) {
-      isLoading.weather = true
-      loadModule('weather').then((module) => {
-        ModWeather = module.component
-      })
-    }
-
-    if ($settingsStore.modules.fitbit && !isLoading.fitbit) {
-      isLoading.fitbit = true
-      loadModule('fitbit').then((module) => {
-        ModFitbit = module.component
-      })
-    }
-  })
 </script>
+
+{#snippet module(moduleId: ModuleID)}
+  {#if $settingsStore.modules?.[moduleId]}
+    {#await loadModule(moduleId) then Module}
+      <Module.component />
+    {/await}
+  {/if}
+{/snippet}
 
 <header class="w-full p-5">
   <div
@@ -142,22 +104,11 @@
         <p>{metric.title}</p>
       </button>
     {/each}
-    <!-- <Habits /> -->
-    {#if $settingsStore.modules.countdown}
-      <ModCountdown />
-    {/if}
-    {#if $settingsStore.modules.world_clocks}
-      <ModWorldClocks />
-    {/if}
-    {#if $settingsStore.modules.fitbit}
-      <ModFitbit />
-    {/if}
-    {#if $settingsStore.modules.spotify}
-      <ModSpotify />
-    {/if}
-    {#if $settingsStore.modules.weather}
-      <ModWeather />
-    {/if}
+    {@render module('countdown')}
+    {@render module('world_clocks')}
+    {@render module('fitbit')}
+    {@render module('spotify')}
+    {@render module('weather')}
     <Account />
   </div>
 </header>
