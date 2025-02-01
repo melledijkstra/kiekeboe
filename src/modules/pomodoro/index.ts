@@ -2,5 +2,6 @@ import type { Module } from '@/modules'
 import Pomodoro from './Pomodoro.svelte'
 
 export default {
-  component: Pomodoro
+  component: Pomodoro,
+  scene: Pomodoro
 } satisfies Module

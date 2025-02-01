@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill'
 import { log } from '@/logger'
 
-const BASE_URL = 'https://api.spotify.com/v1'
-
 const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
 
 /**
@@ -49,24 +47,4 @@ export async function initializeSpotifyPlayer(
       reject(error)
     }
   })
-}
-
-export async function transferPlaybackDevice(deviceId: string, token: string) {
-  const response = await fetch(`${BASE_URL}/me/player`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      device_ids: [deviceId],
-      play: false
-    })
-  })
-
-  if (response.ok) {
-    return true
-  }
-
-  return false
 }

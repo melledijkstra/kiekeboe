@@ -49,7 +49,7 @@ export class BaseClient {
       }
     })
 
-    if (response.ok) {
+    if (response.ok && response.status !== 204) {
       return (await response.json()) as T
     }
   }

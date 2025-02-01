@@ -1,11 +1,10 @@
 <script lang="ts">
-  import Icon from "@/components/Icon.svelte"
-  import { mdiSpotify } from "@mdi/js"
-  import { getAuthToken, getTokenFromStoreOrRefreshToken } from "@/oauth2/auth"
-  import Playback from "./Playback.svelte"
-  import { onMount } from "svelte"
-  import { clickOutside } from "@/actions/click-outside"
-  import IconButton from "@/components/IconButton.svelte"
+  import { mdiSpotify } from '@mdi/js'
+  import { getAuthToken, getTokenFromStoreOrRefreshToken } from '@/oauth2/auth'
+  import Playback from './Playback.svelte'
+  import { onMount } from 'svelte'
+  import { clickOutside } from '@/actions/click-outside'
+  import IconButton from '@/components/IconButton.svelte'
 
   let open = $state(false)
   let token = $state<string>()
@@ -29,10 +28,12 @@
   })
 </script>
 
-<div class="relative" use:clickOutside={() => open = false}>
-  <IconButton onclick={token ? toggleDisplay : authenticate} icon={mdiSpotify} />
+<div class="relative" use:clickOutside={() => (open = false)}>
+  <IconButton
+    onclick={token ? toggleDisplay : authenticate}
+    icon={mdiSpotify}
+  />
   {#if token}
-    <Playback {open} token={token} />
+    <Playback {open} {token} />
   {/if}
 </div>
-
