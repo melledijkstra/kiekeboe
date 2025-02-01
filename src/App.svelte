@@ -7,7 +7,7 @@
   import { settingsStore, syncSettingsStoreWithStorage } from './settings'
   import { appState } from '@/app-state.svelte.ts'
   import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
-  import { loadImage, refreshDailyImage } from '@/api/unsplash'
+  import { UnsplashClient } from '@/api/unsplash'
   import { loadModule } from '@/modules'
   import TopBar from './components/TopBar.svelte'
   import IconButton from './components/IconButton.svelte'
@@ -16,6 +16,8 @@
   import { tasks } from './stores/tasks.svelte.ts'
   import Toasts from './components/Toasts.svelte'
   import FloatMenu from './components/FloatMenu.svelte'
+
+  let unsplashClient = $state(new UnsplashClient())
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
@@ -28,9 +30,9 @@
   })
 
   async function refreshBackround() {
-    const url = await refreshDailyImage()
+    const url = await unsplashClient.refreshDailyImage()
     if (url) {
-      loadImage(url)
+      unsplashClient.loadImage(url)
     }
   }
 </script>
