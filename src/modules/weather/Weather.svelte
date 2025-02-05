@@ -25,7 +25,7 @@
       <span class="text-lg">{formatCelcius(currentWeather.temperature)}</span>
     </div>
     <span
-      class="text-xs max-w-16 overflow-hidden overflow-ellipsis whitespace-nowrap"
+      class="text-xs max-w-16 overflow-hidden text-ellipsis whitespace-nowrap"
       >{currentWeather.location}</span
     >
   {:else}

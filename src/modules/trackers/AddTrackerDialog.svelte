@@ -22,7 +22,7 @@
   <Card
     class={[
       addTrackerDialogOpen ? 'block' : 'hidden',
-      'absolute right-0 text-center p-5 w-80'
+      'absolute right-0 text-center w-sm'
     ]}
   >
     <p class="text-lg mb-4 font-bold">Add tracker</p>

@@ -80,13 +80,13 @@
         <label for="timezone">Timezone</label>
         <input
           type="date"
-          class="text-black p-2 rounded"
+          class="text-black p-2 rounded-sm"
           required
           bind:value={inputDate}
         />
         <label for="name">Name</label>
         <input
-          class="text-black p-2 rounded"
+          class="text-black p-2 rounded-sm"
           placeholder="Countdown Name"
           required
           type="text"
@@ -94,7 +94,7 @@
         />
         <Toggle bind:checked={inputPinned} label="Pin?" />
         <button
-          class="flex items-center justify-center gap-1 mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded"
+          class="flex items-center justify-center gap-1 mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded-sm"
           type="submit"
         >
           <Icon size={16} path={mdiCalendarPlusOutline} /> Add Countdown

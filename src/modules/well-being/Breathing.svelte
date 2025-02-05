@@ -1,17 +1,21 @@
 <script lang="ts">
-  import { Timer } from "@/time/timer"
-  import { onDestroy, onMount } from "svelte"
-  import { millisecondsToTime } from "@/time/utils"
-  import { fade } from "svelte/transition"
-  import { log } from "@/logger"
+  import { Timer } from '@/time/timer'
+  import { onDestroy, onMount } from 'svelte'
+  import { millisecondsToTime } from '@/time/utils'
+  import { fade } from 'svelte/transition'
+  import { log } from '@/logger'
 
   const DURATION = 5 * 60 * 1000
 
-  let breatheState = $state<boolean>(true) // true: inhale, false: exhale
+  let breatheState = $state<boolean>(true)
+  let inhaling = $derived(breatheState)
+  let exhaling = $derived(!breatheState)
   let active = $state(false)
-  let timer = $state(new Timer({
-    duration: DURATION
-  }))
+  let timer = $state(
+    new Timer({
+      duration: DURATION
+    })
+  )
   let timeLeft = $state(millisecondsToTime(DURATION))
   let counter = $state(1)
 
@@ -22,8 +26,8 @@
     })
 
     if (
-      (!breatheState && counter >= 7) || // exhale for 7 ticks (seconds)
-      (breatheState && counter >= 6) // inhale for 5 ticks (seconds)
+      (exhaling && counter >= 7) || // exhale for 7 ticks (seconds)
+      (inhaling && counter >= 6) // inhale for 5 ticks (seconds)
     ) {
       breatheState = !breatheState
       counter = 1
@@ -39,11 +43,12 @@
     timer.start()
   }
 
-  function pause() {
+  function stop() {
     active = false
     breatheState = true
     counter = 1
-    timer.pause()
+    timer.stop()
+    timeLeft = timer.formatRemainingTime()
   }
 
   onMount(() => {
@@ -55,16 +60,36 @@
   })
 </script>
 
+<style>
+  @reference '../../app.css';
+
+  .inhaling {
+    scale: 150%;
+    transition-duration: 6s;
+  }
+
+  .exhaling {
+    scale: 100%;
+    transition-duration: 7s;
+  }
+</style>
+
 <div class="flex flex-col gap justify-center items-center">
-  <button onclick={!active ? start : pause}>
+  <button onclick={!active ? start : stop}>
     <div
       class={{
-        'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-sm': true,
-        'flex flex-col items-center justify-center size-60 m-10 text-3xl transition-all duration-1000 text-center rounded-full capitalize': true,
-        'scale-150': active && breatheState
-      }}>
+        'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-xs': true,
+        'flex flex-col items-center justify-center size-60 m-10 duration-1000 text-3xl transition-all text-center rounded-full capitalize': true,
+        inhaling: active && inhaling,
+        exhaling: active && exhaling
+      }}
+    >
       {#if active}
-        <span transition:fade>{breatheState ? 'Inhale' : 'Exhale'}</span>
+        {#key breatheState}
+          <span in:fade={{ duration: 1000 }}>
+            {breatheState ? 'Inhale' : 'Exhale'}
+          </span>
+        {/key}
       {/if}
       <span>{timeLeft}</span>
     </div>

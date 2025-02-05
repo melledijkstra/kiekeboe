@@ -76,7 +76,7 @@
             {task.title}
           </li>
         {/each}
-        <input bind:value={inputTask} onkeypress={createTask} class="mt-1 border-none outline-none text-sm bg-transparent text-white" type="text" placeholder="New task" />
+        <input bind:value={inputTask} onkeypress={createTask} class="mt-1 border-none outline-hidden text-sm bg-transparent text-white" type="text" placeholder="New task" />
       </ul>
     {:else}
       <Button onclick={triggerAuthFlow}>

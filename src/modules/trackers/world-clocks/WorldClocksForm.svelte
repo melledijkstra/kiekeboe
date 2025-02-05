@@ -92,7 +92,7 @@
       >
         <label for="timezone">Timezone</label>
         <select
-          class="text-black p-2 rounded"
+          class="text-black p-2 rounded-sm"
           required
           bind:value={inputTimezone}
         >
@@ -103,7 +103,7 @@
         </select>
         <label for="name">Name</label>
         <input
-          class="text-black p-2 rounded"
+          class="text-black p-2 rounded-sm"
           placeholder="World Clock Name"
           required
           type="text"
@@ -111,7 +111,7 @@
         />
         <Toggle bind:checked={inputPinned} label="Pin?" />
         <button
-          class="flex items-center justify-center gap-1 mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded"
+          class="flex items-center justify-center gap-1 mt-2 py-1 px-3 bg-slate-800 hover:bg-slate-500 rounded-sm"
           type="submit"
         >
           <Icon size={16} path={mdiClockPlusOutline} /> Add Clock

@@ -18,7 +18,7 @@
     <div
       transition:fade
       class={[
-        "mb-2 p-3 rounded shadow-md text-white",
+        "mb-2 p-3 rounded-sm shadow-md text-white",
         type === 'success' ? 'bg-green-500/70' :
         type === 'error' ? 'bg-red-500/70' : 'bg-blue-500/70'
       ]}

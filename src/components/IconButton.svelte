@@ -4,19 +4,12 @@
   const { icon, children = null, tooltip = '', ...props } = $props()
 </script>
 
-<style lang="postcss">
-  .tooltip-arrow {
-    @apply after:absolute after:bottom-full after:left-1/2 after:-ml-[5px] after:border-[5px];
-    @apply after:border-b-black/50 after:border-r-transparent after:border-t-transparent after:border-l-transparent;
-  }
-</style>
-
 <button
   {...props}
   class={[
     props.class,
     tooltip && 'relative block group/tooltip',
-    'block text-white/70 transition-colors hover:text-white cursor-pointer'
+    'block cursor-pointer text-white/70 transition-colors hover:text-white'
   ]}
 >
   <Icon path={icon} size={!children ? 48 : 24} />
@@ -31,7 +24,8 @@
         // hovering
         'group-hover/tooltip:visible group-hover/tooltip:opacity-100',
         // tooltip arrow
-        'tooltip-arrow'
+        'after:absolute after:bottom-full after:left-1/2 after:-ml-[5px] after:border-[5px]',
+        'after:border-t-transparent after:border-r-transparent after:border-b-[rgba(0,0,0,0.5)] after:border-l-transparent'
       ]}
     >
       {tooltip}

@@ -37,11 +37,11 @@
         type="text"
         bind:value={newHabit}
         placeholder="Enter new habit"
-        class="border text-black p-2 rounded w-full"
+        class="border text-black p-2 rounded-sm w-full"
       />
       <button
         onclick={handleAddHabit}
-        class="mt-2 bg-blue-500 text-white p-2 rounded">Add Habit</button
+        class="mt-2 bg-blue-500 text-white p-2 rounded-sm">Add Habit</button
       >
     </div>
     <ul class="mt-4">

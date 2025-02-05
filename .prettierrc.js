@@ -6,9 +6,10 @@ const config = {
   semi: false,
   singleQuote: true,
   tabWidth: 2,
-  trailingComma: "none",
+  trailingComma: 'none',
   printWidth: 80,
-  svelteSortOrder: "scripts-styles-markup"
-};
+  svelteSortOrder: 'scripts-styles-markup',
+  plugins: ['prettier-plugin-tailwindcss']
+}
 
-export default config;
+export default config

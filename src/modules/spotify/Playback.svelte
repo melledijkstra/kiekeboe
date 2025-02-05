@@ -160,11 +160,16 @@
   onDestroy(cleanup)
 </script>
 
-<Card class={[open ? 'block' : 'hidden', 'absolute right-0 w-md min-w-96']}>
+<Card
+  class={[
+    open ? 'block' : 'hidden',
+    'absolute top-[calc(100%+10px)] right-0 w-xl'
+  ]}
+>
   {#if currentTrack}
     <div class="flex flex-row gap-4">
       <img
-        class="size-20 rounded"
+        class="size-20 rounded-sm"
         src={currentTrack.album.images[0].url}
         alt={currentTrack.name}
       />
@@ -220,7 +225,7 @@
         <button
           class="p-2 {device.id === deviceId
             ? 'bg-green-700'
-            : 'bg-zinc-900'} hover:bg-zinc-600 rounded"
+            : 'bg-zinc-900'} hover:bg-zinc-600 rounded-sm"
           onclick={() => activateDevice(device.id)}
         >
           {device.name}

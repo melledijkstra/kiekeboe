@@ -51,7 +51,7 @@
 <div class="flex flex-col gap justify-center items-center">
   <div
     class={{
-      'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-sm': true,
+      'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-xs': true,
       'flex flex-col items-center justify-center size-60 m-10 text-3xl transition-all duration-1000 text-center rounded-full capitalize': true,
     }}>
     <span class="capitalize" transition:fade>{pState.mode}</span>

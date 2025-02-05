@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
+import tailwindcss from "@tailwindcss/vite";
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import packageJson from './package.json'
@@ -16,6 +17,7 @@ function manifestTransformer(content: string, mode: string) {
 
 const defaultConfig = defineConfig(({ mode }) => ({
   plugins: [
+    tailwindcss(),
     svelte(),
     viteStaticCopy({
       targets: [

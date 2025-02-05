@@ -37,7 +37,7 @@
   {:else if nameLoaded}
       What is your name?
       <input
-        class="outline-none min-w-5 max-w-max p-1 border-b-2 border-white bg-transparent"
+        class="outline-hidden min-w-5 max-w-max p-1 border-b-2 border-white bg-transparent"
         name="username"
         type="text"
         bind:value={nameInput}

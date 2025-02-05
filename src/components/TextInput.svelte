@@ -5,6 +5,6 @@
 <input
   {...props}
   type="text"
-  class={['text-black p-2 rounded', props.class]}
+  class={['text-black p-2 rounded-sm', props.class]}
   bind:value
 />
