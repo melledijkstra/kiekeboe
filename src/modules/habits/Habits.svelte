@@ -25,7 +25,11 @@
 </script>
 
 <div class="relative">
-  <IconButton onclick={() => (open = !open)} icon={mdiInfinity} />
+  <IconButton
+    tooltip="Habits"
+    onclick={() => (open = !open)}
+    icon={mdiInfinity}
+  />
   <Card class={[open ? 'block' : 'hidden', 'absolute right-0 p-4 min-w-80']}>
     <h1 class="text-xl font-bold">Habit Tracker</h1>
     <div class="mt-4">

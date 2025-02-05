@@ -9,7 +9,7 @@
   import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
   import { UnsplashClient } from '@/api/unsplash'
   import { loadModule } from '@/modules'
-  import TopBar from './components/TopBar.svelte'
+  import TopBar from './components/topbar/TopBar.svelte'
   import IconButton from './components/IconButton.svelte'
   import SettingsMenu from './settings/Menu.svelte'
   import { clickOutside } from './actions/click-outside.ts'

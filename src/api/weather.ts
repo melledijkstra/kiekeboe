@@ -4,6 +4,12 @@ import { Logger } from '@/logger'
 import { getCurrentPosition } from '@/modules/weather/geolocation'
 import type { WeatherResponse } from '@/api/definitions/openweathermap'
 
+export type WeatherInfo = {
+  location: string
+  temperature: number
+  icon: string
+}
+
 const logger = new Logger('weather')
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5'
@@ -47,10 +53,4 @@ export class WeatherClient extends BaseClient {
       return info
     }
   }
-}
-
-export type WeatherInfo = {
-  location: string
-  temperature: number
-  icon: string
 }

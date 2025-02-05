@@ -30,6 +30,7 @@
 
 <div class="relative" use:clickOutside={() => (open = false)}>
   <IconButton
+    tooltip={!open ? 'Spotify' : ''}
     onclick={token ? toggleDisplay : authenticate}
     icon={mdiSpotify}
   />

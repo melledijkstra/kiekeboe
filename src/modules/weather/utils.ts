@@ -7,27 +7,41 @@ import {
   mdiWeatherLightning,
   mdiSnowflake,
   mdiWeatherFog,
-  mdiCloudQuestionOutline
+  mdiCloudQuestionOutline,
+  mdiWeatherNight,
+  mdiWeatherNightPartlyCloudy
 } from '@mdi/js'
 
 export function weatherToMdiIcon(icon?: string) {
-  switch (icon?.slice(0, 2)) {
-    case '01':
+  switch (icon) {
+    case '01d':
       return mdiWeatherSunny
-    case '02':
+    case '01n':
+      return mdiWeatherNight
+    case '02d':
       return mdiWeatherPartlyCloudy
-    case '03':
-    case '04':
+    case '02n':
+      return mdiWeatherNightPartlyCloudy
+    case '03d':
+    case '04d':
       return mdiWeatherCloudy
-    case '09':
+    case '03n':
+    case '04n':
+      return mdiWeatherNight
+    case '09d':
+    case '09n':
       return mdiWeatherRainy
-    case '10':
+    case '10d':
+    case '10n':
       return mdiWeatherPartlyRainy
-    case '11':
+    case '11d':
+    case '11n':
       return mdiWeatherLightning
-    case '13':
+    case '13d':
+    case '13n':
       return mdiSnowflake
-    case '50':
+    case '50d':
+    case '50n':
       return mdiWeatherFog
     default:
       return mdiCloudQuestionOutline

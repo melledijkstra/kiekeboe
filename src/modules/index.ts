@@ -31,11 +31,6 @@ export const MODULE_CONFIG = [
     import: () => import('./notes/index.ts')
   },
   {
-    id: 'world_clocks',
-    title: 'World Clocks',
-    import: () => import('./world-clocks/index.ts')
-  },
-  {
     id: 'command_center',
     title: 'Command Center',
     import: () => import('./command-center/index.ts')
@@ -51,19 +46,9 @@ export const MODULE_CONFIG = [
     import: () => import('./spotify/index.ts')
   },
   {
-    id: 'fitbit',
-    title: 'Fitbit',
-    import: () => import('./fitbit/index.ts')
-  },
-  {
     id: 'pomodoro',
     title: 'Pomodoro',
     import: () => import('./pomodoro/index.ts')
-  },
-  {
-    id: 'countdown',
-    title: 'Countdown',
-    import: () => import('./countdown/index.ts')
   },
   {
     id: 'weather',
@@ -78,7 +63,7 @@ function isValidModule(module: unknown): module is Module {
   return typeof module === 'object' && module !== null && 'component' in module
 }
 
-let loadedModules: Partial<Record<ModuleID, Module>> = {}
+let loadedModules = new Map<ModuleID, Module>()
 
 export async function loadModule(id: ModuleID): Promise<Module> {
   const module = MODULE_CONFIG.find((m) => m.id === id)
@@ -87,9 +72,9 @@ export async function loadModule(id: ModuleID): Promise<Module> {
     throw new Error(`Module ${id} not found`)
   }
 
-  if (loadedModules[id]) {
+  if (loadedModules.has(id)) {
     logger.log(`Module "${id}" already loaded, returning from cache`)
-    return loadedModules[id]
+    return loadedModules.get(id) as Module // cast to Module as we know it exists
   }
 
   const loadedModule = await module.import()
@@ -101,7 +86,7 @@ export async function loadModule(id: ModuleID): Promise<Module> {
     )
   }
 
-  loadedModules[id] = loadedModule.default
+  loadedModules.set(id, loadedModule.default)
 
   return loadedModule.default
 }

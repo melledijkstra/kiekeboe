@@ -1,3 +1,5 @@
+import type { WeatherInfo } from "./api/weather"
+
 const STORAGE_KEY = 'appMode'
 
 export const appModes = ['default', 'breathing', 'pomodoro'] as const
@@ -6,6 +8,7 @@ export type AppMode = (typeof appModes)[number]
 
 export type AppState = {
   mode: AppMode
+  weather?: WeatherInfo
 }
 
 export const appState = $state<AppState>({

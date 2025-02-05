@@ -158,11 +158,9 @@
   })
 
   onDestroy(cleanup)
-
-  $inspect(devices)
 </script>
 
-<Card class={[open ? 'block' : 'hidden', 'absolute right-0 min-w-96']}>
+<Card class={[open ? 'block' : 'hidden', 'absolute right-0 w-md min-w-96']}>
   {#if currentTrack}
     <div class="flex flex-row gap-4">
       <img
