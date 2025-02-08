@@ -1,4 +1,7 @@
-import { getBrowserLocale } from "@/ui"
+export function getBrowserLocale(): string {
+  if (navigator.languages !== undefined) return navigator.languages[0]
+  return navigator.language
+}
 
 export function repeatEvery(callback: () => void, interval: number) {
   // Check current time and calculate the delay until next interval
@@ -44,4 +47,26 @@ export function calculateDays(timestamp: number) {
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY)
+}
+
+export function getTime(): string {
+  const locale = getBrowserLocale()
+  const date = new Date()
+  return date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+/**
+ * Returns a string representing how much of the day has passed in percentage form.
+ *
+ * @returns A string such as "50%" indicating the percentage of the day that has passed.
+ */
+export function getTimePercentage(): string {
+  const date = new Date()
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  // 1440 minutes in a day
+  return `${Math.round(((hours * 60 + minutes) / 1440) * 100)}%`
 }
