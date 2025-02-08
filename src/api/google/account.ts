@@ -1,4 +1,4 @@
-import { getAuthToken } from '@/oauth2/auth'
+import { AuthClient } from '@/oauth2/auth'
 
 export type Account = {
   name: string
@@ -6,9 +6,11 @@ export type Account = {
   email: string
 }
 
+const client = new AuthClient('google')
+
 export async function fetchAccountInfo() {
   try {
-    const token = await getAuthToken('google')
+    const token = client.getAuthToken()
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       {

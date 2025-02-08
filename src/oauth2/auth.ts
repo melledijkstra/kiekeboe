@@ -1,8 +1,8 @@
 import browser from 'webextension-polyfill'
 import manifest from '../../manifest.json'
-import { log, Logger } from '@/logger'
+import { Logger } from '@/logger'
 
-type OauthProvider = 'google' | 'spotify' | 'fitbit'
+export type OauthProvider = 'google' | 'spotify' | 'fitbit'
 
 type AuthConfig = {
   clientId: string
@@ -24,8 +24,6 @@ class AuthError extends Error {
     this.provider = provider
   }
 }
-
-const logger = new Logger('auth')
 
 const oauthConfig: Record<OauthProvider, AuthConfig> = {
   google: {
@@ -90,235 +88,265 @@ const base64encode = (input: ArrayBuffer) => {
     .replace(/\//g, '_')
 }
 
-const storageKey = (provider: string) => `${OAUTH2_STORAGE_KEY}.${provider}`
-
-export async function getAuthTokenChrome(
-  interactive = true
-): Promise<string | undefined> {
-  const oauth2 = await chrome.identity.getAuthToken({ interactive })
-  return oauth2.token
-}
-
-async function cacheAuthToken(
-  provider: OauthProvider,
-  access_token: string,
-  refresh_token: string,
-  expires_in: number
-) {
-  const tokenStore: TokenStore = {
-    access_token,
-    refresh_token,
-    expires_at: Date.now() + expires_in * 1000
-  }
-
-  await browser.storage.local.set({
-    [storageKey(provider)]: tokenStore
-  })
-}
-
-export async function getTokenFromStoreOrRefreshToken(
+export class AuthClient {
   provider: OauthProvider
-): Promise<string | undefined> {
-  const key = storageKey(provider)
-  const { [key]: storeToken } = (await browser.storage.local.get(key)) as {
-    [key: string]: TokenStore
+  logger: Logger
+
+  constructor(provider: OauthProvider) {
+    this.provider = provider
+    this.logger = new Logger(`auth:${provider}`)
   }
 
-  let { access_token, refresh_token, expires_at } = storeToken ?? {}
-
-  logger.log(provider, 'token in storage?', { storeToken })
-
-  // Subtract some buffer (60 seconds) to ensure we refresh before actual expiry
-  const isTokenExpired = !expires_at || Date.now() > expires_at - 60_000
-
-  logger.log(provider, 'expired?', { isTokenExpired, refresh_token })
-
-  if (isTokenExpired && refresh_token) {
-    try {
-      // Refresh the token
-      const newTokens = await refreshAccessToken(provider, refresh_token)
-
-      if (!newTokens) {
-        throw new Error('Failed to refresh token – user must re-authenticate.')
-      }
-
-      access_token = newTokens.access_token
-      logger.log(provider, 'refreshed new access token, storing it and continue')
-      cacheAuthToken(
-        provider,
-        newTokens.access_token,
-        // if provider doesn’t return a new refresh token, keep the old one
-        newTokens.refresh_token ?? refresh_token,
-        newTokens.expires_in
-      )
-    } catch (error) {
-      if (error instanceof AuthError && error.reason === 'invalid_token') {
-        // if the error is an AuthError, remove the stored token
-        // so that the user can re-authenticate
-        await browser.storage.local.remove(key)
-        getAuthToken(provider, false)
-      }
-    }
+  get storageKey() {
+    return `${OAUTH2_STORAGE_KEY}.${this.provider}`
   }
 
-  return access_token
-}
-
-async function refreshAccessToken(
-  provider: OauthProvider,
-  refreshToken: string
-): Promise<TokenResponse | null> {
-  const config = oauthConfig[provider]
-
-  const response = await fetch(config.tokenEndpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      client_id: config.clientId,
-      refresh_token: refreshToken
-    })
-  })
-
-  if (!response.ok) {
-    const errorBody = await response.text()
-    console.error(
-      provider,
-      'Refresh token request failed:',
-      errorBody
-    )
-    if (errorBody.includes('invalid_grant')) {
-      throw new AuthError(`Failed to refresh token: ${errorBody}`, 'invalid_token', provider)
-    }
-    return null
-  }
-
-  const tokenData = (await response.json()) as TokenResponse
-  logger.log(provider, 'refreshed token data', tokenData)
-
-  return tokenData
-}
-
-export async function getAuthToken(
-  provider: OauthProvider,
-  interactive = true
-): Promise<string | undefined> {
-  if (provider === 'google' && typeof chrome !== 'undefined') {
-    // if we are on chrome browser then use the preferred auth token
-    // method that is already build in
-    try {
-      const token = await getAuthTokenChrome()
+  async isAuthenticated() {
+    if (this.provider === 'google' && typeof chrome !== 'undefined') {
+      const token = await this.getAuthTokenChrome(false)
       if (token) {
-        return token
+        return true
       }
-    } catch (e) {
-      console.error(
-        `${provider}: No luck retrieving oauth token using build in functionality, trying manually`,
-        e
-      )
+      return false
+    }
+
+    const token = await this.getAuthToken()
+
+    this.logger.log({ token })
+
+    return !!token
+  }
+
+  static isExpired(token: TokenStore) {
+    return Date.now() > token.expires_at - 60_000
+  }
+
+  async getAuthTokenChrome(interactive = true): Promise<string | undefined> {
+    try {
+      const oauth2 = await chrome.identity.getAuthToken({ interactive })
+      return oauth2?.token
+    } catch (error) {
+      this.logger.error(error)
     }
   }
 
-  const config = oauthConfig[provider]
-
-  const storedToken = await getTokenFromStoreOrRefreshToken(provider)
-
-  if (storedToken) {
-    logger.log(provider, 'we have a refreshed or stored token, lets use it', {
-      storedToken
-    })
-    return storedToken
+  async getAuthTokenFromStorage(): Promise<TokenStore | undefined> {
+    const { [this.storageKey]: storeToken } = (await browser.storage.local.get(
+      this.storageKey
+    )) as {
+      [key: string]: TokenStore | undefined
+    }
+    return storeToken
   }
 
-  logger.log(
-    provider,
-    'no token retrieved in any way, continue with normal oauth2 flow...'
-  )
+  async refreshAccessToken(
+    refreshToken: string
+  ): Promise<TokenResponse | null> {
+    const config = oauthConfig[this.provider]
 
-  const redirectUrl = browser.identity.getRedirectURL()
-  const state = generateRandomString(16)
-  const codeVerifier = generateRandomString(64)
-  const hashed = await sha256(codeVerifier)
-  const codeChallenge = base64encode(hashed)
-
-  const queryParams = new URLSearchParams({
-    client_id: config.clientId,
-    response_type: 'code',
-    scope: config.scopes.join(' '),
-    redirect_uri: redirectUrl,
-    code_challenge_method: 'S256',
-    code_challenge: codeChallenge,
-    state: state
-  })
-
-  const authUrl = new URL(config.authEndpoint)
-  authUrl.search = queryParams.toString()
-
-  logger.log({
-    provider,
-    redirectUrl,
-    authUrl: authUrl.toString()
-  })
-
-  const responseUrl = await browser.identity.launchWebAuthFlow({
-    url: authUrl.toString(),
-    interactive
-  })
-
-  logger.log(provider, 'responseUrl', responseUrl)
-
-  if (browser.runtime.lastError || !responseUrl) {
-    console.error(
-      provider,
-      'Error during authentication:',
-      browser.runtime.lastError
-    )
-    return
-  }
-
-  const responseParams = new URL(responseUrl).searchParams
-  const authCode = responseParams.get('code')
-  const responseError = responseParams.get('error')
-  const responseState = responseParams.get('state')
-
-  logger.log(provider, 'auth code', authCode)
-
-  if (responseError) {
-    console.error('Error during authentication:', responseError)
-    return
-  }
-
-  if (!authCode || state !== responseState) {
-    console.error('No auth code found or state mismatch!')
-    return
-  }
-
-  try {
-    const tokenResponse = await fetch(config.tokenEndpoint, {
+    const response = await fetch(config.tokenEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: authCode,
-        redirect_uri: redirectUrl,
+        grant_type: 'refresh_token',
         client_id: config.clientId,
-        code_verifier: codeVerifier
+        refresh_token: refreshToken
       })
     })
 
-    const tokenData = (await tokenResponse.json()) as TokenResponse
-
-    if (tokenData.refresh_token) {
-      cacheAuthToken(
-        provider,
-        tokenData.access_token,
-        tokenData.refresh_token,
-        tokenData.expires_in
-      )
+    if (!response.ok) {
+      const errorBody = await response.text()
+      this.logger.error('Refresh token request failed:', errorBody)
+      if (errorBody.includes('invalid_grant')) {
+        throw new AuthError(
+          `Failed to refresh token: ${errorBody}`,
+          'invalid_token',
+          this.provider
+        )
+      }
+      return null
     }
 
-    return tokenData.access_token
-  } catch (error) {
-    console.error(provider, 'Token exchange failed:', error)
+    const tokenData = (await response.json()) as TokenResponse
+    this.logger.log('refreshed token data', tokenData)
+
+    return tokenData
+  }
+
+  async getTokenFromStoreOrRefreshToken(): Promise<string | undefined> {
+    const storeToken = await this.getAuthTokenFromStorage()
+
+    let { access_token, refresh_token, expires_at } = storeToken ?? {}
+
+    this.logger.log('token in storage?', { storeToken })
+
+    // Subtract some buffer (60 seconds) to ensure we refresh before actual expiry
+    const isTokenExpired = !expires_at || Date.now() > expires_at - 60_000
+
+    this.logger.log('expired?', { isTokenExpired, refresh_token })
+
+    if (isTokenExpired && refresh_token) {
+      try {
+        // Refresh the token
+        const newTokens = await this.refreshAccessToken(refresh_token)
+
+        if (!newTokens) {
+          throw new Error(
+            'Failed to refresh token – user must re-authenticate.'
+          )
+        }
+
+        access_token = newTokens.access_token
+        this.logger.log('refreshed new access token, storing it and continue')
+        this.cacheAuthToken(
+          newTokens.access_token,
+          // if provider doesn’t return a new refresh token, keep the old one
+          newTokens.refresh_token ?? refresh_token,
+          newTokens.expires_in
+        )
+      } catch (error) {
+        if (error instanceof AuthError && error.reason === 'invalid_token') {
+          // if the error is an AuthError, remove the stored token
+          // so that the user can re-authenticate
+          await browser.storage.local.remove(this.storageKey)
+          this.getAuthToken(false)
+        }
+      }
+    }
+
+    return access_token
+  }
+
+  async cacheAuthToken(
+    access_token: string,
+    refresh_token: string,
+    expires_in: number
+  ) {
+    const tokenStore: TokenStore = {
+      access_token,
+      refresh_token,
+      expires_at: Date.now() + expires_in * 1000
+    }
+
+    await browser.storage.local.set({
+      [this.storageKey]: tokenStore
+    })
+  }
+
+  async getAuthToken(interactive = true): Promise<string | undefined> {
+    if (this.provider === 'google' && typeof chrome !== 'undefined') {
+      // if we are on chrome browser then use the preferred auth token
+      // method that is already build in
+      try {
+        const token = await this.getAuthTokenChrome()
+        if (token) {
+          return token
+        }
+      } catch (e) {
+        console.error(
+          `${this.provider}: No luck retrieving oauth token using build in functionality, trying manually`,
+          e
+        )
+      }
+    }
+
+    const config = oauthConfig[this.provider]
+
+    const storedToken = await this.getTokenFromStoreOrRefreshToken()
+
+    if (storedToken) {
+      this.logger.log('we have a refreshed or stored token, lets use it', {
+        storedToken
+      })
+      return storedToken
+    }
+
+    this.logger.log(
+      'no token retrieved in any way, continue with normal oauth2 flow...'
+    )
+
+    const redirectUrl = browser.identity.getRedirectURL()
+    const state = generateRandomString(16)
+    const codeVerifier = generateRandomString(64)
+    const hashed = await sha256(codeVerifier)
+    const codeChallenge = base64encode(hashed)
+
+    const queryParams = new URLSearchParams({
+      client_id: config.clientId,
+      response_type: 'code',
+      scope: config.scopes.join(' '),
+      redirect_uri: redirectUrl,
+      code_challenge_method: 'S256',
+      code_challenge: codeChallenge,
+      state: state
+    })
+
+    const authUrl = new URL(config.authEndpoint)
+    authUrl.search = queryParams.toString()
+
+    this.logger.log({
+      redirectUrl,
+      authUrl: authUrl.toString()
+    })
+
+    const responseUrl = await browser.identity.launchWebAuthFlow({
+      url: authUrl.toString(),
+      interactive
+    })
+
+    this.logger.log('responseUrl', responseUrl)
+
+    if (browser.runtime.lastError || !responseUrl) {
+      this.logger.error(
+        'Error during authentication:',
+        browser.runtime.lastError
+      )
+      return
+    }
+
+    const responseParams = new URL(responseUrl).searchParams
+    const authCode = responseParams.get('code')
+    const responseError = responseParams.get('error')
+    const responseState = responseParams.get('state')
+
+    this.logger.log('auth code', authCode)
+
+    if (responseError) {
+      this.logger.error('Error during authentication:', responseError)
+      return
+    }
+
+    if (!authCode || state !== responseState) {
+      this.logger.error('No auth code found or state mismatch!')
+      return
+    }
+
+    try {
+      const tokenResponse = await fetch(config.tokenEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: authCode,
+          redirect_uri: redirectUrl,
+          client_id: config.clientId,
+          code_verifier: codeVerifier
+        })
+      })
+
+      const tokenData = (await tokenResponse.json()) as TokenResponse
+
+      if (tokenData.refresh_token) {
+        this.cacheAuthToken(
+          tokenData.access_token,
+          tokenData.refresh_token,
+          tokenData.expires_in
+        )
+      }
+
+      return tokenData.access_token
+    } catch (error) {
+      this.logger.error('Token exchange failed:', error)
+    }
   }
 }

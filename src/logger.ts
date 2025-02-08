@@ -4,6 +4,12 @@ export function log(...data: any[]) {
   }
 }
 
+function error(...data: any[]) {
+  if (import.meta.env.MODE === 'development') {
+    console.error(...data)
+  }
+}
+
 export class Logger {
   public name: string
 
@@ -11,7 +17,11 @@ export class Logger {
     this.name = name
   }
 
-  log(...data: any[]) {
+  log(...data: unknown[]) {
     log(`[${this.name}]`, ...data)
+  }
+
+  error(...data: unknown[]) {
+    error(`[${this.name}]`, ...data)
   }
 }

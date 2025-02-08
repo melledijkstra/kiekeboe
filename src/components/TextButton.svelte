@@ -1,7 +1,13 @@
 <script lang="ts">
-  const { children, className = '', ...props } = $props()
+  const { children, ...props } = $props()
 </script>
 
-<button class="{className} text-slate-200 hover:text-white text-lg capitalize" {...props}>
+<button
+  {...props}
+  class={[
+    'text-slate-200 hover:text-white text-lg capitalize cursor-pointer',
+    props.class
+  ]}
+>
   {@render children()}
 </button>

@@ -1,10 +1,12 @@
 <script lang="ts">
   import { mdiSpotify } from '@mdi/js'
-  import { getAuthToken, getTokenFromStoreOrRefreshToken } from '@/oauth2/auth'
+  import { AuthClient } from '@/oauth2/auth'
   import Playback from './Playback.svelte'
   import { onMount } from 'svelte'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
+
+  const authClient = new AuthClient('spotify')
 
   let open = $state(false)
   let token = $state<string>()
@@ -14,14 +16,14 @@
   }
 
   async function authenticate() {
-    const tokenData = await getAuthToken('spotify')
+    const tokenData = await authClient.getAuthToken()
     if (tokenData) {
       token = tokenData
     }
   }
 
   onMount(async () => {
-    const tokenData = await getTokenFromStoreOrRefreshToken('spotify')
+    const tokenData = await authClient.getTokenFromStoreOrRefreshToken()
     if (tokenData) {
       token = tokenData
     }

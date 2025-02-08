@@ -17,14 +17,16 @@
   import Card from '@/components/Card.svelte'
   import { SpotifyClient } from '@/api/spotify'
   import type { Device } from '@/api/definitions/spotify'
+  import { AuthClient } from '@/oauth2/auth'
 
   const PLAYER_LOCK_FLAG = 'spotifyInitialized'
 
   let EMPTY: undefined
 
   const logger = new Logger('spotify')
+  const authClient = new AuthClient('spotify')
 
-  const { open, token } = $props()
+  const { open, token }: { open: boolean; token: string } = $props()
   let apiClient = $state(new SpotifyClient(token))
   let deviceId = $state<string | null>(null)
   let player = $state<Spotify.Player | null>(null)
@@ -70,7 +72,6 @@
     if (!state.paused) {
       if (!playbackLoop) {
         playbackLoop = setInterval(() => {
-          logger.log('updating time')
           position += 1000
         }, 1000)
       }
@@ -124,7 +125,7 @@
       return
     }
 
-    player = await initializeSpotifyPlayer(token)
+    player = await initializeSpotifyPlayer(authClient)
     lock()
 
     player.addListener('ready', async ({ device_id }) => {

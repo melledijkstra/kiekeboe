@@ -10,10 +10,24 @@
   import { onMount } from 'svelte'
   import Toggle from '@/components/Toggle.svelte'
   import TextInput from '@/components/TextInput.svelte'
+  import { AuthClient } from '@/oauth2/auth'
+  import TextButton from '@/components/TextButton.svelte'
+  import AuthButton from '@/components/AuthButton.svelte'
+
+  const clients = {
+    google: new AuthClient('google'),
+    spotify: new AuthClient('spotify'),
+    fitbit: new AuthClient('fitbit')
+  }
 
   let manifest = $state<Manifest.WebExtensionManifest>()
   let tab = $state(getSelectedTabFromUrl())
   let settingsLoaded = $state(false)
+  let authState = $state({
+    google: false,
+    spotify: false,
+    fitbit: false
+  })
 
   function getSelectedTabFromUrl() {
     const parsed = parseInt(document.location.hash.replace('#', ''))
@@ -23,6 +37,12 @@
   function selectTab(index: number) {
     tab = index
     document.location.hash = index.toString()
+  }
+
+  async function retrieveAuthState() {
+    authState.google = await clients.google.isAuthenticated()
+    authState.spotify = await clients.spotify.isAuthenticated()
+    authState.fitbit = await clients.fitbit.isAuthenticated()
   }
 
   onMount(() => {
@@ -40,21 +60,43 @@
 
 <div class="flex flex-row items-stretch text-white w-full">
   <nav class="border-r-[1px] p-5 border-slate-500">
-    <button
-      class={[tab === 0 && 'text-white', 'block text-lg font-bold']}
-      onclick={() => selectTab(0)}>General</button
+    <TextButton
+      class={[
+        tab === 0 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(0)}
     >
-    <button
-      class={[tab === 1 && 'text-white', 'block text-lg font-bold']}
-      onclick={() => selectTab(1)}>Modules</button
+      General
+    </TextButton>
+    <TextButton
+      disabled={!settingsLoaded}
+      class={[
+        tab === 1 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(1)}>Modules</TextButton
     >
-    <button
-      class={[tab === 2 && 'text-white', 'block text-lg font-bold']}
-      onclick={() => selectTab(2)}>Appearance</button
+    <TextButton
+      class={[
+        tab === 2 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(2)}>Authentication</TextButton
     >
-    <button
-      class={[tab === 3 && 'text-white', 'block text-lg font-bold']}
-      onclick={() => selectTab(3)}>About</button
+    <TextButton
+      class={[
+        tab === 3 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(3)}>Appearance</TextButton
+    >
+    <TextButton
+      class={[
+        tab === 4 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(4)}>About</TextButton
     >
   </nav>
   <div class="flex-1 p-5 overflow-y-auto custom-scrollbar">
@@ -87,6 +129,45 @@
         </p>
       {/each}
     {:else if tab === 2}
+      {#await retrieveAuthState() then _ignore}
+        <h1 class="text-xl mb-3">Authentication</h1>
+        <div class="flex flex-col gap-3">
+          <p class="text-sm">
+            <strong>Google:</strong>
+            <span class="text-gray-400">{authState.google}</span>
+            {#if !authState.google}
+              <AuthButton
+                class="mt-2"
+                provider={'google'}
+                onAuth={(token) => (authState.google = !!token)}
+              />
+            {/if}
+          </p>
+          <p class="text-sm">
+            <strong>Spotify:</strong>
+            <span class="text-gray-400">{authState.spotify}</span>
+            {#if !authState.spotify}
+              <AuthButton
+                class="mt-2"
+                provider={'spotify'}
+                onAuth={(token) => (authState.spotify = !!token)}
+              />
+            {/if}
+          </p>
+          <p class="text-sm">
+            <strong>Fitbit:</strong>
+            <span class="text-gray-400">{authState.fitbit}</span>
+            {#if !authState.fitbit}
+              <AuthButton
+                class="mt-2"
+                provider={'fitbit'}
+                onAuth={(token) => (authState.fitbit = !!token)}
+              />
+            {/if}
+          </p>
+        </div>
+      {/await}
+    {:else if tab === 3}
       <h1 class="mb-2 text-xl">Appearance Settings</h1>
       <label for="unsplash-collection">Unsplash Collection</label>
       <TextInput
@@ -94,7 +175,7 @@
         name="unsplash-collection"
         placeholder="Unsplash collection"
       />
-    {:else if tab === 3}
+    {:else if tab === 4}
       <h1 class="text-xl">About</h1>
       <p class="text-sm"><strong>Extension Name:</strong> {manifest?.name}</p>
       <p class="text-sm">

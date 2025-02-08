@@ -1,11 +1,13 @@
 <script lang="ts">
   import { mdiCounter } from '@mdi/js'
-  import { getAuthToken, getTokenFromStoreOrRefreshToken } from '@/oauth2/auth'
+  import { AuthClient } from '@/oauth2/auth'
   import { onMount } from 'svelte'
   import Card from '@/components/Card.svelte'
   import { FitbitClient } from '../../api/fitbit'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
+
+  const authClient = new AuthClient('fitbit')
 
   let client = $state<FitbitClient>()
   let open = $state(false)
@@ -21,14 +23,14 @@
   }
 
   async function authenticate() {
-    const tokenData = await getAuthToken('fitbit')
+    const tokenData = await authClient.getAuthToken()
     if (tokenData) {
       token = tokenData
     }
   }
 
   onMount(async () => {
-    const tokenData = await getTokenFromStoreOrRefreshToken('fitbit')
+    const tokenData = await authClient.getTokenFromStoreOrRefreshToken()
     if (tokenData) {
       token = tokenData
       client = new FitbitClient(token)

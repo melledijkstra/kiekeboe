@@ -28,7 +28,7 @@
   <div
     class={[
       open ? 'block' : 'hidden',
-      'absolute bottom-8 overflow-y-auto right-0 max-h-96 min-w-80 rounded-lg bg-slate-950/80 p-4'
+      'absolute bottom-8 overflow-y-auto right-0 max-h-96 w-xl rounded-lg bg-slate-950/80 p-4'
     ]}
   >
     <h3 class="text-lg text-white">Create quick note</h3>
