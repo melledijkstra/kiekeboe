@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import { getTime, getTimePercentage } from './ui'
-  import { repeatEvery } from './time/utils'
+  import { repeatEvery, getTime, getTimePercentage } from './time/utils'
 
   const ONE_MINUTE = 60 * 1000 // in ms
 
