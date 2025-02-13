@@ -26,7 +26,6 @@ export class Timer {
   private remainingTime: number = 0
 
   constructor(options: TimerOptions) {
-    this.id = Math.floor(Math.random() * 10000)
     this.duration = options.duration
     this.interval = options.interval ?? 1000
     this.onTick = options.onTick
@@ -115,6 +114,14 @@ export class Timer {
 
   formatRemainingTime() {
     return Timer.formatRemainingTime(this.remainingTime)
+  }
+
+  formatRemainingMinutes() {
+    return `${Math.ceil(this.remainingTime / 1000 / 60)}m`
+  }
+
+  formatRemainingSeconds() {
+    return `${Math.ceil(this.remainingTime / 1000)}s`
   }
 
   reset(newDuration?: number) {

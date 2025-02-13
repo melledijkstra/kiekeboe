@@ -13,7 +13,9 @@ import { Timer } from '@/time/timer'
 import type { Mode, PomodoroState } from './types'
 
 const WORK_DURATION = 25 * 60 * 1000
-const BREAK_DURATION = 3000 // 5 * 60 * 1000
+const BREAK_DURATION = 65 * 1000 // 5 * 60 * 1000
+
+const browserAction = browser.action ?? browser.browserAction
 
 export class PomodoroService implements BackgroundService {
   private state: PomodoroState = {
@@ -38,12 +40,23 @@ export class PomodoroService implements BackgroundService {
   }
 
   onTick(remainingTime: number) {
+    const currentMin = Math.floor(this.state.timeRemaining / (60 * 1000))
+    const newMin = Math.floor(remainingTime / (60 * 1000))
+    // update when minutes pass, or when we are under one minute
+    if (currentMin !== newMin || newMin < 1) {
+      const badgeText =
+        newMin < 1
+          ? this.timer.formatRemainingSeconds()
+          : this.timer.formatRemainingMinutes()
+      browserAction.setBadgeText({ text: badgeText })
+    }
     this.state.timeRemaining = remainingTime
     this.sendUpdate()
   }
 
   onComplete() {
     logger.log('Pomodoro completed in background service')
+    browserAction.setBadgeText({ text: null })
     browser.notifications.create('pomodoroDone', {
       type: 'basic',
       title: `Pomodoro Done (${this.state.mode})`,
@@ -61,6 +74,10 @@ export class PomodoroService implements BackgroundService {
 
   startPomodoro() {
     logger.log('Pomodoro started in background service')
+    logger.log(browser.action, browser.browserAction)
+    browserAction.setBadgeText({
+      text: this.timer.formatRemainingMinutes()
+    })
     this.timer.start()
     this.state.isRunning = true
     this.sendUpdate()
@@ -71,6 +88,7 @@ export class PomodoroService implements BackgroundService {
     this.timer.stop()
     this.state.isRunning = false
     this.state.timeRemaining = this.state.duration
+    browserAction.setBadgeText({ text: null })
     this.sendUpdate()
   }
 
@@ -80,6 +98,7 @@ export class PomodoroService implements BackgroundService {
     const duration = mode === 'break' ? BREAK_DURATION : WORK_DURATION
     this.timer.setDuration(duration)
     this.state.isRunning = false
+    browserAction.setBadgeText({ text: null })
     this.state.duration = duration
     this.state.timeRemaining = duration
     this.sendUpdate()

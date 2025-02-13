@@ -37,6 +37,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>{appState.title}</title>
+</svelte:head>
+
 <Curtain />
 
 <Toasts position="top-left" />
