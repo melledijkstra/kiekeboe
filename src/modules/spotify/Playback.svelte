@@ -2,22 +2,12 @@
   import { onMount, onDestroy } from 'svelte'
   import { Logger } from '@/logger'
   import { initializeSpotifyPlayer } from './player'
-  import Icon from '@/components/Icon.svelte'
-  import {
-    mdiPause,
-    mdiPlay,
-    mdiRepeat,
-    mdiRepeatOff,
-    mdiRepeatOnce,
-    mdiShuffleVariant,
-    mdiSkipNext,
-    mdiSkipPrevious
-  } from '@mdi/js'
-  import { millisecondsToTime } from '@/time/utils'
   import Card from '@/components/Card.svelte'
   import { SpotifyClient } from '@/api/spotify'
   import type { Device } from '@/api/definitions/spotify'
   import { AuthClient } from '@/oauth2/auth'
+  import TrackFeedback from '@/components/musicplayer/TrackFeedback.svelte'
+  import Devices from '@/components/musicplayer/Devices.svelte'
 
   const PLAYER_LOCK_FLAG = 'spotifyInitialized'
 
@@ -31,25 +21,10 @@
   let deviceId = $state<string | null>(null)
   let player = $state<Spotify.Player | null>(null)
   let isActive = $state(false)
-  let isShuffling = $state(false)
-  let repeatMode = $state(0)
-  let repeatModeIcon = $derived(
-    repeatMode === 0
-      ? mdiRepeatOff
-      : repeatMode === 1
-        ? mdiRepeatOnce
-        : mdiRepeat
-  )
-  let isPaused = $state(true)
-  let currentTrack = $state<Spotify.Track | undefined>(undefined)
-  let songDuration = $state(0) // in ms
   let position = $state(0) // in ms
-  let remaining = $derived(songDuration - position)
-  let completedPercent = $derived(Math.ceil((position / songDuration) * 100))
-  let timeLeft = $derived<string>(millisecondsToTime(remaining))
-  let currentTime = $derived<string>(millisecondsToTime(position))
   let hasLock = $state(false)
   let devices = $state<Device[]>([])
+  let playbackState = $state<Spotify.PlaybackState | null>(null)
 
   let playbackLoop = $state<number>()
 
@@ -62,11 +37,7 @@
       return
     }
 
-    isPaused = state.paused
-    isShuffling = state.shuffle
-    repeatMode = state.repeat_mode
-    currentTrack = state.track_window.current_track
-    songDuration = state.track_window.current_track.duration_ms
+    playbackState = state
     position = state.position
 
     if (!state.paused) {
@@ -167,71 +138,18 @@
     'absolute top-[calc(100%+10px)] right-0 w-xl'
   ]}
 >
-  {#if currentTrack}
-    <div class="flex flex-row gap-4">
-      <img
-        class="size-20 rounded-sm"
-        src={currentTrack.album.images[0].url}
-        alt={currentTrack.name}
-      />
-      <div class="flex flex-col justify-center overflow-hidden">
-        <strong class="truncate text-xl">{currentTrack.name}</strong>
-        <p class="truncate">
-          {currentTrack.artists.map((artist) => artist.name).join(', ')}
-        </p>
-      </div>
-    </div>
-    <div class="mt-2 flex w-full flex-row justify-between text-sm">
-      <div>{currentTime}</div>
-      <div>-{timeLeft}</div>
-    </div>
-    <input
-      type="range"
-      min="0"
-      max={songDuration}
-      bind:value={position}
-      onchange={() => apiClient.seekToPosition(position)}
-      tabindex="0"
-      class="mb-4 w-full bg-gray-200/50 rounded-full h-2 dark:bg-gray-700"
+  {#if playbackState}
+    <TrackFeedback
+      {playbackState}
+      {position}
+      onSeek={() => apiClient.seekToPosition(position)}
+      onShuffle={(shuffleState) => apiClient.toggleShuffle(shuffleState)}
+      onPrev={() => player?.previousTrack()}
+      onNext={() => player?.nextTrack()}
+      onPlayPause={() => player?.togglePlay()}
     />
-    <div class="flex flex-row justify-between">
-      <button onclick={() => apiClient.toggleShuffle(!isShuffling)}>
-        <Icon
-          class="size-6 {isShuffling ? 'text-green-500' : 'text-white'}"
-          path={mdiShuffleVariant}
-        />
-      </button>
-      <button onclick={() => player?.previousTrack()}>
-        <Icon class="size-6 fill-white" path={mdiSkipPrevious} />
-      </button>
-      <button onclick={() => player?.togglePlay()}>
-        <Icon class="size-6 fill-white" path={isPaused ? mdiPlay : mdiPause} />
-      </button>
-      <button onclick={() => player?.nextTrack()}>
-        <Icon class="size-6 fill-white" path={mdiSkipNext} />
-      </button>
-      <button disabled>
-        <Icon class="size-6 fill-white" path={repeatModeIcon} />
-      </button>
-    </div>
   {:else}
     <p>No active track, select one first</p>
   {/if}
-  {#if !isActive}
-    <p class="mt-2">
-      This is currently not the active device, transfer playback to this device
-    </p>
-    <div class="flex flex-row gap-2 mt-2">
-      {#each devices as device (device.id)}
-        <button
-          class="p-2 {device.id === deviceId
-            ? 'bg-green-700'
-            : 'bg-zinc-900'} hover:bg-zinc-600 rounded-sm"
-          onclick={() => activateDevice(device.id)}
-        >
-          {device.name}
-        </button>
-      {/each}
-    </div>
-  {/if}
+  <Devices {devices} onActivate={activateDevice} />
 </Card>

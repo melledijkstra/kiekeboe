@@ -1,0 +1,109 @@
+<script lang="ts">
+  import {
+    mdiPause,
+    mdiPlay,
+    mdiRepeat,
+    mdiRepeatOff,
+    mdiRepeatOnce,
+    mdiShuffleVariant,
+    mdiSkipNext,
+    mdiSkipPrevious
+  } from '@mdi/js'
+  import Icon from '../Icon.svelte'
+  import { millisecondsToTime } from '@/time/utils'
+
+  export type TrackFeedbackProps = {
+    playbackState: Spotify.PlaybackState
+    position: number // in ms
+    onSeek?: (position: number) => void
+    onShuffle?: (isShuffling: boolean) => void
+    onPrev?: () => void
+    onNext?: () => void
+    onPlayPause?: () => void
+    onRepeat?: (repeatMode: number) => void
+  }
+
+  let {
+    playbackState,
+    position = $bindable(),
+    onSeek,
+    onShuffle,
+    onPrev,
+    onNext,
+    onPlayPause,
+    onRepeat
+  }: TrackFeedbackProps = $props()
+
+  let isPaused = $derived(playbackState.paused)
+  let isShuffling = $derived(playbackState.shuffle)
+  let repeatMode = $derived(playbackState.repeat_mode)
+  let repeatModeIcon = $derived(
+    repeatMode === 0
+      ? mdiRepeatOff
+      : repeatMode === 1
+        ? mdiRepeatOnce
+        : mdiRepeat
+  )
+  let track = $derived(playbackState.track_window.current_track)
+  let remaining = $derived(track.duration_ms - position)
+  let timeLeft = $derived<string>(millisecondsToTime(remaining))
+  let currentTime = $derived<string>(millisecondsToTime(position))
+</script>
+
+<div class="flex flex-row p-2">
+  <!-- Track Info -->
+  <div class="flex flex-row gap-4 mr-5">
+    <img
+      class="size-20 rounded-sm"
+      src={track.album.images[0].url}
+      alt={track.name}
+    />
+    <div class="flex flex-col justify-center overflow-hidden">
+      <strong class="truncate text-xl">{track.name}</strong>
+      <p class="truncate">
+        {track.artists.map((artist) => artist.name).join(', ')}
+      </p>
+    </div>
+  </div>
+  <!-- Controls -->
+  <div class="flex flex-col w-96 gap-3">
+    <div class="flex flex-row justify-between">
+      <button
+        class="cursor-pointer"
+        onclick={() => {
+          onShuffle?.(!isShuffling)
+        }}
+      >
+        <Icon
+          class="size-6 {isShuffling ? 'text-green-500' : 'text-white'}"
+          path={mdiShuffleVariant}
+        />
+      </button>
+      <button class="cursor-pointer" onclick={() => onPrev?.()}>
+        <Icon class="size-6 fill-white" path={mdiSkipPrevious} />
+      </button>
+      <button class="cursor-pointer" onclick={() => onPlayPause?.()}>
+        <Icon class="size-6 fill-white" path={isPaused ? mdiPlay : mdiPause} />
+      </button>
+      <button class="cursor-pointer" onclick={() => onNext?.()}>
+        <Icon class="size-6 fill-white" path={mdiSkipNext} />
+      </button>
+      <button class="cursor-pointer" onclick={() => onRepeat?.(repeatMode)}>
+        <Icon class="size-6 fill-white" path={repeatModeIcon} />
+      </button>
+    </div>
+    <div class="mt-2 flex flex-row gap-2 items-center justify-between text-sm">
+      <div>{currentTime}</div>
+      <input
+        type="range"
+        min="0"
+        max={track.duration_ms}
+        bind:value={position}
+        onchange={() => onSeek?.(position)}
+        tabindex="0"
+        class="bg-gray-200/50 rounded-full h-2 accent-green-700"
+      />
+      <div>-{timeLeft}</div>
+    </div>
+  </div>
+</div>

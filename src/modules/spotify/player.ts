@@ -9,6 +9,7 @@ const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
  */
 export function loadSpotifySDK(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
+    console.log('YOOO')
     const sdkFile = browser.runtime.getURL(SPOTIFY_SDK_FILE)
     // check if the script is already loaded
     if (document.querySelector(`script[src="${sdkFile}"]`)) {
