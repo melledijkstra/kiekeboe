@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import { PomodoroService } from '@/modules/pomodoro/service'
+import { FocusService } from '@/modules/focus/service'
 import { Logger } from './logger'
 
 export const logger = new Logger('background')
@@ -31,7 +31,7 @@ browser.notifications.onClicked.addListener((notificationId) => {
 })
 
 logger.log('Service worker activated')
-services.push(new PomodoroService())
+services.push(new FocusService())
 
 if (import.meta.env.DEV) {
   // add global r() function to make development easier reloading

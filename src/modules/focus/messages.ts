@@ -1,4 +1,4 @@
-import type { Mode, PomodoroState } from '@/modules/pomodoro/types'
+import type { Mode, PomodoroState } from '@/modules/focus/types'
 import { createMessage } from '@/messaging/system'
 
 export const startPomodoro = createMessage<void, void>('startPomodoro')

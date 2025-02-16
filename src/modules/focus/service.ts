@@ -8,7 +8,7 @@ import {
   stateUpdate,
   stopPomodoro,
   switchMode
-} from '@/modules/pomodoro/messages'
+} from '@/modules/focus/messages'
 import { Timer } from '@/time/timer'
 import type { Mode, PomodoroState } from './types'
 
@@ -17,7 +17,7 @@ const BREAK_DURATION = 65 * 1000 // 5 * 60 * 1000
 
 const browserAction = browser.action ?? browser.browserAction
 
-export class PomodoroService implements BackgroundService {
+export class FocusService implements BackgroundService {
   private state: PomodoroState = {
     isRunning: false,
     mode: 'work',

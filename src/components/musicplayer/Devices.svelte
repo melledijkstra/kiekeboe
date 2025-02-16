@@ -16,7 +16,7 @@
 </script>
 
 <div
-  class="relative flex justify-end gap-1 py-1 px-2 w-full bg-green-700 text-white"
+  class="relative flex justify-end gap-1 py-1 px-2 w-full bg-green-700 text-white rounded-b-xl"
 >
   {#if activeDevice}
     <Icon class="inline" path={mdiVolumeHigh} size={15} />

@@ -46,9 +46,9 @@ export const MODULE_CONFIG = [
     import: () => import('./spotify/index.ts')
   },
   {
-    id: 'pomodoro',
-    title: 'Pomodoro',
-    import: () => import('./pomodoro/index.ts')
+    id: 'focus',
+    title: 'Focus Sessions',
+    import: () => import('./focus/index.ts')
   },
   {
     id: 'weather',

@@ -1,6 +1,11 @@
-import { openDB, type DBSchema } from "idb"
-import type { Habit } from "./habits"
-import type { Note } from "./notes"
+import { openDB } from 'idb'
+import type { DBSchema, IDBPDatabase, StoreNames, StoreValue } from 'idb'
+import type { Habit } from './habits'
+import type { Note } from './notes'
+import type { FocusSession } from './focus'
+import { Logger } from '@/logger'
+
+export const logger = new Logger('db')
 
 export interface PersonalExtensionDB extends DBSchema {
   habits: {
@@ -13,23 +18,44 @@ export interface PersonalExtensionDB extends DBSchema {
     value: Note
     indexes: { id: number }
   }
+  focus: {
+    key: number
+    value: FocusSession
+    indexes: { id: number }
+  }
 }
 
-export const dbPromise = openDB<PersonalExtensionDB>('PersonalExtensionDB', 2, {
-  upgrade: (db) => {
-    if (!db.objectStoreNames.contains('habits')) {
-      const habitStore = db.createObjectStore('habits', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      habitStore.createIndex('id', 'id')
-    }
-    if (!db.objectStoreNames.contains('notes')) {
-      const notesStore = db.createObjectStore('notes', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      notesStore.createIndex('id', 'id')
-    }
+type StoreName = StoreNames<PersonalExtensionDB>
+
+async function createSimpleDB(
+  db: IDBPDatabase<PersonalExtensionDB>,
+  dbName: StoreName
+) {
+  if (!db.objectStoreNames.contains(dbName)) {
+    const store = db.createObjectStore(dbName, {
+      keyPath: 'id',
+      autoIncrement: true
+    })
+    store.createIndex('id', 'id')
+  }
+}
+
+export const dbPromise = openDB<PersonalExtensionDB>('PersonalExtensionDB', 7, {
+  upgrade: async (db) => {
+    await createSimpleDB(db, 'habits')
+    await createSimpleDB(db, 'notes')
+    await createSimpleDB(db, 'focus')
   }
 })
+
+export async function storeInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+  dbName: DBName,
+  value: StoreValue<PersonalExtensionDB, DBName>
+) {
+  const db = await dbPromise
+  const tx = db.transaction(dbName, 'readwrite')
+
+  await tx.store.add(value)
+
+  await tx.done
+}

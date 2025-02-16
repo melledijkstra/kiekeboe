@@ -1,0 +1,49 @@
+<script lang="ts">
+  import Button from '@/components/Button.svelte'
+  import { Timer } from '@/time/timer'
+  import { formatSeconds } from '@/time/utils'
+  import { onMount } from 'svelte'
+
+  type Props = {
+    onMinutePassed: () => void
+  }
+
+  const { onMinutePassed } = $props()
+
+  let startTime = $state<number | null>(null)
+  let seconds = $state(0)
+  let displaySeconds = $derived(formatSeconds(seconds))
+  let timer = $state(
+    new Timer({
+      duration: Infinity,
+      interval: 1000
+    })
+  )
+
+  function start() {
+    startTime = Date.now()
+    timer.start()
+  }
+
+  function stop() {
+    startTime = null
+    seconds = 0
+    timer.stop()
+  }
+
+  onMount(() => {
+    timer.on('tick', () => {
+      if (seconds > 0 && seconds % 60 === 0) {
+        onMinutePassed()
+      }
+      seconds++
+    })
+  })
+</script>
+
+<div class="text-2xl text-white">
+  <p>{displaySeconds}</p>
+
+  <Button onclick={start}>start</Button>
+  <Button onclick={stop}>stop</Button>
+</div>

@@ -21,7 +21,7 @@ const SETTINGS_KEY = 'settings' as const
 const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
   command_center: false,
   well_being: false,
-  pomodoro: false,
+  focus: false,
   weather: false,
   google_tasks: false,
   notes: false,

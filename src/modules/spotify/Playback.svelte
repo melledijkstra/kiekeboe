@@ -133,6 +133,8 @@
 </script>
 
 <Card
+  theme="dark"
+  nopadding
   class={[
     open ? 'block' : 'hidden',
     'absolute top-[calc(100%+10px)] right-0 w-xl'
@@ -149,7 +151,7 @@
       onPlayPause={() => player?.togglePlay()}
     />
   {:else}
-    <p>No active track, select one first</p>
+    <p class="p-2">No active track, select one first</p>
   {/if}
   <Devices {devices} onActivate={activateDevice} />
 </Card>

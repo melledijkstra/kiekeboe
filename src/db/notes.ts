@@ -1,4 +1,4 @@
-import { dbPromise } from '@/db'
+import { dbPromise, storeInDB } from '@/db'
 
 export const DB_NAME = 'notes' as const
 
@@ -8,15 +8,8 @@ export type Note = {
   dateCreated: Date
 }
 
-export async function addNote(
-  note: Note
-) {
-  const db = await dbPromise
-  const tx = db.transaction(DB_NAME, 'readwrite')
-
-  await tx.store.add(note)
-
-  await tx.done
+export async function addNote(note: Note) {
+  await storeInDB(DB_NAME, note)
 }
 
 export async function getAllNotes(): Promise<Note[]> {

@@ -69,8 +69,8 @@
         {#await loadModule('well_being') then Module}
           <Module.scene />
         {/await}
-      {:else if appState.mode === 'pomodoro'}
-        {#await loadModule('pomodoro') then Module}
+      {:else if appState.mode === 'focus'}
+        {#await loadModule('focus') then Module}
           <Module.scene />
         {/await}
       {:else}

@@ -6,7 +6,6 @@
   }
 
   const { children, theme, nopadding = false, ...props }: CardProps = $props()
-  $inspect(props.class)
 </script>
 
 <div

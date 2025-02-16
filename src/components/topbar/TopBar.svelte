@@ -26,10 +26,10 @@
       tooltip="Home"
       icon={mdiHomeOutline}
     />
-    {#if $settingsStore.modules.pomodoro}
+    {#if $settingsStore.modules.focus}
       <IconButton
-        tooltip="Pomodoro"
-        onclick={() => switchAppMode('pomodoro')}
+        tooltip="Focus"
+        onclick={() => switchAppMode('focus')}
         icon={mdiSprout}
       />
     {/if}

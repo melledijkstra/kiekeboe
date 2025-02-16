@@ -2,7 +2,6 @@
   import browser from 'webextension-polyfill'
   import { Timer } from '@/time/timer'
   import { onMount } from 'svelte'
-  import { fade } from 'svelte/transition'
   import {
     getPomodoroState,
     pomodoroComplete,
@@ -14,12 +13,19 @@
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
 
+  type Props = {
+    onMinutePassed: () => void
+  }
+
+  const { onMinutePassed } = $props()
+
   let pState = $state<PomodoroState>({
     mode: 'work',
     timeRemaining: 0,
     duration: 0,
     isRunning: false
   })
+  let seconds = $state(0)
   let audio = $state<HTMLAudioElement>(new Audio())
   let timeLeft = $derived(Timer.formatRemainingTime(pState.timeRemaining))
 
@@ -34,6 +40,14 @@
   })
 
   function onStateUpdate(state: PomodoroState) {
+    // pState.timeRemaining is in milliseconds
+    const durationMinutes = Math.floor(state.duration / 60000)
+    const oldMinutes = Math.floor(pState.timeRemaining / 60000)
+    const newMinutes = Math.floor(state.timeRemaining / 60000)
+    console.log(oldMinutes, newMinutes)
+    if (oldMinutes !== durationMinutes && oldMinutes > newMinutes) {
+      onMinutePassed()
+    }
     pState = state
   }
 
@@ -72,7 +86,7 @@
       'flex flex-col items-center justify-center size-60 m-10 text-3xl transition-all duration-1000 text-center rounded-full capitalize': true
     }}
   >
-    <span class="capitalize" transition:fade>{pState.mode}</span>
+    <span class="capitalize">{pState.mode}</span>
     <span>{timeLeft}</span>
   </div>
   <div class="flex flex-row gap-2 mt-2">

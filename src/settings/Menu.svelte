@@ -5,7 +5,8 @@
     DEFAULT_SETTINGS,
     saveSettingsToStorage,
     settingsStore,
-    syncSettingsStoreWithStorage
+    syncSettingsStoreWithStorage,
+    type Settings
   } from '@/settings'
   import { onMount } from 'svelte'
   import Toggle from '@/components/Toggle.svelte'
@@ -13,6 +14,19 @@
   import { AuthClient } from '@/oauth2/auth'
   import TextButton from '@/components/TextButton.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
+  import Button from '@/components/Button.svelte'
+  import { getAllFocusSessions, type FocusSession } from '@/db/focus'
+  import { getAllHabits, type Habit } from '@/db/habits'
+  import { getAllNotes, type Note } from '@/db/notes'
+
+  type Export = {
+    databases?: {
+      focusSessions?: FocusSession[]
+      habits?: Habit[]
+      notes?: Note[]
+    }
+    settings: Settings
+  }
 
   const clients = {
     google: new AuthClient('google'),
@@ -43,6 +57,27 @@
     authState.google = await clients.google.isAuthenticated()
     authState.spotify = await clients.spotify.isAuthenticated()
     authState.fitbit = await clients.fitbit.isAuthenticated()
+  }
+
+  async function exportData() {
+    const focusSessions = await getAllFocusSessions()
+    const notes = await getAllNotes()
+    const habits = await getAllHabits()
+    const exportData: Export = {
+      databases: {
+        focusSessions,
+        habits,
+        notes
+      },
+      settings: $settingsStore
+    }
+    const data = JSON.stringify(exportData)
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'export.json'
+    a.click()
   }
 
   onMount(() => {
@@ -96,7 +131,14 @@
         tab === 4 && 'underline',
         'block text-lg font-bold cursor-pointer'
       ]}
-      onclick={() => selectTab(4)}>About</TextButton
+      onclick={() => selectTab(4)}>Export</TextButton
+    >
+    <TextButton
+      class={[
+        tab === 5 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(5)}>About</TextButton
     >
   </nav>
   <div class="flex-1 p-5 overflow-y-auto custom-scrollbar">
@@ -176,6 +218,10 @@
         placeholder="Unsplash collection"
       />
     {:else if tab === 4}
+      <h1 class="text-xl">Export Settings</h1>
+      <p class="text-sm">Export your settings to a file</p>
+      <Button class="mt-2" onclick={exportData}>Export</Button>
+    {:else if tab === 5}
       <h1 class="text-xl">About</h1>
       <p class="text-sm"><strong>Extension Name:</strong> {manifest?.name}</p>
       <p class="text-sm">
