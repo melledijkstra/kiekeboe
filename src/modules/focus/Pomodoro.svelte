@@ -12,6 +12,7 @@
   } from './messages'
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
+  import Card from '@/components/Card.svelte'
 
   type Props = {
     onMinutePassed: () => void
@@ -80,15 +81,10 @@
 </script>
 
 <div class="flex flex-col gap justify-center items-center">
-  <div
-    class={{
-      'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-xs': true,
-      'flex flex-col items-center justify-center size-60 m-10 text-3xl transition-all duration-1000 text-center rounded-full capitalize': true
-    }}
-  >
+  <Card class="text-2xl">
     <span class="capitalize">{pState.mode}</span>
     <span>{timeLeft}</span>
-  </div>
+  </Card>
   <div class="flex flex-row gap-2 mt-2">
     <button
       onclick={pState.isRunning ? stop : start}

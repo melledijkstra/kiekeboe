@@ -46,7 +46,12 @@
 <Toasts position="top-left" />
 
 <!-- Grid playground: https://play.tailwindcss.com/qTwjNWVyU1 -->
-<div class="grid h-screen animate-fade-in">
+<div
+  class={[
+    appState.mode === 'focus' && 'bg-zinc-700/40',
+    'grid h-screen animate-fade-in transition-colors'
+  ]}
+>
   <!-- TOP --->
   <TopBar />
   <!-- MIDDLE --->

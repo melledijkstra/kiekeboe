@@ -1,7 +1,7 @@
 <script lang="ts">
   import { loadModule, type ModuleID } from '@/modules'
   import { mdiHomeOutline, mdiSpa, mdiSprout } from '@mdi/js'
-  import { switchAppMode } from '@/app-state.svelte'
+  import { appState, switchAppMode } from '@/app-state.svelte'
   import IconButton from '@/components/IconButton.svelte'
   import { settingsStore } from '@/settings'
   import AddMetricsDialog from '@/modules/trackers/AddTrackerDialog.svelte'
@@ -42,7 +42,10 @@
     {/if}
   </div>
   <div
-    class="group float-right flex flex-row items-center justify-end align-middle gap-5"
+    class={[
+      appState.mode === 'focus' ? 'invisible' : 'visible',
+      'group float-right flex flex-row items-center justify-end align-middle gap-5'
+    ]}
   >
     <AddMetricsDialog />
     <Metrics />

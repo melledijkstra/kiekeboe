@@ -5,7 +5,12 @@
     [key: string]: any
   }
 
-  const { children, theme, nopadding = false, ...props }: CardProps = $props()
+  const {
+    children,
+    theme = 'dark',
+    nopadding = false,
+    ...props
+  }: CardProps = $props()
 </script>
 
 <div
