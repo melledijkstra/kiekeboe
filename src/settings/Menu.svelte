@@ -84,6 +84,8 @@
     syncSettingsStoreWithStorage().then(() => (settingsLoaded = true))
     manifest = browser.runtime.getManifest()
   })
+
+  $inspect(authState)
 </script>
 
 <style>
@@ -171,8 +173,8 @@
         </p>
       {/each}
     {:else if tab === 2}
+      <h1 class="text-xl mb-3">Authentication</h1>
       {#await retrieveAuthState() then _ignore}
-        <h1 class="text-xl mb-3">Authentication</h1>
         <div class="flex flex-col gap-3">
           <p class="text-sm">
             <strong>Google:</strong>

@@ -101,20 +101,24 @@ export class AuthClient {
     return `${OAUTH2_STORAGE_KEY}.${this.provider}`
   }
 
-  async isAuthenticated() {
-    if (this.provider === 'google' && typeof chrome !== 'undefined') {
-      const token = await this.getAuthTokenChrome(false)
-      if (token) {
-        return true
+  async isAuthenticated(): Promise<boolean> {
+    try {
+      if (this.provider === 'google' && typeof chrome !== 'undefined') {
+        const token = await this.getAuthTokenChrome(false)
+        if (token) {
+          return true
+        }
+        return false
       }
+  
+      const token = await this.getAuthToken(false)
+  
+      this.logger.log({ token })
+  
+      return !!token
+    } catch (error) {
       return false
     }
-
-    const token = await this.getAuthToken()
-
-    this.logger.log({ token })
-
-    return !!token
   }
 
   static isExpired(token: TokenStore) {

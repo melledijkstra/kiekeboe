@@ -12,7 +12,7 @@
     'block cursor-pointer text-white/70 transition-colors hover:text-white'
   ]}
 >
-  <Icon path={icon} size={!children ? 48 : 24} />
+  <Icon path={icon} size={!children ? 40 : 24} />
   {@render children?.()}
   {#if tooltip}
     <span

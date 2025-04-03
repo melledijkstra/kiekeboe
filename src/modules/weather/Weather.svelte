@@ -4,6 +4,7 @@
   import Icon from '@/components/Icon.svelte'
   import { mdiCloudOff } from '@mdi/js'
   import { weatherToMdiIcon } from './utils'
+  import IconButton from '@/components/IconButton.svelte'
 
   let currentWeather = $state<WeatherInfo>()
   let client = $state<WeatherClient>()
@@ -29,6 +30,6 @@
       >{currentWeather.location}</span
     >
   {:else}
-    <Icon path={mdiCloudOff} size={46} />
+    <IconButton icon={mdiCloudOff} tooltip="Weather" onclick={() => alert('Not implemented yet!')} />
   {/if}
 </div>
