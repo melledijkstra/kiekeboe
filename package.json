@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
   "devDependencies": {
-    "@chromatic-com/storybook": "^3.2.4",
+    "@chromatic-com/storybook": "^3.2.6",
     "@storybook/addon-essentials": "^8.5.3",
     "@storybook/addon-interactions": "^8.5.3",
     "@storybook/addon-svelte-csf": "^5.0.0-next.23",
