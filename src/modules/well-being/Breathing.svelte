@@ -61,8 +61,6 @@
 </script>
 
 <style>
-  @reference '../../app.css';
-
   .inhaling {
     scale: 150%;
     transition-duration: 6s;
@@ -75,23 +73,22 @@
 </style>
 
 <div class="flex flex-col gap justify-center items-center">
-  <button onclick={!active ? start : stop}>
-    <div
-      class={{
-        'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-xs': true,
-        'flex flex-col items-center justify-center size-60 m-10 duration-1000 text-3xl transition-all text-center rounded-full capitalize': true,
-        inhaling: active && inhaling,
-        exhaling: active && exhaling
-      }}
-    >
-      {#if active}
-        {#key breatheState}
-          <span in:fade={{ duration: 1000 }}>
-            {breatheState ? 'Inhale' : 'Exhale'}
-          </span>
-        {/key}
-      {/if}
-      <span>{timeLeft}</span>
-    </div>
+  <button
+    onclick={!active ? start : stop}
+    class={[
+      'overflow-hidden border-2 border-white/20 bg-white/20 p-5 text-white shadow-md backdrop-blur-xs cursor-pointer',
+      'flex flex-col items-center justify-center size-60 m-10 duration-1000 text-3xl transition-all text-center rounded-full capitalize',
+      active && inhaling ? 'inhaling' : '',
+      active && exhaling ? 'exhaling' : ''
+    ]}
+  >
+    {#if active}
+      {#key breatheState}
+        <span in:fade={{ duration: 1000 }}>
+          {breatheState ? 'Inhale' : 'Exhale'}
+        </span>
+      {/key}
+    {/if}
+    <span>{timeLeft}</span>
   </button>
 </div>
