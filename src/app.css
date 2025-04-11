@@ -12,6 +12,8 @@
   --text-13xl: 14rem;
   --text-13xl--line-height: normal;
 
+  --shadow-center: 0 0 40px current-color;
+
   --animate-fade-in: fadeIn 0.5s ease-in;
   @keyframes fadeIn {
     0% {

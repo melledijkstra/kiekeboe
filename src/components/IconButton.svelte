@@ -2,14 +2,17 @@
   import Icon from './Icon.svelte'
 
   const { icon, children = null, tooltip = '', ...props } = $props()
+
+  const hasColor = props.class?.some((cls: string) => cls.includes('text-') || cls.includes('bg-'))
 </script>
 
 <button
   {...props}
   class={[
     props.class,
+    !hasColor && 'text-white/70 hover:text-white',
     tooltip && 'relative block group/tooltip',
-    'block cursor-pointer text-white/70 transition-colors hover:text-white'
+    'block cursor-pointer transition-colors',
   ]}
 >
   <Icon path={icon} size={!children ? 40 : 24} />

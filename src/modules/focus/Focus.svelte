@@ -62,6 +62,6 @@
     <CountUp {onMinutePassed} />
   {/if}
 
-  <label>What are you focussing on?</label>
-  <TextInput class="bg-black/50 text-white" bind:value={focusItem} />
+  <label for="focusItem">What are you focussing on?</label>
+  <TextInput id="focusItem" class="bg-black/50 text-white" bind:value={focusItem} />
 </div>

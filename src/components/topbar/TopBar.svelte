@@ -7,6 +7,7 @@
   import AddMetricsDialog from '@/modules/trackers/AddTrackerDialog.svelte'
   import Account from './Account.svelte'
   import Metrics from './Metrics.svelte'
+  import RaspberryPi from '../RaspberryPi.svelte'
 </script>
 
 {#snippet module(moduleId: ModuleID)}
@@ -21,6 +22,7 @@
   <div
     class="float-left flex flex-row items-center justify-start align-middle gap-5"
   >
+    <RaspberryPi />
     <IconButton
       onclick={() => switchAppMode('default')}
       tooltip="Home"
