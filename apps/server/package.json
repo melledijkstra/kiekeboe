@@ -9,7 +9,7 @@
     "dev": "tsx watch src/index.ts",
     "lint": "eslint .",
     "test": "vitest",
-    "migrate": "knex migrate:latest"
+    "migrate": "tsx scripts/migrate --knexfile ./knexfile.ts migrate:latest"
   },
   "dependencies": {
     "cors": "^2.8.5",
