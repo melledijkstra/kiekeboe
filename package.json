@@ -7,6 +7,9 @@
     "packages/*",
     "apps/*"
   ],
+  "scripts": {
+    "start-server": "npm run -w @odysea/server start"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/melledijkstra/kiekeboe.git"
