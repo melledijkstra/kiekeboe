@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import { router as focusSessionsRouter } from './routes/focus-sessions'
 
 dotenv.config()
 
@@ -13,8 +14,10 @@ app.use('/status', (_req, res) => {
   return;
 })
 
+app.use('/focus-sessions', focusSessionsRouter)
+
 const PORT = process.env.PORT ?? 3000
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Odysea Server running on port ${PORT}`)
 })
