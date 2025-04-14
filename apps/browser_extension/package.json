@@ -27,7 +27,7 @@
     "@types/node": "^22.14.0",
     "@types/webextension-polyfill": "^0.12.3",
     "autoprefixer": "^10.4.21",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "storybook": "^8.5.3",
     "svelte": "^5.19.9",
