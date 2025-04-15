@@ -1,0 +1,16 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  dir: 'apps/serverless'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - unsplash_function
+  - --region=europe-southwest1
+  - --source=.
+  - --trigger-http
+  - --runtime=python312
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_MEDIUM
