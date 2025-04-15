@@ -2,7 +2,7 @@ import { dirname, join } from "path";
 import type { StorybookConfig } from '@storybook/svelte-vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(js|ts|svelte)'],
+  stories: ['../stories/**/*.stories.@(js|ts|svelte)'],
   addons: [
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",

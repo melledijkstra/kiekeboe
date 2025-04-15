@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import Clock from './Clock.svelte'
+  import Clock from './components/Clock.svelte'
   import Curtain from './Curtain.svelte'
   import Welcome from './Welcome.svelte'
   import { onMount } from 'svelte'

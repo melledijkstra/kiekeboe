@@ -1,6 +1,6 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
-  import SpotifyPlayback from '../../components/musicplayer/TrackFeedback.svelte'
+  import SpotifyPlayback from '@/components/musicplayer/TrackFeedback.svelte'
   import { playbackState } from '@/fixtures/spotify/playback'
   import { fn } from '@storybook/test'
 

@@ -1,7 +1,7 @@
 <script module lang="ts">
   import { defineMeta, type Args } from '@storybook/addon-svelte-csf'
-  import Panel from '../components/Panel.svelte'
-  import Toggle from '../components/Toggle.svelte'
+  import Panel from '@/components/Panel.svelte'
+  import Toggle from '@/components/Toggle.svelte'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({

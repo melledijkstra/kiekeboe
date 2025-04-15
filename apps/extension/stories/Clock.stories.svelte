@@ -1,25 +1,30 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
-  import Button from '../components/Button.svelte'
+  import Clock from '@/components/Clock.svelte'
   import { fn } from '@storybook/test'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Components/Button',
-    component: Button,
+    title: 'Components/Clock',
+    component: Clock,
     tags: ['autodocs'],
-    argTypes: {
-      label: 'string'
+    parameters: {
+      backgrounds: {
+        values: [
+          {
+            name: 'gray',
+            value: '#d5d5d587'
+          }
+        ],
+        default: 'gray'
+      }
     },
+    argTypes: {},
     args: {
-      onclick: fn()
+      onchange: fn()
     }
   })
 </script>
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" args={{ label: 'Click me!' }}>
-  {#snippet children({ label, ...args }: { label: string })}
-    <Button {...args}>{label}</Button>
-  {/snippet}
-</Story>
+<Story name="Default" />
