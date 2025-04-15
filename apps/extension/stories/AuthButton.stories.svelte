@@ -19,11 +19,10 @@
           type: 'select',
           options: ['google', 'github', 'fitbit']
         }
-      },
+      }
     },
     args: {
-      onclick: fn(),
-      provider: 'fitbit'
+      onclick: fn()
     }
   })
 </script>
@@ -32,17 +31,26 @@
   setTemplate(template)
 </script>
 
-{#snippet template({ children, provider, ...args }: { children?: string, provider?: OauthProvider })}
+{#snippet template({
+  children,
+  provider,
+  ...args
+}: {
+  children?: string
+  provider?: OauthProvider
+})}
   {#if !provider}
     <p>Auth provider needs to be specified</p>
+  {:else if children}
+    <AuthButton {provider} {...args}>{children}</AuthButton>
   {:else}
-    {#if children}
-      <AuthButton provider={provider} {...args}>{children}</AuthButton>
-    {:else}
-      <AuthButton provider={provider} {...args} />
-    {/if}
+    <AuthButton {provider} {...args} />
   {/if}
 {/snippet}
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" />
+<Story name="Google" args={{ provider: 'google' }} />
+
+<Story name="Fitbit" args={{ provider: 'fitbit' }} />
+
+<Story name="Spotify" args={{ provider: 'spotify' }} />

@@ -14,6 +14,13 @@
 
   --shadow-center: 0 0 40px current-color;
 
+  /* COLORS */
+  --color-primary: #4285F4;
+  /* - Brands - */
+  --color-spotify: #1DB954;
+  --color-google: #4285F4;
+  --color-fitbit: #3DB6B8;
+
   --animate-fade-in: fadeIn 0.5s ease-in;
   @keyframes fadeIn {
     0% {
