@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
   import IconButton from '@/components/IconButton.svelte'
   import { addNewHabit, habits, initializeHabits } from '@/stores/habits.svelte'
   import { mdiInfinity } from '@mdi/js'
@@ -30,7 +30,7 @@
     onclick={() => (open = !open)}
     icon={mdiInfinity}
   />
-  <Card class={[open ? 'block' : 'hidden', 'absolute right-0 p-4 min-w-80']}>
+  <Panel class={[open ? 'block' : 'hidden', 'absolute right-0 p-4 min-w-80']}>
     <h1 class="text-xl font-bold">Habit Tracker</h1>
     <div class="mt-4">
       <input
@@ -49,5 +49,5 @@
         <li style:color={habit.color} class="p-2 border-b">{habit.name}</li>
       {/each}
     </ul>
-  </Card>
+  </Panel>
 </div>

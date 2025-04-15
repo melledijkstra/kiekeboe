@@ -38,8 +38,26 @@ class Trackers {
     this.countdowns = countdowns
   }
 
+  public setCounters(counters: Counter[]) {
+    this.storeCounters(counters)
+    this.counters = counters
+  }
+
+  public setWorldClocks(worldClocks: WorldClock[]) {
+    this.storeWorldClocks(worldClocks)
+    this.worldClocks = worldClocks
+  }
+
   storeCountdowns(counters: CountDown[]) {
     localStorage.setItem(STORAGE_KEYS.countdowns, JSON.stringify(counters))
+  }
+
+  storeCounters(counters: Counter[]) {
+    localStorage.setItem(STORAGE_KEYS.counters, JSON.stringify(counters))
+  }
+
+  storeWorldClocks(worldClocks: WorldClock[]) {
+    localStorage.setItem(STORAGE_KEYS.worldClocks, JSON.stringify(worldClocks))
   }
 
   private loadCounters() {

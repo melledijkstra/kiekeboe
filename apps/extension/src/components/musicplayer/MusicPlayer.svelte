@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Device } from '@/api/definitions/spotify'
-  import Card from '../Card.svelte'
+  import Panel from '../Panel.svelte'
   import Devices from './Devices.svelte'
   import TrackFeedback from './TrackFeedback.svelte'
   import { playbackState } from '@/fixtures/spotify/playback'
@@ -155,7 +155,7 @@
   </div>
 {/snippet}
 
-<Card class="w-2xl" nopadding theme="dark">
+<Panel class="w-2xl" nopadding theme="dark">
   <div class="flex flex-row gap-3">
     <ul class="py-2">
       {#each playlists as playlist}
@@ -170,4 +170,4 @@
   </div>
   <TrackFeedback {playbackState} position={37573} />
   <Devices {devices} onActivate={() => {}} />
-</Card>
+</Panel>

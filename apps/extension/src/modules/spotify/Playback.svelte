@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte'
   import { Logger } from '@/logger'
   import { initializeSpotifyPlayer } from './player'
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
   import { SpotifyClient } from '@/api/spotify'
   import type { Device } from '@/api/definitions/spotify'
   import { AuthClient } from '@/oauth2/auth'
@@ -132,7 +132,7 @@
   onDestroy(cleanup)
 </script>
 
-<Card
+<Panel
   theme="dark"
   nopadding
   class={[
@@ -154,4 +154,4 @@
     <p class="p-2">No active track, select one first</p>
   {/if}
   <Devices {devices} onActivate={activateDevice} />
-</Card>
+</Panel>

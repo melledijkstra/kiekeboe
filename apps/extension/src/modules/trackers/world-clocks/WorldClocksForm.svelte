@@ -1,14 +1,14 @@
 <script lang="ts">
   import Icon from '@/components/Icon.svelte'
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
   import { mdiClockPlusOutline, mdiDeleteClock, mdiWebClock } from '@mdi/js'
-  import { onDestroy, onMount } from 'svelte'
+  import { onDestroy } from 'svelte'
   import { log } from '@/logger'
   import { renderTimezone, repeatEvery } from '@/time/utils'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
   import Toggle from '@/components/Toggle.svelte'
-  import { getClocks, loadClocks, setClocks } from './state.svelte'
+  import { trackers } from '../state.svelte'
 
   const UPDATE_TIME = 60 * 1000 // every minute
 
@@ -18,10 +18,6 @@
   let inputPinned: boolean = $state(false)
   let cancelTick = $state<() => void>()
   let tickUpdate = $state(false)
-
-  onMount(() => {
-    loadClocks()
-  })
 
   onDestroy(() => {
     cancelTick?.()
@@ -46,13 +42,13 @@
   }
 
   function addClock(name: string, timeZone: string, pinned: boolean) {
-    const newClocks = [...getClocks(), { name, timeZone, pinned }]
-    setClocks(newClocks)
+    const newClocks = [...trackers.worldClocks, { name, timeZone, pinned }]
+    trackers.storeWorldClocks(newClocks)
   }
 
   function deleteClock(index: number) {
-    const newClocks = getClocks().filter((_, i) => i !== index)
-    setClocks(newClocks)
+    const newClocks = trackers.worldClocks.filter((_, i) => i !== index)
+    trackers.storeWorldClocks(newClocks)
   }
 </script>
 
@@ -63,10 +59,10 @@
     icon={mdiWebClock}
   />
   {#if open}
-    <Card class="absolute right-0">
+    <Panel class="absolute right-0">
       <h2 class="text-lg mb-3">World Clocks 🌎</h2>
       {#key tickUpdate}
-        {#each getClocks() as clock, i}
+        {#each trackers.worldClocks as clock, i}
           <div class="flex flex-row items-center justify-between gap-2">
             <div class="flex flex-col">
               <h1 class="text-2xl font-bold">
@@ -117,6 +113,6 @@
           <Icon size={16} path={mdiClockPlusOutline} /> Add Clock
         </button>
       </form>
-    </Card>
+    </Panel>
   {/if}
 </div>

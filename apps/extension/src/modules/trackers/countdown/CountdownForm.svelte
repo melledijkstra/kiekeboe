@@ -1,16 +1,15 @@
 <script lang="ts">
   import Icon from '@/components/Icon.svelte'
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
   import {
     mdiCalendarOutline,
     mdiCalendarPlusOutline,
     mdiDelete
   } from '@mdi/js'
-  import { onMount } from 'svelte'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
   import Toggle from '@/components/Toggle.svelte'
-  import { getCounters, loadCounters, setCounters } from '../state.svelte'
+  import { trackers, type Counter } from '../state.svelte'
   import { calculateDays } from '@/time/utils'
 
   const props = $props()
@@ -24,26 +23,22 @@
     return new Date().toISOString()?.split('T')[0]
   }
 
-  onMount(() => {
-    loadCounters()
-  })
-
   function toggleDisplay() {
     open = !open
   }
 
   function addCountdown(name: string, date: string, pinned: boolean) {
     const countdownDate = new Date(date)
-    const newCounters = [
-      ...getCounters(),
-      { name, date: countdownDate.valueOf(), pinned }
-    ]
-    setCounters(newCounters)
+    const newCounter: Counter = { name, value: countdownDate.valueOf(), pinned }
+    trackers.storeCounters([
+      ...trackers.counters,
+      newCounter
+    ])
   }
 
   function deleteCountdown(index: number) {
-    const newCounters = getCounters().filter((_, i) => i !== index)
-    setCounters(newCounters)
+    const newCounters = trackers.counters.filter((_, i) => i !== index)
+    trackers.storeCounters(newCounters)
   }
 </script>
 
@@ -54,12 +49,12 @@
     icon={mdiCalendarOutline}
   />
   {#if open}
-    <Card class="absolute right-0">
+    <Panel class="absolute right-0">
       <h2 class="text-lg mb-3">Countdowns 🗓️</h2>
-      {#each getCounters() as countdown, i}
+      {#each trackers.counters as countdown, i}
         <div class="flex flex-row items-center justify-between gap-2">
           <div class="flex flex-col">
-            <h1 class="text-2xl font-bold">{calculateDays(countdown.date)}d</h1>
+            <h1 class="text-2xl font-bold">{calculateDays(countdown.value)}d</h1>
             <h2 class="text-sm text-zinc-100">{countdown.name}</h2>
           </div>
           <button onclick={() => deleteCountdown(i)} class="cursor-pointer">
@@ -100,6 +95,6 @@
           <Icon size={16} path={mdiCalendarPlusOutline} /> Add Countdown
         </button>
       </form>
-    </Card>
+    </Panel>
   {/if}
 </div>

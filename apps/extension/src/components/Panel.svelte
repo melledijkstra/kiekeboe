@@ -1,5 +1,5 @@
 <script lang="ts">
-  type CardProps = {
+  type PanelProps = {
     theme?: 'light' | 'dark'
     nopadding?: boolean
     [key: string]: any
@@ -10,7 +10,7 @@
     theme = 'dark',
     nopadding = false,
     ...props
-  }: CardProps = $props()
+  }: PanelProps = $props()
 </script>
 
 <div

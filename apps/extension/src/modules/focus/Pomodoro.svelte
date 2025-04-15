@@ -12,7 +12,7 @@
   } from './messages'
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
 
   type Props = {
     onMinutePassed: () => void
@@ -81,10 +81,10 @@
 </script>
 
 <div class="flex flex-col gap justify-center items-center">
-  <Card class="text-2xl">
+  <Panel class="text-2xl">
     <span class="capitalize">{pState.mode}</span>
     <span>{timeLeft}</span>
-  </Card>
+  </Panel>
   <div class="flex flex-row gap-2 mt-2">
     <button
       onclick={pState.isRunning ? stop : start}

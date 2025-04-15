@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from '@/components/Card.svelte'
+  import Panel from '@/components/Panel.svelte'
   import Icon from '@/components/Icon.svelte'
   import IconButton from '@/components/IconButton.svelte'
   import { mdiPlus, mdiPlusCircle } from '@mdi/js'
@@ -19,7 +19,7 @@
   >
     <span>Add</span>
   </IconButton>
-  <Card
+  <Panel
     class={[
       addTrackerDialogOpen ? 'block' : 'hidden',
       'absolute right-0 text-center w-sm'
@@ -50,5 +50,5 @@
         Sleep Tracker
       </button>
     </div>
-  </Card>
+  </Panel>
 </div>
