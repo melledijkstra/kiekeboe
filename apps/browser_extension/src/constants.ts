@@ -5,4 +5,4 @@ export const NEXT_IMAGE_KEY = 'nextDailyImage'
 export const ACCOUNT_CACHE_KEY = 'account'
 
 export const UNSPLASH_PROXY_URL =
-  'https://e96kk3t1rh.execute-api.eu-north-1.amazonaws.com/proxy'
+  'https://python-http-function-94381359768.europe-southwest1.run.app/'

@@ -1,3 +1,4 @@
+from flask import make_response
 import functions_framework
 import json
 import os
@@ -32,7 +33,7 @@ def unsplash_function(request):
         headers = {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET",
-            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Headers": "*",
             "Access-Control-Max-Age": "3600",
         }
 
@@ -49,28 +50,25 @@ def unsplash_function(request):
     print("Extension ID:", extension_id)
 
     if request_origin != ALLOWED_ORIGIN or extension_id != EXTENSION_ID:
-        return {
+        return ({
             "message": "Forbidden: Unauthorized origin",
             "origin": request_origin,
             "extension_id": extension_id
-        }, 403
+        }, 403, headers)
 
     # Extract user request information
     try:
         queryParams = request.args or {}
     except Exception as e:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"message": "Bad Request", "error": str(e)})
-        }
+        return ({"message": "Bad Request", "error": str(e)}, 400, headers)
 
     # Add API key to the request parameters
     api_key = os.environ.get("UNSPLASH_API_KEY", None)
 
     if not api_key:
-        return {
+        return ({
             "message": "Bad Request: API key not set, check your environment variables",
-        }, 400
+        }, 400, headers)
 
     params = {
         # Add unsplash api key for authentication
@@ -84,10 +82,10 @@ def unsplash_function(request):
 
         res = fetch.get(f"{api_endpoint}?{query_string}")
         if res.status_code != 200:
-            return {
+            return ({
                 "message": "Bad Request to Unsplash API",
                 "error": res.text
-            }, 502
-        return res.json(), res.status_code
+            }, 502, headers)
+        return res.json(), res.status_code, headers
     except fetch.RequestException as e:
-        return {"message": "Bad Gateway", "error": str(e)}, 502
+        return ({"message": "Bad Gateway", "error": str(e)}, 502, headers)
