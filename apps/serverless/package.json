@@ -1,0 +1,19 @@
+{
+  "name": "@odysea/serverless",
+  "version": "1.0.0",
+  "description": "Serverless functions for the Odysea project",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [
+    "serverless",
+    "deno",
+    "cloud"
+  ],
+  "dependencies": {
+    "deno": "^2.2.10",
+    "vitest": "^3.1.1"
+  }
+}

@@ -59,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           onTap: () {
-            print('Check status');
             color = CupertinoColors.systemGrey;
             _checkStatus();
           },

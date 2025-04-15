@@ -1,12 +1,10 @@
 
-# Google Cloud Run Serverless Development
+# Deno Serverless Development
 
 ## Prerequisites
 Before you start, ensure you have the following tools installed:
 
-- gcloud: https://cloud.google.com/sdk/docs/install-sdk
-- python: https://www.python.org/downloads/
-
+- Deno: https://docs.deno.com/runtime/getting_started/installation/
 
 ## Deploying to Google Cloud
 
