@@ -1,27 +1,19 @@
 <script lang="ts">
-  import { AuthClient, type OauthProvider } from '@/oauth2/auth'
+  import type { OauthProvider } from '@/oauth2/auth'
   import Button from './Button.svelte'
   import Icon from './Icon.svelte'
   import { mdiSpotify } from '@mdi/js'
-  import { log } from '@/logger'
+  import type { HTMLButtonAttributes } from 'svelte/elements';
 
   const {
     provider,
-    onAuth,
+    children,
     ...props
   }: {
     provider: OauthProvider
-    onAuth?: (token: string | undefined) => void
-    [key: string]: unknown
-  } = $props()
+  } & HTMLButtonAttributes = $props()
 
-  const auth = $state(new AuthClient(provider))
-
-  async function triggerAuthFlow() {
-    log('triggering auth flow', auth)
-    const token = await auth.getAuthToken(true)
-    onAuth?.(token)
-  }
+  $inspect(children)
 </script>
 
 {#snippet google()}
@@ -53,7 +45,7 @@
   </svg>
 {/snippet}
 
-<Button {...props} onclick={props?.onclick ?? triggerAuthFlow}>
+<Button {...props}>
   {#if provider === 'google'}
     {@render google()}
   {:else if provider === 'spotify'}
@@ -61,5 +53,9 @@
   {:else if provider === 'fitbit'}
     {@render fitbit()}
   {/if}
-  Sign in with&nbsp;<span class="capitalize">{provider}</span>
+  {#if children}
+    {@render children()}
+  {:else}
+    Sign in with&nbsp;<span class="capitalize">{provider}</span>
+  {/if}
 </Button>

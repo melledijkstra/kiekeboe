@@ -5,9 +5,8 @@
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Components/Button',
+    title: 'Atoms/Buttons/Normal',
     component: Button,
-    tags: ['autodocs'],
     argTypes: {
       label: {
         control: {

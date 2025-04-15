@@ -6,10 +6,8 @@
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Components/Spotify/Control',
+    title: 'Atoms/Spotify/Control',
     component: SpotifyPlayback,
-    tags: ['autodocs'],
-    argTypes: {},
     args: {
       playbackState,
       position: Math.round(

@@ -8,7 +8,7 @@
   } from '@mdi/js'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
-  import Toggle from '@/components/Toggle.svelte'
+  import Toggle from '@/components/atoms/Toggle.svelte'
   import { trackers, type Counter } from '../state.svelte'
   import { calculateDays } from '@/time/utils'
 

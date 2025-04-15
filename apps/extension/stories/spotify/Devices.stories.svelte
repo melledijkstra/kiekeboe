@@ -5,10 +5,8 @@
   import { fn } from '@storybook/test'
 
   const { Story } = defineMeta({
-    title: 'Components/Spotify/Devices',
+    title: 'Atoms/Spotify/Devices',
     component: Devices,
-    tags: ['autodocs'],
-    argTypes: {},
     args: {
       devices,
       onActivate: fn()

@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import manifest from '../../manifest.json'
+import manifest from '../../manifest.json' with { type: 'json' }
 import { Logger } from '@/logger'
 
 export type OauthProvider = 'google' | 'spotify' | 'fitbit'

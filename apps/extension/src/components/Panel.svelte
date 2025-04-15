@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { HTMLAttributes } from 'svelte/elements'
+
   type PanelProps = {
     theme?: 'light' | 'dark'
     nopadding?: boolean
-    [key: string]: any
-  }
+  } & HTMLAttributes<HTMLDivElement>
 
   const {
     children,
@@ -11,6 +12,10 @@
     nopadding = false,
     ...props
   }: PanelProps = $props()
+
+  if (!children) {
+    throw new Error('Panel component requires children')
+  }
 </script>
 
 <div

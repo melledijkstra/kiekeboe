@@ -9,7 +9,7 @@
     type Settings
   } from '@/settings'
   import { onMount } from 'svelte'
-  import Toggle from '@/components/Toggle.svelte'
+  import Toggle from '@/components/atoms/Toggle.svelte'
   import TextInput from '@/components/TextInput.svelte'
   import { AuthClient } from '@/oauth2/auth'
   import TextButton from '@/components/TextButton.svelte'
@@ -190,7 +190,10 @@
               <AuthButton
                 class="mt-2"
                 provider={'google'}
-                onAuth={(token) => (authState.google = !!token)}
+                onclick={async () => {
+                  const token = await clients.google.getAuthToken(true)
+                  authState.google = !!token
+                }}
               />
             {/if}
           </p>
@@ -201,7 +204,10 @@
               <AuthButton
                 class="mt-2"
                 provider={'spotify'}
-                onAuth={(token) => (authState.spotify = !!token)}
+                onclick={async () => {
+                  const token = await clients.spotify.getAuthToken(true)
+                  authState.spotify = !!token
+                }}
               />
             {/if}
           </p>
@@ -212,7 +218,10 @@
               <AuthButton
                 class="mt-2"
                 provider={'fitbit'}
-                onAuth={(token) => (authState.fitbit = !!token)}
+                onclick={async () => {
+                  const token = await clients.fitbit.getAuthToken(true)
+                  authState.fitbit = !!token
+                }}
               />
             {/if}
           </p>

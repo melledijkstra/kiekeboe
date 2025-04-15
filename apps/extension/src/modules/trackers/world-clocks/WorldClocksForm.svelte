@@ -7,7 +7,7 @@
   import { renderTimezone, repeatEvery } from '@/time/utils'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
-  import Toggle from '@/components/Toggle.svelte'
+  import Toggle from '@/components/atoms/Toggle.svelte'
   import { trackers } from '../state.svelte'
 
   const UPDATE_TIME = 60 * 1000 // every minute

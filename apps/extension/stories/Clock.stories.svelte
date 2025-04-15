@@ -7,7 +7,6 @@
   const { Story } = defineMeta({
     title: 'Components/Clock',
     component: Clock,
-    tags: ['autodocs'],
     parameters: {
       backgrounds: {
         values: [
@@ -18,10 +17,6 @@
         ],
         default: 'gray'
       }
-    },
-    argTypes: {},
-    args: {
-      onchange: fn()
     }
   })
 </script>
