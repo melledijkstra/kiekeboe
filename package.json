@@ -8,7 +8,8 @@
     "apps/*"
   ],
   "scripts": {
-    "start-server": "npm run -w @odysea/server start"
+    "start-server": "npm run -w @odysea/server start",
+    "serverless:dev": "npm run -w @odysea/serverless dev"
   },
   "repository": {
     "type": "git",

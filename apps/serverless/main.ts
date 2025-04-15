@@ -5,11 +5,11 @@ const ALLOWED_ORIGIN = `chrome-extension://${EXTENSION_ID}`;
 
 Deno.serve(async (req: Request) => {
   const headers = new Headers();
-  headers.set("Content-Type", "application/json");
   headers.set("Access-Control-Allow-Origin", "*");
   headers.set("Access-Control-Allow-Methods", "GET");
   headers.set("Access-Control-Allow-Headers", "*");
   headers.set("Access-Control-Max-Age", "3600");
+  headers.set("Content-Type", "application/json");
 
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers });
@@ -67,10 +67,7 @@ Deno.serve(async (req: Request) => {
 
     return new Response(body, {
       status: unsplashRes.status,
-      headers: {
-        ...headers,
-        "Content-Type": "application/json",
-      },
+      headers
     });
   } catch (err) {
     return new Response(
