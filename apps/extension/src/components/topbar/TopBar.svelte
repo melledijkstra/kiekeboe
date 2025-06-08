@@ -4,7 +4,7 @@
   import { appState, switchAppMode } from '@/app-state.svelte'
   import IconButton from '@/components/IconButton.svelte'
   import { settingsStore } from '@/settings'
-  import AddMetricsDialog from '@/modules/trackers/AddTrackerDialog.svelte'
+  import AddMetricsDialog from '@/modules/trackers/AddMetricDialog.svelte'
   import Account from './Account.svelte'
   import Metrics from './Metrics.svelte'
   import RaspberryPi from '../RaspberryPi.svelte'

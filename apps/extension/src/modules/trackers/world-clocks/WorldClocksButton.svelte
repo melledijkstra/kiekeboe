@@ -1,27 +1,25 @@
 <script lang="ts">
-  import {
-    mdiCalendarOutline
-  } from '@mdi/js'
+  import { mdiWebClock } from '@mdi/js'
   import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/IconButton.svelte'
   import Form from './Form.svelte'
 
-  const props = $props()
-
   let open: boolean = $state(false)
 
   function toggleDisplay() {
-    open = !open
+    if (open) {
+      open = false
+    } else {
+      open = true
+    }
   }
-
-  
 </script>
 
-<div class="relative {props.class}" use:clickOutside={() => (open = false)}>
+<div class="relative" use:clickOutside={() => (open = false)}>
   <IconButton
-    tooltip={!open ? 'Countdown' : ''}
+    tooltip={!open ? 'Clocks' : ''}
     onclick={toggleDisplay}
-    icon={mdiCalendarOutline}
+    icon={mdiWebClock}
   />
   {#if open}
     <Form />

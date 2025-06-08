@@ -5,11 +5,8 @@
     type CountDown,
     type WorldClock
   } from '@/modules/trackers/state.svelte'
-  import { calculateDays, renderTimezone, repeatEvery } from '@/time/utils'
-  import { onDestroy, onMount } from 'svelte'
-
-  let updateKey = $state(Date.now())
-  let cancelUpdater = $state<() => void>()
+  import { calculateDays } from '@/time/utils'
+  import Clock from '@/components/atoms/metrics/WorldClock.svelte'
 
   const metrics = $derived.by(() => {
     const pinnedCounters = trackers.counters.filter((counter) => counter.pinned)
@@ -28,24 +25,11 @@
     return typeof (metric as WorldClock)?.timeZone !== 'undefined'
   }
 
-  onMount(() => {
-    cancelUpdater = repeatEvery(() => {
-      updateKey = Date.now()
-    }, 60 * 1000) // every minute
-  })
-
-  onDestroy(() => {
-    cancelUpdater?.()
-  })
+  $inspect(metrics)
 </script>
 
 {#snippet clock(metric: WorldClock)}
-  <div transition:fade class="text-white px-2 rounded-lg text-right">
-    {#key updateKey}
-      <p class="text-lg">{renderTimezone(metric.timeZone)}</p>
-    {/key}
-    <p class="text-xs">{metric.name}</p>
-  </div>
+  <Clock metric={metric} />
 {/snippet}
 
 {#snippet counter(metric: CountDown)}
