@@ -8,6 +8,7 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "npm run -w @odysea/extension dev",
     "start-server": "npm run -w @odysea/server start",
     "serverless:dev": "npm run -w @odysea/serverless dev"
   },

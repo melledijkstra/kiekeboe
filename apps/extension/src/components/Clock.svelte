@@ -8,6 +8,8 @@
 
   const CLOCK_STORAGE_KEY = 'clockMode'
 
+  const props: { clockMode?: ClockMode } = $props()
+
   let time = $state()
   let mode = $state<ClockMode>()
   let cancelTick = $state<() => void>()
@@ -31,8 +33,14 @@
   }
 
   onMount(async () => {
-    const clockMode = localStorage.getItem(CLOCK_STORAGE_KEY) as ClockMode
-    mode = clockMode ?? 'time'
+    // if parent is overriding clockMode then we shouldn't set it based on localStorage
+    if (props.clockMode) {
+      mode = props.clockMode
+    } else {
+      const clockMode = localStorage.getItem(CLOCK_STORAGE_KEY) as ClockMode
+      mode = clockMode ?? 'time'
+    }
+
     startClock()
   })
 

@@ -1,11 +1,10 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import Clock from '@/components/Clock.svelte'
-  import { fn } from '@storybook/test'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Components/Clock',
+    title: 'Atoms/Clock',
     component: Clock,
     parameters: {
       backgrounds: {
@@ -22,4 +21,6 @@
 </script>
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" />
+<Story name="Default" args={{ clockMode: 'time' }} />
+
+<Story name="Percentage" args={{ clockMode: 'percentage' }} />

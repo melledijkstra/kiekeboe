@@ -84,7 +84,11 @@
     </main>
   {/key}
   <!-- BOTTOM -->
-  <footer class="flex flex-row justify-between content-end items-end p-5">
+  <footer class={[
+    "flex flex-row justify-between content-end items-end p-5",
+    // add vignette effect from to bottom to make icons more visible
+    "bg-gradient-to-t from-gray-700/50 from-10% to-transparent",
+  ]}>
     <!-- BOTTOM LEFT -->
     <div class="flex flex-row gap-3">
       <div class="relative" use:clickOutside={() => (settingsOpen = false)}>

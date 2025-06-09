@@ -11,16 +11,23 @@
         type: 'symbol',
         control: 'object',
       }
-    },
-    args: {
-      metric: {
-        name: 'Storybook Test',
-        pinned: true,
-        timeZone: 'Europe/Amsterdam'
-      }
     }
   })
 </script>
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" />
+<Story name="Amsterdam" args={{
+  metric: {
+    name: 'Amsterdam',
+    pinned: true,
+    timeZone: 'Europe/Amsterdam'
+  }
+}} />
+
+<Story name="Tokyo" args={{
+  metric: {
+    name: 'Tokyo',
+    pinned: true,
+    timeZone: 'Asia/Tokyo'
+  }
+}} />

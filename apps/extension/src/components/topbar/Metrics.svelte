@@ -1,14 +1,22 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition'
   import {
     trackers,
     type CountDown,
+    type Counter,
     type WorldClock
   } from '@/modules/trackers/state.svelte'
-  import { calculateDays } from '@/time/utils'
   import Clock from '@/components/atoms/metrics/WorldClock.svelte'
+  import Countdown from '../atoms/metrics/Countdown.svelte'
 
-  const metrics = $derived.by(() => {
+  type Metric = CountDown | WorldClock | Counter
+
+  const props: { metrics?: Metric[] } = $props()
+
+  const metrics: Metric[] = $derived.by(() => {
+    if (props.metrics?.length) {
+      return props.metrics.filter(metric => metric.pinned)
+    }
+
     const pinnedCounters = trackers.counters.filter((counter) => counter.pinned)
     const pinnedClocks = trackers.worldClocks.filter((clock) => clock.pinned)
     const pinnedCountdowns = trackers.countdowns.filter(
@@ -28,21 +36,19 @@
   $inspect(metrics)
 </script>
 
-{#snippet clock(metric: WorldClock)}
-  <Clock metric={metric} />
-{/snippet}
-
-{#snippet counter(metric: CountDown)}
-  <div transition:fade class="text-white px-2 rounded-lg text-right">
-    <p class="text-lg">{calculateDays(metric.date)}d</p>
-    <p class="text-xs">{metric.name}</p>
+{#if !!metrics.length}
+  <div class="flex flex-row gap-2">
+    {#each metrics as metric}
+      {#if isClock(metric)}
+        <Clock metric={metric} />
+      {:else if isCounter(metric)}
+        <Countdown metric={metric} />
+      {:else}
+        <div class="text-white px-2 rounded-lg text-right">
+          <p class="text-lg">{metric.value}</p>
+          <p class="text-xs">{metric.name}</p>
+        </div>
+      {/if}
+    {/each}
   </div>
-{/snippet}
-
-{#each metrics as metric}
-  {#if isClock(metric)}
-    {@render clock(metric)}
-  {:else if isCounter(metric)}
-    {@render counter(metric)}
-  {/if}
-{/each}
+{/if}

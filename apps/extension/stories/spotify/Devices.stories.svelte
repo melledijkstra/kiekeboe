@@ -5,7 +5,7 @@
   import { fn } from '@storybook/test'
 
   const { Story } = defineMeta({
-    title: 'Atoms/Spotify/Devices',
+    title: 'Spotify/Devices',
     component: Devices,
     args: {
       devices,
