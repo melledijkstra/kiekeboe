@@ -12,7 +12,7 @@
   } from './messages'
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
-  import Panel from '@/components/Panel.svelte'
+  import Panel from '@/components/atoms/Panel.svelte'
 
   type Props = {
     onMinutePassed: () => void

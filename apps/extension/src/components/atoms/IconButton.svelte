@@ -3,7 +3,17 @@
 
   const { icon, children = null, tooltip = '', ...props } = $props()
 
-  const hasColor = props.class?.some((cls: string) => cls.includes('text-') || cls.includes('bg-'))
+  function hasColorClass(classProp: string | string[] | undefined): boolean {
+    if (typeof classProp === 'string') {
+      return classProp.includes('text-') || classProp.includes('bg-');
+    }
+    if (Array.isArray(classProp)) {
+      return classProp.some((cls) => cls.includes('text-') || cls.includes('bg-'));
+    }
+    return false;
+  }
+
+  const hasColor = hasColorClass(props?.class);
 </script>
 
 <button

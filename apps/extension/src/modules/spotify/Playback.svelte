@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte'
   import { Logger } from '@/logger'
   import { initializeSpotifyPlayer } from './player'
-  import Panel from '@/components/Panel.svelte'
+  import Panel from '@/components/atoms/Panel.svelte'
   import { SpotifyClient } from '@/api/spotify'
   import type { Device } from '@/api/definitions/spotify'
   import { AuthClient } from '@/oauth2/auth'

@@ -6,6 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "deno run dev",
+    "dev:express": "deno run --allow-net express.ts",
     "test": "vitest"
   },
   "keywords": [
@@ -15,6 +16,7 @@
   ],
   "dependencies": {
     "deno": "^2.2.10",
+    "express": "^5.1.0",
     "vitest": "^3.1.1"
   }
 }

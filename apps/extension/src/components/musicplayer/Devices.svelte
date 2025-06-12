@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Device } from '@/api/definitions/spotify'
-  import Icon from '../Icon.svelte'
+  import Icon from '../atoms/Icon.svelte'
   import { mdiVolumeHigh } from '@mdi/js'
 
   type DevicesProps = {

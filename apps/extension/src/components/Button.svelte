@@ -5,8 +5,6 @@
     children,
     ...props
   }: HTMLAttributes<HTMLButtonElement> = $props()
-
-  $inspect(props.class)
 </script>
 
 <button

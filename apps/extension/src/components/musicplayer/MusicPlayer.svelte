@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Device } from '@/api/definitions/spotify'
-  import Panel from '../Panel.svelte'
+  import Panel from '../atoms/Panel.svelte'
   import Devices from './Devices.svelte'
   import TrackFeedback from './TrackFeedback.svelte'
   import { playbackState } from '@/fixtures/spotify/playback'

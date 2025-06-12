@@ -10,7 +10,7 @@
   import { UnsplashClient } from '@/api/unsplash'
   import { loadModule } from '@/modules'
   import TopBar from './components/topbar/TopBar.svelte'
-  import IconButton from './components/IconButton.svelte'
+  import IconButton from './components/atoms/IconButton.svelte'
   import SettingsMenu from './settings/Menu.svelte'
   import { clickOutside } from './actions/click-outside.ts'
   import { tasks } from './stores/tasks.svelte.ts'

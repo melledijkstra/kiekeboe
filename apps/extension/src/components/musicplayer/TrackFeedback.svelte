@@ -9,7 +9,7 @@
     mdiSkipNext,
     mdiSkipPrevious
   } from '@mdi/js'
-  import Icon from '../Icon.svelte'
+  import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
 
   export type TrackFeedbackProps = {

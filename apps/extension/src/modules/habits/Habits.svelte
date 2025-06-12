@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Panel from '@/components/Panel.svelte'
-  import IconButton from '@/components/IconButton.svelte'
+  import Panel from '@/components/atoms/Panel.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
   import { addNewHabit, habits, initializeHabits } from '@/stores/habits.svelte'
   import { mdiInfinity } from '@mdi/js'
   import { onMount } from 'svelte'

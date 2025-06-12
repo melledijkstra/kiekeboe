@@ -38,7 +38,8 @@ export class BaseClient {
     }
 
     const headers = {
-      ...(this.strategy === 'token' && { Authorization: `Bearer ${this.code}` })
+      ...(this.strategy === 'token' && { Authorization: `Bearer ${this.code}` }),
+      'accept': 'application/json',
     }
 
     const response = await fetch(url.toString(), {

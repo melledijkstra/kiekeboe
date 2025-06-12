@@ -1,7 +1,7 @@
 <script lang="ts">
   import { mdiWebClock } from '@mdi/js'
   import { clickOutside } from '@/actions/click-outside'
-  import IconButton from '@/components/IconButton.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
   import Form from './Form.svelte'
 
   let open: boolean = $state(false)

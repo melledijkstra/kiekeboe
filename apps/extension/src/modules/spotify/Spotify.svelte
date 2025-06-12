@@ -4,7 +4,7 @@
   import Playback from './Playback.svelte'
   import { onMount } from 'svelte'
   import { clickOutside } from '@/actions/click-outside'
-  import IconButton from '@/components/IconButton.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
 
   const authClient = new AuthClient('spotify')
 

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { WeatherClient, type WeatherInfo } from '@/api/weather'
-  import Icon from '@/components/Icon.svelte'
+  import Icon from '@/components/atoms/Icon.svelte'
   import { mdiCloudOff } from '@mdi/js'
   import { weatherToMdiIcon } from './utils'
-  import IconButton from '@/components/IconButton.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
 
   let currentWeather = $state<WeatherInfo>()
   let client = $state<WeatherClient>()

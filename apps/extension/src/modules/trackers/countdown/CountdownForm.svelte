@@ -3,7 +3,7 @@
     mdiCalendarOutline
   } from '@mdi/js'
   import { clickOutside } from '@/actions/click-outside'
-  import IconButton from '@/components/IconButton.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
   import Form from './Form.svelte'
 
   const props = $props()
@@ -13,8 +13,6 @@
   function toggleDisplay() {
     open = !open
   }
-
-  
 </script>
 
 <div class="relative {props.class}" use:clickOutside={() => (open = false)}>
