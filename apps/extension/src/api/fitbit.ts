@@ -13,6 +13,12 @@ export class FitbitClient extends BaseClient {
     const response = await this.request<SleepResponse>(`/1/user/-/sleep/date/${date}.json`)
 
     if (response) {
+      if (response.summary.stages) {
+        // this avoids counting the wake time between sleep stages
+        const { deep, light, rem } = response.summary.stages
+        return deep + light + rem
+      }
+      // if stages are not available, we can still return total minutes asleep
       return response.summary.totalMinutesAsleep
     }
 
