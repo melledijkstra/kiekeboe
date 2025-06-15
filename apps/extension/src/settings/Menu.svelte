@@ -138,7 +138,14 @@
         tab === 5 && 'underline',
         'block text-lg font-bold cursor-pointer'
       ]}
-      onclick={() => selectTab(5)}>About</TextButton
+      onclick={() => selectTab(5)}>Network</TextButton
+    >
+    <TextButton
+      class={[
+        tab === 6 && 'underline',
+        'block text-lg font-bold cursor-pointer'
+      ]}
+      onclick={() => selectTab(6)}>About</TextButton
     >
   </nav>
   <div class="flex-1 p-5 overflow-y-auto custom-scrollbar">
@@ -150,15 +157,6 @@
         parentClass="my-2"
         onchange={() => saveSettingsToStorage($settingsStore)}
         bind:checked={$settingsStore.ui.showCurrentTask}
-      />
-      <TextInput
-        label="Database URI"
-        bind:value={$settingsStore.network.databaseUri}
-        onkeyup={(event) => {
-          if (event.key === 'Enter') {
-            saveSettingsToStorage($settingsStore)
-          }
-        }}
       />
     {:else if tab === 1 && $settingsStore}
       <h1 class="text-xl">Modules Settings</h1>
@@ -229,17 +227,34 @@
       {/await}
     {:else if tab === 3}
       <h1 class="mb-2 text-xl">Appearance Settings</h1>
-      <label for="unsplash-collection">Unsplash Collection</label>
       <TextInput
-        disabled
-        name="unsplash-collection"
-        placeholder="Unsplash collection"
+        label="Unsplash Query"
+        name="unsplash-query"
+        placeholder="Unsplash Query"
+        bind:value={$settingsStore.ui.dailyImageQuery}
       />
+      <Button class="mt-2" onclick={() => saveSettingsToStorage($settingsStore)}>
+        Save Settings
+      </Button>
     {:else if tab === 4}
       <h1 class="text-xl">Export Settings</h1>
       <p class="text-sm">Export your settings to a file</p>
       <Button class="mt-2" onclick={exportData}>Export</Button>
     {:else if tab === 5}
+      <h1 class="text-xl">Network Settings</h1>
+      <TextInput
+        class="mb-2"
+        label="Database URI"
+        bind:value={$settingsStore.network.databaseUri}
+      />
+      <TextInput
+        label="Serverless Host"
+        bind:value={$settingsStore.network.serverlessHost}
+      />
+      <Button class="mt-2" onclick={() => saveSettingsToStorage($settingsStore)}>
+        Save Network Settings
+      </Button>
+    {:else if tab === 6}
       <h1 class="text-xl">About</h1>
       <p class="text-sm"><strong>Extension Name:</strong> {manifest?.name}</p>
       <p class="text-sm">

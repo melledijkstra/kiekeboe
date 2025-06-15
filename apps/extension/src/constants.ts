@@ -4,5 +4,5 @@ export const DAILY_IMAGE_KEY = 'dailyImage'
 export const NEXT_IMAGE_KEY = 'nextDailyImage'
 export const ACCOUNT_CACHE_KEY = 'account'
 
-export const UNSPLASH_PROXY_URL =
+export const SERVERLESS_HOST_URL =
   'https://melledijkstra-kiekeboe.deno.dev/'

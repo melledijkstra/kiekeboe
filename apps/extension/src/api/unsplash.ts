@@ -1,12 +1,14 @@
 import {
   DAILY_IMAGE_KEY,
   NEXT_IMAGE_KEY,
-  UNSPLASH_PROXY_URL
+  SERVERLESS_HOST_URL
 } from '@/constants'
 import browser from 'webextension-polyfill'
 import { formatDate } from '@/date'
 import { log } from '@/logger'
 import type { UnsplashResponse } from '@/api/definitions/unsplash'
+
+const ENDPOINT = '/api/daily-image'
 
 type ImageInfo = {
   id: string
@@ -15,10 +17,25 @@ type ImageInfo = {
 }
 
 export class UnsplashClient {
-  constructor() {}
+  private HOST: string
+  public query?: string
+
+  constructor(host: string = SERVERLESS_HOST_URL, query?: string) {
+    this.HOST = host
+    this.query = query
+    log('UnsplashClient initialized with host:', this.HOST, 'and query:', this.query) 
+  }
+
+  setHost(host: string) {
+    this.HOST = host
+  }
 
   async fetchRandomUnsplashImage(): Promise<UnsplashResponse> {
-    const response = await fetch(UNSPLASH_PROXY_URL, {
+    const serverlessUrl = new URL(ENDPOINT, this.HOST)
+    if (this.query) {
+      serverlessUrl.searchParams.set('query', this.query)
+    }
+    const response = await fetch(serverlessUrl, {
       headers: {
         'X-Extension-ID': browser.runtime.id
       }
@@ -121,5 +138,15 @@ export class UnsplashClient {
       callback?.()
       document.body.style.backgroundImage = `url(${url})`
     }
+  }
+
+  async clearNextImage() {
+    await browser.storage.local.remove(NEXT_IMAGE_KEY)
+    log('Next image cleared from storage')
+  }
+
+  async clearImageCache() {
+    await browser.storage.local.remove([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])
+    log('Daily and next images cleared from storage')
   }
 }

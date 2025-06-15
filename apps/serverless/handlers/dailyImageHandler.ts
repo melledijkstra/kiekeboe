@@ -34,14 +34,13 @@ export async function dailyImageHandler(c: Context): Promise<Response> {
     }, 400);
   }
 
-  const params = new URLSearchParams({
-    client_id: UNSPLASH_API_KEY,
-    orientation,
-    query,
-  });
+  const unsplashUrl = new URL(UNSPLASH_URL);
+  unsplashUrl.searchParams.set("client_id", UNSPLASH_API_KEY);
+  unsplashUrl.searchParams.set("orientation", orientation);
+  unsplashUrl.searchParams.set("query", query);
 
   try {
-    return await fetch(`${UNSPLASH_URL}?${params}`);
+    return await fetch(unsplashUrl);
   } catch (err) {
     return c.json(
       { message: "Bad Gateway", error: String(err) },

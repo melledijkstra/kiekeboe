@@ -6,8 +6,7 @@
   import { onMount } from 'svelte'
   import { settingsStore, syncSettingsStoreWithStorage } from './settings'
   import { appState } from '@/app-state.svelte.ts'
-  import { mdiCameraRetakeOutline, mdiTuneVertical } from '@mdi/js'
-  import { UnsplashClient } from '@/api/unsplash'
+  import { mdiTuneVertical } from '@mdi/js'
   import { loadModule } from '@/modules'
   import TopBar from './components/topbar/TopBar.svelte'
   import IconButton from './components/atoms/IconButton.svelte'
@@ -16,8 +15,7 @@
   import { tasks } from './stores/tasks.svelte.ts'
   import Toasts from './components/Toasts.svelte'
   import FloatMenu from './components/FloatMenu.svelte'
-
-  let unsplashClient = $state(new UnsplashClient())
+  import ImageRefreshButton from './components/ImageRefreshButton.svelte'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
@@ -28,13 +26,6 @@
   onMount(async () => {
     await syncSettingsStoreWithStorage()
   })
-
-  async function refreshBackround() {
-    const url = await unsplashClient.refreshDailyImage()
-    if (url) {
-      unsplashClient.loadImage(url)
-    }
-  }
 </script>
 
 <svelte:head>
@@ -104,7 +95,9 @@
           <SettingsMenu />
         </FloatMenu>
       </div>
-      <IconButton onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
+      {#if $settingsStore.loaded}
+        <ImageRefreshButton />
+      {/if}
     </div>
     <div class="flex flex-row gap-5">
       {#if $settingsStore.modules.notes}

@@ -10,12 +10,14 @@ let changeListenersSet = false
 export type Settings = {
   loaded?: boolean
   network: {
+    serverlessHost: string
     databaseUri: string
   },
   modules: {
     [key in ModuleID]: boolean
   }
   ui: {
+    dailyImageQuery?: string
     showCurrentTask: boolean
   }
 }
@@ -35,7 +37,8 @@ const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
 export const DEFAULT_SETTINGS: Settings = {
   loaded: false,
   network: {
-    databaseUri: 'http://raspberrypi.local:3000'
+    serverlessHost: '',
+    databaseUri: ''
   },
   modules: DEFAULT_MODULE_SETTINGS,
   ui: {
@@ -47,11 +50,12 @@ export const settingsStore = writable<Settings>(DEFAULT_SETTINGS)
 
 export function saveSettingsToStorage(settings: Settings) {
   // make sure we don't save the loaded property to storage
-  delete settings.loaded
+  const settingsToStore = structuredClone(settings)
+  delete settingsToStore.loaded
   logger.log('Saving settings to storage', {
-    settings
+    settingsToStore
   })
-  browser.storage.sync.set({ settings })
+  browser.storage.sync.set({ settings: settingsToStore })
 }
 
 export async function getSettingsFromStorage(): Promise<Settings> {
