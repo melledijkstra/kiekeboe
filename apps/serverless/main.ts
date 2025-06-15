@@ -1,78 +1,22 @@
-const UNSPLASH_URL = "https://api.unsplash.com/photos/random"
-const UNSPLASH_API_KEY = Deno.env.get('UNSPLASH_API_KEY')
-const EXTENSION_ID = "kaeibbjbbioodhkpgclmhdhnoggcikhi";
-const ALLOWED_ORIGIN = `chrome-extension://${EXTENSION_ID}`;
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { showRoutes } from 'hono/dev'
+import { dailyImageHandler } from "./handlers/dailyImageHandler.ts";
+import { ALLOWED_ORIGIN } from "./constants.ts";
 
-Deno.serve(async (req: Request) => {
-  const headers = new Headers();
-  headers.set("Access-Control-Allow-Origin", "*");
-  headers.set("Access-Control-Allow-Methods", "GET");
-  headers.set("Access-Control-Allow-Headers", "*");
-  headers.set("Access-Control-Max-Age", "3600");
-  headers.set("Content-Type", "application/json");
+const app = new Hono()
 
-  if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers });
-  }
+app.use('*', cors({
+  origin: ALLOWED_ORIGIN,
+  maxAge: 3600
+}))
 
-  const origin = req.headers.get("origin") ?? "";
-  const extensionId = req.headers.get("x-extension-id") ?? "";
+app.get('/', (c) => {
+  return c.text('Hey there!')
+})
 
-  console.log("Request Origin:", origin);
-  console.log("Extension ID:", extensionId);
+app.get('/api/daily-image', dailyImageHandler)
 
-  if (origin !== ALLOWED_ORIGIN || extensionId !== EXTENSION_ID) {
-    return new Response(
-      JSON.stringify({
-        message: "Forbidden: Unauthorized origin",
-        origin,
-        extension_id: extensionId,
-      }),
-      { status: 403, headers }
-    );
-  }
+showRoutes(app)
 
-  const url = new URL(req.url);
-  const orientation = url.searchParams.get("orientation") ?? "landscape";
-  const query = url.searchParams.get("query") ?? "landscape";
-
-  if (!UNSPLASH_API_KEY) {
-    return new Response(
-      JSON.stringify({
-        message: "Bad Request: API key not set, check your environment variables",
-      }),
-      { status: 400, headers }
-    );
-  }
-
-  const params = new URLSearchParams({
-    client_id: UNSPLASH_API_KEY,
-    orientation,
-    query,
-  });
-
-  try {
-    const unsplashRes = await fetch(`${UNSPLASH_URL}?${params}`);
-    const body = await unsplashRes.text();
-
-    if (!unsplashRes.ok) {
-      return new Response(
-        JSON.stringify({
-          message: "Bad Request to Unsplash API",
-          error: body,
-        }),
-        { status: 502, headers },
-      );
-    }
-
-    return new Response(body, {
-      status: unsplashRes.status,
-      headers
-    });
-  } catch (err) {
-    return new Response(
-      JSON.stringify({ message: "Bad Gateway", error: String(err) }),
-      { status: 502, headers }
-    );
-  }
-});
+Deno.serve(app.fetch)

@@ -1,6 +1,7 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@hono/hono@^4.7.11": "4.7.11",
     "npm:@mdi/js@^7.4.47": "7.4.47",
     "npm:@storybook/addon-essentials@^8.6.12": "8.6.14_storybook@8.6.14__prettier@3.5.3_prettier@3.5.3",
     "npm:@storybook/addon-interactions@^8.6.12": "8.6.14_storybook@8.6.14__prettier@3.5.3_prettier@3.5.3",
@@ -21,6 +22,7 @@
     "npm:@types/webextension-polyfill@~0.12.3": "0.12.3",
     "npm:autoprefixer@^10.4.21": "10.4.21_postcss@8.5.4",
     "npm:cors@^2.8.5": "2.8.5",
+    "npm:create-hono@*": "0.19.1",
     "npm:deno@^2.2.10": "2.3.5",
     "npm:dotenv@^16.5.0": "16.5.0",
     "npm:express@^5.1.0": "5.1.0",
@@ -40,6 +42,11 @@
     "npm:vite@^6.2.6": "6.3.5_@types+node@22.15.31_tsx@4.19.4_picomatch@4.0.2",
     "npm:vitest@^3.1.1": "3.2.3_@types+node@22.15.31_vite@6.3.5__@types+node@22.15.31__tsx@4.19.4__picomatch@4.0.2_tsx@4.19.4",
     "npm:webextension-polyfill@0.12": "0.12.0"
+  },
+  "jsr": {
+    "@hono/hono@4.7.11": {
+      "integrity": "52b9395e4f2448fbaf82a6bd7925d15e59f4055037e74d6c2f657f3618b11193"
+    }
   },
   "npm": {
     "@adobe/css-tools@4.4.3": {
@@ -1296,6 +1303,9 @@
         "object-assign",
         "vary"
       ]
+    },
+    "create-hono@0.19.1": {
+      "integrity": "sha512-Nou3VaRiSA0EhjESlhHmT+FD0vnwDGK6O2Az6vLUzU4k51Kd04ZUNjfMvceuR0QgbZe3Wl4g/s4mNZU1mCIT5A=="
     },
     "cross-spawn@7.0.6": {
       "integrity": "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==",
@@ -3301,10 +3311,12 @@
         }
       },
       "apps/serverless": {
+        "dependencies": [
+          "jsr:@hono/hono@^4.7.11"
+        ],
         "packageJson": {
           "dependencies": [
             "npm:deno@^2.2.10",
-            "npm:express@^5.1.0",
             "npm:vitest@^3.1.1"
           ]
         }

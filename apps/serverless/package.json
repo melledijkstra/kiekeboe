@@ -1,12 +1,12 @@
 {
   "name": "@odysea/serverless",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Serverless functions for the Odysea project",
   "type": "module",
-  "main": "index.ts",
+  "main": "main.ts",
   "scripts": {
-    "dev": "deno run dev",
-    "dev:express": "deno run --allow-net express.ts",
+    "dev": "deno run --allow-net --allow-env --watch --env-file main.ts",
+    "start": "deno run --allow-net --allow-env --env-file main.ts",
     "test": "vitest"
   },
   "keywords": [
@@ -16,7 +16,6 @@
   ],
   "dependencies": {
     "deno": "^2.2.10",
-    "express": "^5.1.0",
     "vitest": "^3.1.1"
   }
 }

@@ -1,5 +1,9 @@
 {
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode"
-  }
+  },
+  "deno.enablePaths": [
+    "./apps/serverless",
+  ],
+  "editor.inlayHints.enabled": "off"
 }
