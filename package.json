@@ -1,6 +1,6 @@
 {
   "name": "odysea",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "A personal ecosystem",
   "workspaces": [
@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "npm run -w @odysea/extension dev",
+    "storybook": "npm run -w @odysea/extension storybook",
     "start-server": "npm run -w @odysea/server start",
     "serverless:dev": "npm run -w @odysea/serverless dev"
   },

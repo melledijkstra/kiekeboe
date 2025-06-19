@@ -7,13 +7,6 @@
   const { Story } = defineMeta({
     title: 'Atoms/Buttons/Normal',
     component: Button,
-    argTypes: {
-      label: {
-        control: {
-          type: 'text'
-        }
-      },
-    },
     args: {
       onclick: fn()
     }
@@ -29,4 +22,4 @@
 {/snippet}
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" args={{ label: 'Click me!' }} />
+<Story name="Default" />

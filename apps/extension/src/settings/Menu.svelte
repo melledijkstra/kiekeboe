@@ -18,6 +18,7 @@
   import { getAllFocusSessions, type FocusSession } from '@/db/focus'
   import { getAllHabits, type Habit } from '@/db/habits'
   import { getAllNotes, type Note } from '@/db/notes'
+  import BitsExample from './tabs/BitsExample.svelte'
 
   type Export = {
     databases?: {
@@ -264,4 +265,8 @@
       <p class="text-sm"><strong>Version:</strong> {manifest?.version}</p>
     {/if}
   </div>
+</div>
+
+<div class="mt-5 w-full">
+  <BitsExample />
 </div>
