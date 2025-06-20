@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { OauthProvider } from '@/oauth2/auth'
-  import Button from './Button.svelte'
+  import Button from './atoms/Button.svelte'
   import Icon from './atoms/Icon.svelte'
   import { mdiSpotify } from '@mdi/js'
   import type { HTMLButtonAttributes } from 'svelte/elements'

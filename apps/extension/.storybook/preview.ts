@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/svelte'
 import '../src/app.css'
+import DarkModeDecarator from './DarkModeDecorator.svelte'
 
 export const initialGlobals = {
   backgrounds: {
@@ -15,7 +16,8 @@ const preview: Preview = {
         date: /Date$/i
       }
     }
-  }
+  },
+  // decorators: [() => DarkModeDecarator]
 }
 
 export default preview

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '@/components/Button.svelte'
+  import Button from '@/components/atoms/Button.svelte'
   import { Timer } from '@/time/timer'
   import { formatSeconds } from '@/time/utils'
   import { onMount } from 'svelte'

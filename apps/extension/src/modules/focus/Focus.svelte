@@ -2,7 +2,7 @@
   import Pomodoro from './Pomodoro.svelte'
   import CountUp from './CountUp.svelte'
   import TextInput from '@/components/TextInput.svelte'
-  import Button from '@/components/Button.svelte'
+  import Button from '@/components/atoms/Button.svelte'
   import { onDestroy } from 'svelte'
   import { storeFocusSession } from '@/db/focus'
 

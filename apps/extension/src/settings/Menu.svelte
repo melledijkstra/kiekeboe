@@ -1,48 +1,20 @@
 <script lang="ts">
-  import browser, { type Manifest } from 'webextension-polyfill'
-  import { MODULE_CONFIG } from '@/modules'
   import {
-    DEFAULT_SETTINGS,
-    saveSettingsToStorage,
     settingsStore,
     syncSettingsStoreWithStorage,
-    type Settings
   } from '@/settings'
   import { onMount } from 'svelte'
-  import Toggle from '@/components/atoms/Toggle.svelte'
-  import TextInput from '@/components/TextInput.svelte'
-  import { AuthClient } from '@/oauth2/auth'
   import TextButton from '@/components/TextButton.svelte'
-  import AuthButton from '@/components/AuthButton.svelte'
-  import Button from '@/components/Button.svelte'
-  import { getAllFocusSessions, type FocusSession } from '@/db/focus'
-  import { getAllHabits, type Habit } from '@/db/habits'
-  import { getAllNotes, type Note } from '@/db/notes'
-  import BitsExample from './tabs/BitsExample.svelte'
+  import NetworkTab from './tabs/NetworkTab.svelte'
+  import AboutTab from './tabs/AboutTab.svelte'
+  import ExportTab from './tabs/ExportTab.svelte'
+  import AppearanceTab from './tabs/AppearanceTab.svelte'
+  import AuthenticationTab from './tabs/AuthenticationTab.svelte'
+  import ModulesTab from './tabs/ModulesTab.svelte'
+  import GeneralTab from './tabs/GeneralTab.svelte'
 
-  type Export = {
-    databases?: {
-      focusSessions?: FocusSession[]
-      habits?: Habit[]
-      notes?: Note[]
-    }
-    settings: Settings
-  }
-
-  const clients = {
-    google: new AuthClient('google'),
-    spotify: new AuthClient('spotify'),
-    fitbit: new AuthClient('fitbit')
-  }
-
-  let manifest = $state<Manifest.WebExtensionManifest>()
   let tab = $state(getSelectedTabFromUrl())
   let settingsLoaded = $state(false)
-  let authState = $state({
-    google: false,
-    spotify: false,
-    fitbit: false
-  })
 
   function getSelectedTabFromUrl() {
     const parsed = parseInt(document.location.hash.replace('#', ''))
@@ -54,36 +26,8 @@
     document.location.hash = index.toString()
   }
 
-  async function retrieveAuthState() {
-    authState.google = await clients.google.isAuthenticated()
-    authState.spotify = await clients.spotify.isAuthenticated()
-    authState.fitbit = await clients.fitbit.isAuthenticated()
-  }
-
-  async function exportData() {
-    const focusSessions = await getAllFocusSessions()
-    const notes = await getAllNotes()
-    const habits = await getAllHabits()
-    const exportData: Export = {
-      databases: {
-        focusSessions,
-        habits,
-        notes
-      },
-      settings: $settingsStore
-    }
-    const data = JSON.stringify(exportData)
-    const blob = new Blob([data], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'export.json'
-    a.click()
-  }
-
   onMount(() => {
     syncSettingsStoreWithStorage().then(() => (settingsLoaded = true))
-    manifest = browser.runtime.getManifest()
   })
 </script>
 
@@ -151,122 +95,19 @@
   </nav>
   <div class="flex-1 p-5 overflow-y-auto custom-scrollbar">
     {#if tab === 0}
-      <h1 class="text-xl">General Settings</h1>
-      <Toggle
-        disabled={!settingsLoaded}
-        label="Show currently focussed task (required Google Tasks)"
-        parentClass="my-2"
-        onchange={() => saveSettingsToStorage($settingsStore)}
-        bind:checked={$settingsStore.ui.showCurrentTask}
-      />
+      <GeneralTab settingsLoaded={settingsLoaded} />
     {:else if tab === 1 && $settingsStore}
-      <h1 class="text-xl">Modules Settings</h1>
-      <p class="mb-4 text-gray-400">Enable or disable modules</p>
-      {#each MODULE_CONFIG as { id, title } (id)}
-        <p class="font-bold">
-          <input
-            disabled={!settingsLoaded}
-            class="scale-150 mr-2"
-            type="checkbox"
-            onchange={() => saveSettingsToStorage($settingsStore)}
-            bind:checked={$settingsStore.modules[id]}
-          />
-          <span class="text-base">{title}</span>
-        </p>
-        <p class="text-gray-400">
-          {id}: {$settingsStore.modules[id]} (default: {DEFAULT_SETTINGS
-            .modules?.[id]})
-        </p>
-      {/each}
+      <ModulesTab settingsLoaded={settingsLoaded} />
     {:else if tab === 2}
-      <h1 class="text-xl mb-3">Authentication</h1>
-      {#await retrieveAuthState() then _ignore}
-        <div class="flex flex-col gap-3">
-          <p class="text-sm">
-            <strong>Google:</strong>
-            <span class="text-gray-400">{authState.google}</span>
-            {#if !authState.google}
-              <AuthButton
-                class="mt-2"
-                provider={'google'}
-                onclick={async () => {
-                  const token = await clients.google.getAuthToken(true)
-                  authState.google = !!token
-                }}
-              />
-            {/if}
-          </p>
-          <p class="text-sm">
-            <strong>Spotify:</strong>
-            <span class="text-gray-400">{authState.spotify}</span>
-            {#if !authState.spotify}
-              <AuthButton
-                class="mt-2"
-                provider={'spotify'}
-                onclick={async () => {
-                  const token = await clients.spotify.getAuthToken(true)
-                  authState.spotify = !!token
-                }}
-              />
-            {/if}
-          </p>
-          <p class="text-sm">
-            <strong>Fitbit:</strong>
-            <span class="text-gray-400">{authState.fitbit}</span>
-            {#if !authState.fitbit}
-              <AuthButton
-                class="mt-2"
-                provider={'fitbit'}
-                onclick={async () => {
-                  const token = await clients.fitbit.getAuthToken(true)
-                  authState.fitbit = !!token
-                }}
-              />
-            {/if}
-          </p>
-        </div>
-      {/await}
+      <AuthenticationTab />
     {:else if tab === 3}
-      <h1 class="mb-2 text-xl">Appearance Settings</h1>
-      <TextInput
-        label="Unsplash Query"
-        name="unsplash-query"
-        placeholder="Unsplash Query"
-        bind:value={$settingsStore.ui.dailyImageQuery}
-      />
-      <Button class="mt-2" onclick={() => saveSettingsToStorage($settingsStore)}>
-        Save Settings
-      </Button>
+      <AppearanceTab />
     {:else if tab === 4}
-      <h1 class="text-xl">Export Settings</h1>
-      <p class="text-sm">Export your settings to a file</p>
-      <Button class="mt-2" onclick={exportData}>Export</Button>
+      <ExportTab />
     {:else if tab === 5}
-      <h1 class="text-xl">Network Settings</h1>
-      <TextInput
-        class="mb-2"
-        label="Database URI"
-        bind:value={$settingsStore.network.databaseUri}
-      />
-      <TextInput
-        label="Serverless Host"
-        bind:value={$settingsStore.network.serverlessHost}
-      />
-      <Button class="mt-2" onclick={() => saveSettingsToStorage($settingsStore)}>
-        Save Network Settings
-      </Button>
+      <NetworkTab />
     {:else if tab === 6}
-      <h1 class="text-xl">About</h1>
-      <p class="text-sm"><strong>Extension Name:</strong> {manifest?.name}</p>
-      <p class="text-sm">
-        <strong>Description:</strong>
-        {manifest?.description}
-      </p>
-      <p class="text-sm"><strong>Version:</strong> {manifest?.version}</p>
+      <AboutTab />
     {/if}
   </div>
-</div>
-
-<div class="mt-5 w-full">
-  <BitsExample />
 </div>
