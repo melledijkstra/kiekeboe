@@ -48,7 +48,5 @@
   metrics: metricMock
 }} />
 
-<Story name="Empty">
-  <Metrics metrics={[]} />
-</Story>
+<Story name="Empty" args={{ metrics: [] }} />
 

@@ -4,7 +4,7 @@
   import { mdiArrowLeft, mdiDelete, mdiPin, mdiPinOff, mdiPlusCircle } from '@mdi/js'
   import CountdownForm from './countdown/Form.svelte'
   import WorldClockForm from './world-clocks/Form.svelte'
-  import Button from '@/components/Button.svelte'
+  import Button from '@/components/atoms/Button.svelte'
   import Countdown from '@/components/atoms/metrics/Countdown.svelte'
   import { setIsSleepMetricEnabled, trackers } from './state.svelte'
   import WorldClock from '@/components/atoms/metrics/WorldClock.svelte'

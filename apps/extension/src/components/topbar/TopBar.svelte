@@ -9,6 +9,8 @@
   import Metrics from './MetricsBar.svelte'
   import RaspberryPi from '../RaspberryPi.svelte'
   import MetricsPanelTrigger from '@/modules/trackers/MetricsPanelTrigger.svelte'
+  import MenuButton from '../atoms/MenuButton.svelte'
+  import Menu from '@/settings/Menu.svelte'
 
   let metricsPanelOpen = $state(false)
 
@@ -18,10 +20,6 @@
 
   const closeMetricsPanel = () => {
     metricsPanelOpen = false
-  }
-
-  const toggleMetricsPanel = () => {
-    metricsPanelOpen = !metricsPanelOpen
   }
 </script>
 
@@ -42,23 +40,23 @@
     class="float-left flex flex-row items-center justify-start align-middle gap-5"
   >
     <RaspberryPi />
-    <IconButton
+    <MenuButton
       onclick={() => switchAppMode('default')}
       tooltip="Home"
-      icon={mdiHomeOutline}
+      mdiIcon={mdiHomeOutline}
     />
     {#if $settingsStore.modules.focus}
-      <IconButton
+      <MenuButton
         tooltip="Focus"
         onclick={() => switchAppMode('focus')}
-        icon={mdiSprout}
+        mdiIcon={mdiSprout}
       />
     {/if}
     {#if $settingsStore.modules.well_being}
-      <IconButton
+      <MenuButton
         tooltip="Breathing"
         onclick={() => switchAppMode('breathing')}
-        icon={mdiSpa}
+        mdiIcon={mdiSpa}
       />
     {/if}
   </div>
