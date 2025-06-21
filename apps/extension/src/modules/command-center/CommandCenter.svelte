@@ -12,6 +12,7 @@
   } from '@mdi/js'
   import { type CommandGroups } from './types'
   import { commandCenterOpen } from './messages'
+  import { remove } from 'lscache'
 
   const commands: CommandGroups = {
     Actions: [
@@ -108,6 +109,15 @@
     }
   }
 
+  function removeQueryParam(isOpen: boolean) {
+    console.log('Removing query param, isOpen:', isOpen)
+    const url = new URL(window.location.href);
+    if (!isOpen && url.searchParams.has("command-center")) {
+      url.searchParams.delete("command-center");
+      window.history.replaceState({}, '', url.toString());
+    }
+  }
+
   onMount(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get("command-center") === "true") {
@@ -134,7 +144,7 @@
   })
 </script>
 
-<Dialog.Root bind:open={open}>
+<Dialog.Root bind:open={open} onOpenChangeComplete={removeQueryParam}>
   <Dialog.Portal>
     <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/40"

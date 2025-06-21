@@ -16,6 +16,7 @@
   import ImageRefreshButton from './components/ImageRefreshButton.svelte'
   import { Popover } from 'bits-ui'
   import Panel from './components/atoms/Panel.svelte'
+  import Icon from './components/atoms/Icon.svelte'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
@@ -81,8 +82,11 @@
     <!-- BOTTOM LEFT -->
     <div class="flex flex-row gap-3">
       <Popover.Root>
-        <Popover.Trigger>
-          <IconButton icon={mdiTuneVertical} />
+        <Popover.Trigger class={[
+          'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
+          'block cursor-pointer transition-colors',
+        ]}>
+          <Icon path={mdiTuneVertical} size={40} />
         </Popover.Trigger>
         <Panel nopadding class='w-[550px] h-80'>
           <SettingsMenu />

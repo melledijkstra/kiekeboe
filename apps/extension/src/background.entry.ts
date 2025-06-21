@@ -24,16 +24,6 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
   }
 })
 
-function isSupportedTab(tab: browser.Tabs.Tab) {
-  if (!tab || !tab.url) {
-    return false
-  }
-
-  if (tab.url.startsWith('http://') || tab.url.startsWith('https:')) {
-    return true
-  }
-}
-
 async function getActiveTab() {
   const tabs = await browser.tabs.query({ active: true, currentWindow: true });
   return tabs[0];
@@ -42,8 +32,6 @@ async function getActiveTab() {
 async function findExtensionTab() {
   const tabs = await browser.tabs.query({});
   const extensionUrl = `chrome-extension://${browser.runtime.id}/index.html`;
-
-  console.log(tabs.map(tab => tab.url))
 
   return tabs.find(tab =>
     tab.url?.startsWith(extensionUrl) || tab.url?.startsWith('chrome://newtab')

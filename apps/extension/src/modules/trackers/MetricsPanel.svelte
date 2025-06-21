@@ -31,16 +31,16 @@
 </script>
 
 <Popover.Root bind:open={isOpen}>
-  <Popover.Trigger>
-    <IconButton
-      icon={mdiPlus}
-      class={[
-        isOpen ? 'opacity-100' : 'opacity-0',
-        'group-hover:opacity-100 transition-opacity duration-300 p-1 flex-col cursor-pointer'
-      ]}
-    >
-      <span>Add</span>
-    </IconButton>
+  <Popover.Trigger
+    class={[
+      isOpen ? 'opacity-100' : 'opacity-0',
+      'group-hover:opacity-100 focus:opacity-100 transition-opacity duration-300 p-1 flex-col cursor-pointer',
+      'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
+      'cursor-pointer transition-colors',
+    ]}
+  >
+    <Icon path={mdiPlus} size={24} />
+    <span>Add</span>
   </Popover.Trigger>
   <Panel>
     {#if currentForm}
