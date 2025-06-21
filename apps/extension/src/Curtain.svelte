@@ -6,6 +6,9 @@
   let loaded = $state(false)
 
   onMount(() => {
+    if (document.body.id !== 'curtain-image') {
+      document.body.id = 'curtain-image'
+    }
     setBackgroundImage()
   })
 
@@ -26,7 +29,7 @@
   }
 
   :global {
-    body {
+    #curtain-image {
       @apply h-screen w-screen overflow-x-hidden;
 
       background-color: #000;

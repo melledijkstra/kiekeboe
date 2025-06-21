@@ -136,7 +136,8 @@ export class UnsplashClient {
     image.src = url
     image.onload = () => {
       callback?.()
-      document.body.style.backgroundImage = `url(${url})`
+      const elem = document.querySelector(':root') as HTMLElement
+      elem?.style.setProperty('--background-image', `url(${url})`)
     }
   }
 

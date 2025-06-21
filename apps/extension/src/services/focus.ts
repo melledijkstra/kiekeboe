@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
-import type { BackgroundService } from '@/background'
-import { logger } from '@/background'
+import type { BackgroundService } from '@/services/types'
+import { logger } from '@/background.entry'
 import {
   getPomodoroState,
   pomodoroComplete,
@@ -10,7 +10,7 @@ import {
   switchMode
 } from '@/modules/focus/messages'
 import { Timer } from '@/time/timer'
-import type { Mode, PomodoroState } from './types'
+import type { Mode, PomodoroState } from '@/modules/focus/types'
 
 const WORK_DURATION = 25 * 60 * 1000
 const BREAK_DURATION = 65 * 1000 // 5 * 60 * 1000

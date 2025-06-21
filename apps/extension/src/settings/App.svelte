@@ -1,6 +1,5 @@
 <script lang="ts">
   import Menu from './Menu.svelte'
-  import '@/app.css'
 </script>
 
 <div class="bg-black min-h-screen text-white">

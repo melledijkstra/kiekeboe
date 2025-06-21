@@ -10,7 +10,8 @@
     mdiSearchWeb,
     mdiSticker,
   } from '@mdi/js'
-  import { type CommandGroups } from './types'  
+  import { type CommandGroups } from './types'
+  import { commandCenterOpen } from './messages'
 
   const commands: CommandGroups = {
     Actions: [
@@ -107,11 +108,22 @@
     }
   }
 
-  function init(inputElem: HTMLInputElement) {
-    inputElem.focus()
-  }
-
   onMount(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("command-center") === "true") {
+      open = true
+    }
+
+    document.addEventListener('command-center:open', () => {
+      log('Command center opened via event')
+      open = true
+    })
+
+    commandCenterOpen.on(() => {
+      log('Command center opened via runtime message')
+      open = true
+    })
+
     log('registering command center')
     document.addEventListener('keydown', handleKeypress)
   })
@@ -125,7 +137,7 @@
 <Dialog.Root bind:open={open}>
   <Dialog.Portal>
     <Dialog.Overlay
-      class="fixed inset-0 z-50 bg-black/80"
+      class="fixed inset-0 z-50 bg-black/40"
     />
     <Dialog.Content
       class="rounded-card-lg bg-background shadow-popover data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95  data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] outline-hidden fixed left-[50%] top-[50%] z-50 w-full max-w-[94%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[490px] md:w-full"

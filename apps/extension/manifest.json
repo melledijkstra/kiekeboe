@@ -37,12 +37,27 @@
       "matches": ["<all_urls>"]
     }
   ],
+  "commands": {
+    "toggle-command-center": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+P",
+        "mac": "Command+Shift+P"
+      },
+      "description": "Toggle Command Center"
+    }
+  },
   "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
     "storage",
     "identity",
     "alarms",
     "notifications",
     "geolocation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "oauth2": {
     "client_id": "%CLIENT_ID%",

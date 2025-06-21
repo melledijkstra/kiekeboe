@@ -14,7 +14,7 @@ const isMessage = (msg: unknown): msg is Message => {
   return msg !== null && typeof msg === 'object' && 'identifier' in msg
 }
 
-export function createMessage<Request, Response>(identifier: string) {
+export function createMessage<Request = void, Response = void>(identifier: string) {
   return {
     async send(data: Request): Promise<Response> {
       log('Sending message:', identifier)

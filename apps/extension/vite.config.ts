@@ -34,7 +34,7 @@ const defaultConfig = defineConfig(({ mode }) => ({
       input: {
         home: './index.html',
         options: './options.html',
-        background: './src/background.ts',
+        background: './src/background.entry.ts',
       },
       output: {
         entryFileNames: '[name].js',
