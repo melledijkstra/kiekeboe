@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { ALLOWED_ORIGIN, EXTENSION_ID, UNSPLASH_URL } from "../constants.ts";
+import { EXTENSION_ID, UNSPLASH_URL } from "../constants.ts";
 
 const UNSPLASH_API_KEY = Deno.env.get('UNSPLASH_API_KEY')
 
@@ -7,16 +7,13 @@ export async function dailyImageHandler(c: Context): Promise<Response> {
   const responseHeaders = new Headers();
   responseHeaders.set("Content-Type", "application/json");
 
-  const origin = c.req.header("origin") ?? "";
   const extensionId = c.req.header("x-extension-id") ?? "";
 
-  console.log("Request Origin:", origin);
   console.log("Extension ID:", extensionId);
   
-  if (origin !== ALLOWED_ORIGIN || extensionId !== EXTENSION_ID) {
+  if (extensionId !== EXTENSION_ID) {
     return c.json({
-      message: "Forbidden: Unauthorized origin",
-      origin,
+      message: "Forbidden: Invalid extension ID",
       extension_id: extensionId,
     }, 403);
   }
