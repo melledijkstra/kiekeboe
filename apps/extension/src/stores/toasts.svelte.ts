@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
 
 export type Toast = {
-  id: number
+  id: string
   message: string
   type: 'info' | 'success' | 'error'
 }
@@ -13,7 +13,7 @@ export function addToast(
   type: Toast['type'] = 'info',
   duration = 3000
 ) {
-  const id = Date.now()
+  const id = `${Date.now()}_${Math.floor(Math.random() * 1000)}` // Unique ID based on timestamp and random number
   toasts.update((current) => [...current, { id, message, type }])
 
   setTimeout(() => {

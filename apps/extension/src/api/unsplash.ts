@@ -30,11 +30,13 @@ export class UnsplashClient {
     this.HOST = host
   }
 
-  async fetchRandomUnsplashImage(): Promise<UnsplashResponse> {
+  async fetchUnsplashImage(): Promise<UnsplashResponse> {
     const serverlessUrl = new URL(ENDPOINT, this.HOST)
+    
     if (this.query) {
       serverlessUrl.searchParams.set('query', this.query)
     }
+
     const response = await fetch(serverlessUrl, {
       headers: {
         'X-Extension-ID': browser.runtime.id
@@ -46,7 +48,7 @@ export class UnsplashClient {
 
   async retrieveNextImage(): Promise<ImageInfo> {
     // and fetch a new next image
-    const response = await this.fetchRandomUnsplashImage()
+    const response = await this.fetchUnsplashImage()
     const nextDailyImage: ImageInfo = {
       id: response.id,
       url: response.urls.full
@@ -106,7 +108,7 @@ export class UnsplashClient {
         this.retrieveNextImage()
       }
 
-      const data = await this.fetchRandomUnsplashImage()
+      const data = await this.fetchUnsplashImage()
       const dailyImage: ImageInfo = {
         id: data.id,
         date: today,
