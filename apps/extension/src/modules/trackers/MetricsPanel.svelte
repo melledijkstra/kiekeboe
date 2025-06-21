@@ -1,7 +1,7 @@
 <script lang="ts">
   import Panel from '@/components/atoms/Panel.svelte'
   import Icon from '@/components/atoms/Icon.svelte'
-  import { mdiArrowLeft, mdiDelete, mdiPin, mdiPinOff, mdiPlusCircle } from '@mdi/js'
+  import { mdiArrowLeft, mdiDelete, mdiPin, mdiPinOff, mdiPlusCircle, mdiPlus } from '@mdi/js'
   import CountdownForm from './countdown/Form.svelte'
   import WorldClockForm from './world-clocks/Form.svelte'
   import Button from '@/components/atoms/Button.svelte'
@@ -9,10 +9,11 @@
   import { setIsSleepMetricEnabled, trackers } from './state.svelte'
   import WorldClock from '@/components/atoms/metrics/WorldClock.svelte'
   import IconButton from '@/components/atoms/IconButton.svelte'
+  import { Popover } from 'bits-ui'
 
   type FormType = 'countdown' | 'worldclock' | 'sleep' | 'counter';
 
-  const { open }: { open: boolean } = $props()
+  let isOpen = $state(false)
 
   let currentForm = $state<FormType>();
 
@@ -29,67 +30,75 @@
   }
 </script>
 
-<Panel
-  class={[
-    open ? 'block' : 'hidden',
-    'absolute right-0 w-sm'
-  ]}
->
-  {#if currentForm}
-    <IconButton class="float-left" icon={mdiArrowLeft} onclick={() => (currentForm = undefined)} />
-  {/if}
-  {#if !currentForm}
-    <p class="text-lg text-center mb-4 font-bold">Add Metric</p>
-    <div class="flex flex-row justify-between gap-4 items-stretch">
-      <button onclick={() => showForm('countdown')}>
-        <Icon path={mdiPlusCircle} />
-        Countdown
-      </button>
-      <button onclick={() => showForm('worldclock')}>
-        <Icon path={mdiPlusCircle} />
-        World Clock
-      </button>
-      <button onclick={() => showForm('counter')}>
-        <Icon path={mdiPlusCircle} />
-        Counter
-      </button>
-      <button onclick={() => showForm('sleep')}>
-        <Icon path={mdiPlusCircle} />
-        Sleep Metrics
-      </button>
-    </div>
-    <hr class="my-2" />
-    <!-- list of saved metrics -->
-    {#each trackers.countdowns as countdown, i}
-      <div class="flex flex-row justify-between gap-2">
-        <Countdown metric={countdown} />
-        <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
-          <Icon path={mdiDelete} size={24} />
+<Popover.Root bind:open={isOpen}>
+  <Popover.Trigger>
+    <IconButton
+      icon={mdiPlus}
+      class={[
+        isOpen ? 'opacity-100' : 'opacity-0',
+        'group-hover:opacity-100 transition-opacity duration-300 p-1 flex-col cursor-pointer'
+      ]}
+    >
+      <span>Add</span>
+    </IconButton>
+  </Popover.Trigger>
+  <Panel>
+    {#if currentForm}
+      <IconButton class="float-left" icon={mdiArrowLeft} onclick={() => (currentForm = undefined)} />
+    {/if}
+    {#if !currentForm}
+      <p class="text-lg text-center mb-4 font-bold">Add Metric</p>
+      <div class="flex flex-row justify-between gap-4 items-stretch">
+        <button onclick={() => showForm('countdown')}>
+          <Icon path={mdiPlusCircle} />
+          Countdown
+        </button>
+        <button onclick={() => showForm('worldclock')}>
+          <Icon path={mdiPlusCircle} />
+          World Clock
+        </button>
+        <button onclick={() => showForm('counter')}>
+          <Icon path={mdiPlusCircle} />
+          Counter
+        </button>
+        <button onclick={() => showForm('sleep')}>
+          <Icon path={mdiPlusCircle} />
+          Sleep Metrics
         </button>
       </div>
-    {/each}
-    {#each trackers.worldClocks as worldClock, i}
-      <div class="flex flex-row justify-between gap-2">
-        <WorldClock metric={worldClock} />
-        <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
-          <Icon path={mdiDelete} size={24} />
-        </button>
-        <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
-          <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={24} />
-        </button>
-      </div>
-    {/each}
-  {:else if currentForm === 'countdown'}
-    <h2 class="text-lg mb-3">Countdowns 🗓️</h2>
-    <CountdownForm onSubmitted={backToMain} />
-  {:else if currentForm === 'worldclock'}
-    <h2 class="text-lg mb-3">World Clocks 🌎</h2>
-    <WorldClockForm onSubmitted={backToMain} />
-  {:else if currentForm === 'counter'}
-    <h2 class="text-lg mb-3">Counters 🔢</h2>
-    <!-- Placeholder for future counter form -->
-    <p>Counter form not yet implemented.</p>
-  {:else if currentForm === 'sleep'}
-    <Button onclick={addSleepTracker}>Add sleep tracker</Button>
-  {/if}
-</Panel>
+      <hr class="my-2" />
+      <!-- list of saved metrics -->
+      {#each trackers.countdowns as countdown, i}
+        <div class="flex flex-row justify-between gap-2">
+          <Countdown metric={countdown} />
+          <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
+            <Icon path={mdiDelete} size={24} />
+          </button>
+        </div>
+      {/each}
+      {#each trackers.worldClocks as worldClock, i}
+        <div class="flex flex-row justify-between gap-2">
+          <WorldClock metric={worldClock} />
+          <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
+            <Icon path={mdiDelete} size={24} />
+          </button>
+          <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
+            <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={24} />
+          </button>
+        </div>
+      {/each}
+    {:else if currentForm === 'countdown'}
+      <h2 class="text-lg mb-3">Countdowns 🗓️</h2>
+      <CountdownForm onSubmitted={backToMain} />
+    {:else if currentForm === 'worldclock'}
+      <h2 class="text-lg mb-3">World Clocks 🌎</h2>
+      <WorldClockForm onSubmitted={backToMain} />
+    {:else if currentForm === 'counter'}
+      <h2 class="text-lg mb-3">Counters 🔢</h2>
+      <!-- Placeholder for future counter form -->
+      <p>Counter form not yet implemented.</p>
+    {:else if currentForm === 'sleep'}
+      <Button onclick={addSleepTracker}>Add sleep tracker</Button>
+    {/if}
+  </Panel>
+</Popover.Root>

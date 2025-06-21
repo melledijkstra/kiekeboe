@@ -1,32 +1,37 @@
 <script lang="ts">
+  import { Popover } from 'bits-ui'
   import type { HTMLAttributes } from 'svelte/elements'
 
   type PanelProps = {
-    theme?: 'light' | 'dark'
     nopadding?: boolean
   } & HTMLAttributes<HTMLDivElement>
 
-  const {
-    children,
-    theme = 'dark',
-    nopadding = false,
-    ...props
-  }: PanelProps = $props()
+  const { children, nopadding, ...props }: PanelProps = $props()
 
   if (!children) {
     throw new Error('Panel component requires children')
   }
 </script>
 
-<div
-  {...props}
+<Popover.Content
+  sideOffset={8}
+  collisionPadding={8}
   class={[
-    props.class,
-    !nopadding && 'p-3',
-    theme === 'dark' && 'bg-black/40 text-white',
-    theme === 'light' && 'bg-white/40 text-black',
-    'z-40 rounded-xl shadow-md backdrop-blur-xs'
+    !nopadding && 'p-4',
+    'rounded-xl shadow-md backdrop-blur-xs',
+    // dark theme
+    'dark:bg-black/60 dark:text-white',
+    // light theme
+    'bg-white/40 text-black',
+    'max-h-[600px] max-w-[900px] z-40',
+    props.class
   ]}
 >
-  {@render children()}
-</div>
+  <Popover.Arrow class={[
+    // align with panel background
+    "dark:text-black/40 text-white/40"
+  ]} />
+  <div class="overflow-y-auto h-full">
+    {@render children()}
+  </div>
+</Popover.Content>

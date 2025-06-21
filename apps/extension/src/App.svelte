@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import Clock from './components/Clock.svelte'
+  import Clock from '@/components/Clock.svelte'
   import Curtain from './Curtain.svelte'
   import Welcome from './Welcome.svelte'
   import { onMount } from 'svelte'
@@ -8,20 +8,18 @@
   import { appState } from '@/app-state.svelte.ts'
   import { mdiTuneVertical } from '@mdi/js'
   import { loadModule } from '@/modules'
-  import TopBar from './components/topbar/TopBar.svelte'
-  import IconButton from './components/atoms/IconButton.svelte'
-  import SettingsMenu from './settings/Menu.svelte'
-  import { clickOutside } from './actions/click-outside.ts'
+  import TopBar from '@/components/topbar/TopBar.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
+  import SettingsMenu from '@/settings/Menu.svelte'
   import { tasks } from './stores/tasks.svelte.ts'
-  import Toasts from './components/Toasts.svelte'
-  import FloatMenu from './components/FloatMenu.svelte'
+  import Toasts from '@/components/Toasts.svelte'
   import ImageRefreshButton from './components/ImageRefreshButton.svelte'
+  import { Popover } from 'bits-ui'
+  import Panel from './components/atoms/Panel.svelte'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
   )
-
-  let settingsOpen = $state(false)
 
   onMount(async () => {
     await syncSettingsStoreWithStorage()
@@ -82,19 +80,14 @@
   ]}>
     <!-- BOTTOM LEFT -->
     <div class="flex flex-row gap-3">
-      <div class="relative" use:clickOutside={() => (settingsOpen = false)}>
-        <IconButton
-          onclick={() => (settingsOpen = !settingsOpen)}
-          icon={mdiTuneVertical}
-        />
-        <FloatMenu
-          open={settingsOpen}
-          nopadding
-          class="flex flex-row overflow-hidden w-[500px] h-96"
-        >
+      <Popover.Root>
+        <Popover.Trigger>
+          <IconButton icon={mdiTuneVertical} />
+        </Popover.Trigger>
+        <Panel nopadding class='w-[550px] h-80'>
           <SettingsMenu />
-        </FloatMenu>
-      </div>
+        </Panel>
+      </Popover.Root>
       {#if $settingsStore.loaded}
         <ImageRefreshButton />
       {/if}

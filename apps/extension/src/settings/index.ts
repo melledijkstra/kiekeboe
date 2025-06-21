@@ -89,12 +89,12 @@ export async function syncSettingsStoreWithStorage() {
   )) as { settings: Settings }
 
   const settings = { ...DEFAULT_SETTINGS, ...storageSettings, loaded: true }
-
-  settingsStore.set(settings)
-
+  
   logger.log('syncing settings store with storage', {
     settings
   })
+
+  settingsStore.set(settings)
 
   if (!changeListenersSet) {
     browser.storage.sync.onChanged.addListener(onStorageSettingsChanged)

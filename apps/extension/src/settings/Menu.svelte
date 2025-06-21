@@ -4,7 +4,6 @@
     syncSettingsStoreWithStorage,
   } from '@/settings'
   import { onMount } from 'svelte'
-  import TextButton from '@/components/TextButton.svelte'
   import NetworkTab from './tabs/NetworkTab.svelte'
   import AboutTab from './tabs/AboutTab.svelte'
   import ExportTab from './tabs/ExportTab.svelte'
@@ -12,18 +11,31 @@
   import AuthenticationTab from './tabs/AuthenticationTab.svelte'
   import ModulesTab from './tabs/ModulesTab.svelte'
   import GeneralTab from './tabs/GeneralTab.svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
+  import { Separator, Tabs } from 'bits-ui'
+
+  const sections = [
+    'general',
+    'modules',
+    'authentication',
+    'appearance',
+    'export',
+    'network',
+    'about'
+  ]
+
+  const props: HTMLAttributes<HTMLDivElement> = $props()
 
   let tab = $state(getSelectedTabFromUrl())
   let settingsLoaded = $state(false)
 
   function getSelectedTabFromUrl() {
-    const parsed = parseInt(document.location.hash.replace('#', ''))
-    return isNaN(parsed) ? 0 : parsed
+    return document.location.hash.replace('#', '')
   }
 
-  function selectTab(index: number) {
-    tab = index
-    document.location.hash = index.toString()
+  function selectTab(value: string) {
+    tab = value
+    document.location.hash = value.toString()
   }
 
   onMount(() => {
@@ -31,83 +43,52 @@
   })
 </script>
 
-<style>
-  .custom-scrollbar {
-    scrollbar-color: #ddd #000;
-    scrollbar-width: thin;
-  }
-</style>
-
-<div class="flex flex-row items-stretch text-white w-full">
-  <nav class="border-r-[1px] p-5 border-slate-500">
-    <TextButton
-      class={[
-        tab === 0 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(0)}
-    >
-      General
-    </TextButton>
-    <TextButton
-      disabled={!settingsLoaded}
-      class={[
-        tab === 1 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(1)}>Modules</TextButton
-    >
-    <TextButton
-      class={[
-        tab === 2 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(2)}>Authentication</TextButton
-    >
-    <TextButton
-      class={[
-        tab === 3 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(3)}>Appearance</TextButton
-    >
-    <TextButton
-      class={[
-        tab === 4 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(4)}>Export</TextButton
-    >
-    <TextButton
-      class={[
-        tab === 5 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(5)}>Network</TextButton
-    >
-    <TextButton
-      class={[
-        tab === 6 && 'underline',
-        'block text-lg font-bold cursor-pointer'
-      ]}
-      onclick={() => selectTab(6)}>About</TextButton
-    >
-  </nav>
-  <div class="flex-1 p-5 overflow-y-auto custom-scrollbar">
-    {#if tab === 0}
-      <GeneralTab settingsLoaded={settingsLoaded} />
-    {:else if tab === 1 && $settingsStore}
-      <ModulesTab settingsLoaded={settingsLoaded} />
-    {:else if tab === 2}
-      <AuthenticationTab />
-    {:else if tab === 3}
-      <AppearanceTab />
-    {:else if tab === 4}
-      <ExportTab />
-    {:else if tab === 5}
-      <NetworkTab />
-    {:else if tab === 6}
-      <AboutTab />
-    {/if}
-  </div>
-</div>
+<Tabs.Root
+  orientation="vertical"
+  class="flex h-full"
+  bind:value={() => tab, selectTab}
+>
+  <Tabs.List class={[
+    'p-5',
+    'flex flex-col text-zinc-600 dark:text-white',
+    props.class
+  ]}>
+    {#each sections as sectionName}
+      <Tabs.Trigger
+        value={sectionName}
+        class={[
+          sectionName === tab ? 'underline' : '',
+          'dark:hover:text-slate-300 hover:text-zinc-800',
+          'text-left text-lg font-bold capitalize'
+        ]}>
+        {sectionName}
+      </Tabs.Trigger>
+    {/each}
+  </Tabs.List>
+  <Separator.Root
+    class="w-px h-full dark:bg-zinc-200 bg-zinc-700 mx-2"
+    orientation="vertical"
+  />
+  {#each sections as sectionName}
+    <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
+      {#if sectionName === 'general' && !settingsLoaded}
+        <div>Loading...</div>
+      {/if}
+      {#if sectionName === 'general'}
+        <GeneralTab settingsLoaded={settingsLoaded} />
+      {:else if sectionName === 'modules' && $settingsStore}
+        <ModulesTab settingsLoaded={settingsLoaded} />
+      {:else if sectionName === 'authentication'}
+        <AuthenticationTab />
+      {:else if sectionName === 'appearance'}
+        <AppearanceTab />
+      {:else if sectionName === 'export'}
+        <ExportTab />
+      {:else if sectionName === 'network'}
+        <NetworkTab />
+      {:else if sectionName === 'about'}
+        <AboutTab />
+      {/if}
+    </Tabs.Content>
+  {/each}
+</Tabs.Root>

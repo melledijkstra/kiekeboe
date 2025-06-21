@@ -5,18 +5,18 @@
 
   let raspberryStatus: boolean | null = $state(null)
 
-  async function fetchDatabaseStatus() {
+  async function fetchDatabaseStatus(URI?: string) {
     try {
-      raspberryStatus = await isRaspberryAlive($settingsStore.network.databaseUri)
+      raspberryStatus = await isRaspberryAlive(URI ?? $settingsStore.network.databaseUri)
     } catch (error) {
       raspberryStatus = false
     }
   }
 
   onMount(() => {
-    const unsub = settingsStore.subscribe(() => {
-      if ($settingsStore.loaded) {
-        fetchDatabaseStatus()
+    const unsub = settingsStore.subscribe((settings) => {
+      if (settings.loaded) {
+        fetchDatabaseStatus(settings.network.databaseUri)
         unsub()
       }
     })

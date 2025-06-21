@@ -155,7 +155,7 @@
   </div>
 {/snippet}
 
-<Panel class="w-2xl" nopadding theme="dark">
+<Panel class="w-2xl">
   <div class="flex flex-row gap-3">
     <ul class="py-2">
       {#each playlists as playlist}

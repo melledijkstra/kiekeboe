@@ -14,4 +14,6 @@
 </script>
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
-<Story name="Default" />
+<Story name="Default">
+  Simple Button
+</Story>
