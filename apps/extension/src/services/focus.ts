@@ -13,7 +13,8 @@ import { Timer } from '@/time/timer'
 import type { Mode, PomodoroState } from '@/modules/focus/types'
 
 const WORK_DURATION = 25 * 60 * 1000
-const BREAK_DURATION = 65 * 1000 // 5 * 60 * 1000
+// break duration defaults to five minutes
+const BREAK_DURATION = 5 * 60 * 1000
 
 const browserAction = browser.action ?? browser.browserAction
 
