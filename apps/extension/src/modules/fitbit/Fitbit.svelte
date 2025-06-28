@@ -24,7 +24,7 @@
   }
 
   async function authenticate() {
-    const tokenData = await authClient.getAuthToken()
+    const tokenData = await authClient.getAuthToken(true)
     if (tokenData) {
       token = tokenData
     }

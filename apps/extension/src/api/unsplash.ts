@@ -5,8 +5,9 @@ import {
 } from '@/constants'
 import browser from 'webextension-polyfill'
 import { formatDate } from '@/date'
-import { log } from '@/logger'
+import { log, Logger } from '@/logger'
 import type { UnsplashResponse } from '@/api/definitions/unsplash'
+import type { ILogger } from '@/interfaces/logger.interface'
 
 const ENDPOINT = '/api/daily-image'
 
@@ -16,21 +17,34 @@ type ImageInfo = {
   date?: string
 }
 
-export class UnsplashClient {
+export class UnsplashClient implements ILogger {
+  public logger: Logger = new Logger('UnsplashClient')
   private HOST: string
   public query?: string
 
   constructor(host: string = SERVERLESS_HOST_URL, query?: string) {
-    this.HOST = host
+    this.HOST = host ?? SERVERLESS_HOST_URL
+    this.logger.log('UnsplashClient initialized with host:', this.HOST)
     this.query = query
-    log('UnsplashClient initialized with host:', this.HOST, 'and query:', this.query) 
+  }
+
+  get host(): string {
+    return this.HOST
   }
 
   setHost(host: string) {
+    if (!host || host.trim() === '') {
+      throw new Error('Serverless host domain cannot be empty')
+    }
     this.HOST = host
   }
 
   async fetchUnsplashImage(): Promise<UnsplashResponse> {
+    this.logger.log('Fetching Unsplash image from', {
+      host: this.HOST,
+      endpoint: ENDPOINT,
+      query: this.query
+    })
     const serverlessUrl = new URL(ENDPOINT, this.HOST)
     
     if (this.query) {
@@ -49,9 +63,13 @@ export class UnsplashClient {
   async retrieveNextImage(): Promise<ImageInfo> {
     // and fetch a new next image
     const response = await this.fetchUnsplashImage()
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
     const nextDailyImage: ImageInfo = {
       id: response.id,
-      url: response.urls.full
+      url: response.urls.full,
+      date: formatDate(tomorrow)
     }
 
     await browser.storage.local.set({
@@ -61,7 +79,7 @@ export class UnsplashClient {
     return nextDailyImage
   }
 
-  async getDailyImage(): Promise<string | null> {
+  async getDailyImage(): Promise<string | undefined> {
     const {
       [DAILY_IMAGE_KEY]: storageImage,
       [NEXT_IMAGE_KEY]: storageNextImage
@@ -124,11 +142,11 @@ export class UnsplashClient {
       return dailyImage.url
     } catch (error) {
       console.error('Error fetching image:', error)
-      return null
+      return
     }
   }
 
-  async refreshDailyImage(): Promise<string | null> {
+  async refreshDailyImage(): Promise<string | undefined> {
     await browser.storage.local.remove(DAILY_IMAGE_KEY)
     return await this.getDailyImage()
   }

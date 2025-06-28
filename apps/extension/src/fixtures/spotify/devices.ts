@@ -6,19 +6,19 @@ export const devices: Device[] = [
     is_active: false,
     is_private_session: false,
     is_restricted: false,
-    name: 'Web Player (Chrome)',
-    type: 'Computer',
-    volume_percent: 35,
-    supports_volume: true
+    name: 'Iphone',
+    type: 'Smartphone',
+    volume_percent: 70,
+    supports_volume: false
   },
   {
     id: '12005cbac470147c83e6070709ea78f43c4254a2',
     is_active: true,
     is_private_session: false,
     is_restricted: false,
-    name: 'Personal Homepage Player',
+    name: 'Web Player (Spotify)',
     type: 'Computer',
-    volume_percent: 50,
+    volume_percent: 34,
     supports_volume: true
   }
 ]

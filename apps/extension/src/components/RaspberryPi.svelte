@@ -1,25 +1,35 @@
 <script lang="ts">
   import { isRaspberryAlive } from '@/api/raspberry'
-  import { settingsStore } from '@/settings'
+  import { settings } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
 
   let raspberryStatus: boolean | null = $state(null)
+  let lastCheckedUri: string | null = $state(null)
 
   async function fetchDatabaseStatus(URI?: string) {
     try {
-      raspberryStatus = await isRaspberryAlive(URI ?? $settingsStore.network.databaseUri)
+      raspberryStatus = await isRaspberryAlive(URI ?? settings.state.network.databaseUri)
     } catch (error) {
       raspberryStatus = false
     }
   }
 
   onMount(() => {
-    const unsub = settingsStore.subscribe((settings) => {
-      if (settings.loaded) {
-        fetchDatabaseStatus(settings.network.databaseUri)
-        unsub()
-      }
-    })
+    console.log('RaspberryPi mounted')
+  })
+
+  $effect(() => {
+    if (!settings.state.loaded) {
+      return
+    }
+
+    if (
+      settings.state.network.databaseUri && 
+      settings.state.network.databaseUri !== lastCheckedUri
+    ) {
+      fetchDatabaseStatus(settings.state.network.databaseUri)
+      lastCheckedUri = settings.state.network.databaseUri
+    }
   })
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte"
-  import { getWelcomeMessage, retrieveUsername, storeUsername } from "./ui"
-  import { repeatEvery } from "./time/utils"
+  import { getWelcomeMessage, retrieveUsername, storeUsername } from "@/ui"
+  import { repeatEvery } from "@/time/utils"
 
   const MINUTE = 60 * 1000
 

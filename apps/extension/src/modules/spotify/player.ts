@@ -1,6 +1,8 @@
 import browser from 'webextension-polyfill'
-import { log } from '@/logger'
+import { Logger } from '@/logger'
 import type { AuthClient } from '@/oauth2/auth'
+
+const logger = new Logger('SpotifySDK')
 
 const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
 
@@ -9,7 +11,7 @@ const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
  */
 export function loadSpotifySDK(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    console.log('YOOO')
+    logger.log('Loading Spotify SDK')
     const sdkFile = browser.runtime.getURL(SPOTIFY_SDK_FILE)
     // check if the script is already loaded
     if (document.querySelector(`script[src="${sdkFile}"]`)) {
@@ -20,7 +22,7 @@ export function loadSpotifySDK(): Promise<void> {
     const script = document.createElement('script')
     script.src = sdkFile
     script.onload = () => {
-      log('Spotify SDK loaded')
+      logger.log('Spotify SDK loaded')
       resolve()
     }
     script.onerror = () => {
@@ -31,20 +33,22 @@ export function loadSpotifySDK(): Promise<void> {
 }
 
 export async function initializeSpotifyPlayer(
-  authClient: AuthClient
+  authClient: AuthClient,
+  initialVolume: number = 0.5
 ): Promise<Spotify.Player> {
   return new Promise(async (resolve, reject) => {
     try {
       window.onSpotifyWebPlaybackSDKReady = () => {
+        logger.log('Spotify Web Playback SDK is ready, setting up player')
         const player = new window.Spotify.Player({
           name: 'Personal Homepage Player',
-          getOAuthToken: async (cb) => {
-            const token = await authClient.getAuthToken(false)
+          getOAuthToken: async (callback) => {
+            const token = await authClient.getAuthToken()
             if (token) {
-              cb(token)
+              callback(token)
             }
           },
-          volume: 0.5
+          volume: initialVolume
         })
 
         resolve(player)

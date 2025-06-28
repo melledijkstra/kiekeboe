@@ -1,9 +1,9 @@
-import { BaseClient } from '../baseclient'
 import type { TaskList, Task } from '@/api/definitions/google'
+import { TokenBaseClient } from '../tokenbaseclient'
 
 const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
-export class TasksClient extends BaseClient {
+export class TasksClient extends TokenBaseClient {
   public taskLists: TaskList[] = []
   public tasks: Task[] = []
 

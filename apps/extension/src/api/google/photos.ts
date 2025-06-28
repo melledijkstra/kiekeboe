@@ -1,8 +1,9 @@
 import { log } from '@/logger'
-import { getAuthToken } from '@/oauth2/auth'
+import { AuthClient } from '@/oauth2/auth'
 
 export async function fetchPhotos() {
-  const token = await getAuthToken('google')
+  const client = new AuthClient('google')
+  const token = client.getAuthToken()
 
   fetch('https://photoslibrary.googleapis.com/v1/mediaItems', {
     headers: {

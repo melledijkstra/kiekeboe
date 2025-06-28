@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Popover } from 'bits-ui'
-  import type { HTMLAttributes } from 'svelte/elements'
 
   type PanelProps = {
     nopadding?: boolean
-  } & HTMLAttributes<HTMLDivElement>
+  } & Popover.ContentProps
 
   const { children, nopadding, ...props }: PanelProps = $props()
 
@@ -16,6 +15,7 @@
 <Popover.Content
   sideOffset={8}
   collisionPadding={8}
+  {...props}
   class={[
     !nopadding && 'p-4',
     'rounded-xl shadow-md backdrop-blur-xs',

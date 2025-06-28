@@ -1,24 +1,14 @@
-type Strategy = 'token' | 'apiKey'
-
 export class BaseClient {
-  private code: string
-  private strategy: Strategy
-
-  #BASE_URL: string
+  private BASE_URL: string
 
   constructor(
-    baseUrl: string,
-    tokenOrKey: string,
-    strategy: Strategy = 'token'
+    baseUrl: string
   ) {
-    this.strategy = strategy
-
     if (!baseUrl) {
       throw new Error('BaseClient needs to be instatiated with a base URL')
     }
 
-    this.#BASE_URL = baseUrl
-    this.code = tokenOrKey
+    this.BASE_URL = baseUrl
 
     if (this.constructor === BaseClient) {
       throw new Error(
@@ -27,20 +17,24 @@ export class BaseClient {
     }
   }
 
-  async request<T>(
-    endpoint: string,
-    config?: RequestInit
-  ): Promise<T | undefined> {
-    const url = new URL(`${this.#BASE_URL}${endpoint}`)
-
-    if (this.strategy === 'apiKey') {
-      url.searchParams.set('appid', this.code)
-    }
-
-    const headers = {
-      ...(this.strategy === 'token' && { Authorization: `Bearer ${this.code}` }),
+  _getHeaders(): HeadersInit {
+    return {
       'accept': 'application/json',
     }
+  }
+
+  async request<T>(
+    endpoint: string,
+    config?: RequestInit,
+    queryParams?: URLSearchParams
+  ): Promise<T | undefined> {
+    const url = new URL(`${this.BASE_URL}${endpoint}`)
+
+    if (queryParams) {
+      url.search = queryParams.toString()
+    }
+
+    const headers = this._getHeaders()
 
     const response = await fetch(url.toString(), {
       ...config,
@@ -55,15 +49,7 @@ export class BaseClient {
     }
   }
 
-  getAuthCode() {
-    return this.code
-  }
-
   getBaseUrl() {
-    return this.#BASE_URL
-  }
-
-  setAccessToken(token: string) {
-    this.code = token
+    return this.BASE_URL
   }
 }

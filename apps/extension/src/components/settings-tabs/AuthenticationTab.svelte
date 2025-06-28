@@ -27,44 +27,41 @@
     <p class="text-sm">
       <strong>Google:</strong>
       <span class="text-gray-400">{authState.google}</span>
-      {#if !authState.google}
         <AuthButton
           class="mt-2"
+          disabled={authState.google}
           provider={'google'}
           onclick={async () => {
             const token = await clients.google.getAuthToken(true)
             authState.google = !!token
           }}
         />
-      {/if}
     </p>
     <p class="text-sm">
       <strong>Spotify:</strong>
       <span class="text-gray-400">{authState.spotify}</span>
-      {#if !authState.spotify}
-        <AuthButton
-          class="mt-2"
-          provider={'spotify'}
-          onclick={async () => {
-            const token = await clients.spotify.getAuthToken(true)
-            authState.spotify = !!token
-          }}
-        />
-      {/if}
+      <AuthButton
+        class="mt-2"
+        disabled={authState.spotify}
+        provider={'spotify'}
+        onclick={async () => {
+          const token = await clients.spotify.getAuthToken(true)
+          authState.spotify = !!token
+        }}
+      />
     </p>
     <p class="text-sm">
       <strong>Fitbit:</strong>
       <span class="text-gray-400">{authState.fitbit}</span>
-      {#if !authState.fitbit}
-        <AuthButton
-          class="mt-2"
-          provider={'fitbit'}
-          onclick={async () => {
-            const token = await clients.fitbit.getAuthToken(true)
-            authState.fitbit = !!token
-          }}
-        />
-      {/if}
+      <AuthButton
+        class="mt-2"
+        disabled={authState.fitbit}
+        provider={'fitbit'}
+        onclick={async () => {
+          const token = await clients.fitbit.getAuthToken(true)
+          authState.fitbit = !!token
+        }}
+      />
     </p>
   </div>
 {/await}

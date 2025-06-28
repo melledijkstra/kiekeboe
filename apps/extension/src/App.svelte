@@ -1,29 +1,29 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
   import Clock from '@/components/Clock.svelte'
-  import Curtain from './Curtain.svelte'
-  import Welcome from './Welcome.svelte'
+  import Curtain from '@/components/Curtain.svelte'
+  import Welcome from '@/components/Welcome.svelte'
   import { onMount } from 'svelte'
-  import { settingsStore, syncSettingsStoreWithStorage } from './settings'
+  import { settings } from '@/settings/index.svelte'
   import { appState } from '@/app-state.svelte.ts'
   import { mdiTuneVertical } from '@mdi/js'
   import { loadModule } from '@/modules'
   import TopBar from '@/components/topbar/TopBar.svelte'
-  import IconButton from '@/components/atoms/IconButton.svelte'
-  import SettingsMenu from '@/settings/Menu.svelte'
-  import { tasks } from './stores/tasks.svelte.ts'
+  import SettingsMenu from '@/components/SettingsMenu.svelte'
+  import { tasks } from '@/stores/tasks.svelte.ts'
   import Toasts from '@/components/Toasts.svelte'
-  import ImageRefreshButton from './components/ImageRefreshButton.svelte'
+  import Panel from '@/components/atoms/Panel.svelte'
+  import Icon from '@/components/atoms/Icon.svelte'
+  import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
   import { Popover } from 'bits-ui'
-  import Panel from './components/atoms/Panel.svelte'
-  import Icon from './components/atoms/Icon.svelte'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
   )
 
   onMount(async () => {
-    await syncSettingsStoreWithStorage()
+    console.log('App mounted')
+    await settings.initialize()
   })
 </script>
 
@@ -55,7 +55,7 @@
         <Clock />
         <Welcome />
         <div class="mt-4 text-lg empty:h-7">
-          {#if $settingsStore.ui.showCurrentTask && currentTask}
+          {#if settings.state.ui.showCurrentTask && currentTask}
             <input type="checkbox" class="scale-150 text-white mr-1" disabled />
             <span class="text-white text-lg">{currentTask.title}</span>
           {/if}
@@ -92,17 +92,15 @@
           <SettingsMenu />
         </Panel>
       </Popover.Root>
-      {#if $settingsStore.loaded}
-        <ImageRefreshButton />
-      {/if}
+      <ImageRefreshButton />
     </div>
     <div class="flex flex-row gap-5">
-      {#if $settingsStore.modules.notes}
+      {#if settings.state.modules.notes}
         {#await loadModule('notes') then Module}
           <Module.component />
         {/await}
       {/if}
-      {#if $settingsStore.modules.google_tasks}
+      {#if settings.state.modules.google_tasks}
         {#await loadModule('google_tasks') then Module}
           <Module.component />
         {/await}
@@ -111,7 +109,7 @@
   </footer>
 </div>
 
-{#if $settingsStore.modules.command_center}
+{#if settings.state.modules.command_center}
   {#await loadModule('command_center') then Module}
     {@const CommandCenter = Module.component}
     <CommandCenter />

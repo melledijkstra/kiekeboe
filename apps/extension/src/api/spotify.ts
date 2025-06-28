@@ -1,14 +1,29 @@
-import { BaseClient } from './baseclient'
-import type { Device } from './definitions/spotify'
+import type { AuthClient } from '@/oauth2/auth'
+import type { Device, PlaybackState, Playlist } from './definitions/spotify'
+import { TokenBaseClient } from './tokenbaseclient'
+import { log } from '@/logger'
 
 const BASE_URL = 'https://api.spotify.com/v1'
 
-export class SpotifyClient extends BaseClient {
-  constructor(token: string) {
-    super(BASE_URL, token)
+export class SpotifyClient extends TokenBaseClient {
+  constructor(private authClient: AuthClient) {
+    super(BASE_URL, '')
+  }
+
+  async retrieveAccessToken() {
+    if (this.getAccessToken() !== '') {
+      return
+    }
+
+    const token = await this.authClient.getAuthToken()
+
+    if (token) {
+      super.retrieveAccessToken(token)
+    }
   }
 
   async transferPlaybackDevice(deviceId: string) {
+    await this.retrieveAccessToken()
     const response = await this.request(`/me/player`, {
       method: 'PUT',
       headers: {
@@ -32,6 +47,8 @@ export class SpotifyClient extends BaseClient {
       devices: Device[]
     }
 
+    await this.retrieveAccessToken()
+
     const response = await this.request<Response>('/me/player/devices')
 
     if (response) {
@@ -40,14 +57,58 @@ export class SpotifyClient extends BaseClient {
   }
 
   async seekToPosition(position: number) {
+    await this.retrieveAccessToken()
     this.request(`/me/player/seek?position_ms=${position}`, {
       method: 'PUT'
     })
   }
 
   async toggleShuffle(state: boolean) {
+    await this.retrieveAccessToken()
     await this.request(`/me/player/shuffle?state=${state ? 'true' : 'false'}`, {
       method: 'PUT'
     })
+  }
+
+  async userPlaylists(): Promise<Array<Playlist>> {
+    await this.retrieveAccessToken()
+    const response = await this.request<{ items: Array<Playlist> }>('/me/playlists')
+
+    return response?.items ?? []
+  }
+
+  async startPlayback(contextUri?: string, offset?: number) {
+    const body: Record<string, any> = {
+      position_ms: 0
+    }
+
+    if (contextUri) {
+      body.context_uri = contextUri
+    }
+
+    if (offset) {
+      body.offset = { position: offset }
+    }
+
+    await this.retrieveAccessToken()
+    await this.request('/me/player/play', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+  }
+
+  async getPlaybackState() {
+    await this.retrieveAccessToken()
+    log('Retrieving playback state from Spotify Web API')
+    const response = await this.request<PlaybackState>('/me/player')
+
+    if (response) {
+      return response
+    }
+
+    return undefined
   }
 }

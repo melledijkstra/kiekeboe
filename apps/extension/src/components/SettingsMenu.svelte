@@ -1,16 +1,13 @@
 <script lang="ts">
-  import {
-    settingsStore,
-    syncSettingsStoreWithStorage,
-  } from '@/settings'
+  import { settings } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
-  import NetworkTab from './tabs/NetworkTab.svelte'
-  import AboutTab from './tabs/AboutTab.svelte'
-  import ExportTab from './tabs/ExportTab.svelte'
-  import AppearanceTab from './tabs/AppearanceTab.svelte'
-  import AuthenticationTab from './tabs/AuthenticationTab.svelte'
-  import ModulesTab from './tabs/ModulesTab.svelte'
-  import GeneralTab from './tabs/GeneralTab.svelte'
+  import NetworkTab from '@/components/settings-tabs/NetworkTab.svelte'
+  import AboutTab from '@/components/settings-tabs/AboutTab.svelte'
+  import ExportTab from '@/components/settings-tabs/ExportTab.svelte'
+  import AppearanceTab from '@/components/settings-tabs/AppearanceTab.svelte'
+  import AuthenticationTab from '@/components/settings-tabs/AuthenticationTab.svelte'
+  import ModulesTab from '@/components/settings-tabs/ModulesTab.svelte'
+  import GeneralTab from '@/components/settings-tabs/GeneralTab.svelte'
   import type { HTMLAttributes } from 'svelte/elements'
   import { Separator, Tabs } from 'bits-ui'
 
@@ -27,7 +24,6 @@
   const props: HTMLAttributes<HTMLDivElement> = $props()
 
   let tab = $state(getSelectedTabFromUrl())
-  let settingsLoaded = $state(false)
 
   function getSelectedTabFromUrl() {
     return document.location.hash.replace('#', '')
@@ -39,7 +35,8 @@
   }
 
   onMount(() => {
-    syncSettingsStoreWithStorage().then(() => (settingsLoaded = true))
+    console.log('SettingsMenu mounted')
+    settings.initialize()
   })
 </script>
 
@@ -71,13 +68,13 @@
   />
   {#each sections as sectionName}
     <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
-      {#if sectionName === 'general' && !settingsLoaded}
+      {#if sectionName === 'general' && !settings.state.loaded}
         <div>Loading...</div>
       {/if}
       {#if sectionName === 'general'}
-        <GeneralTab settingsLoaded={settingsLoaded} />
-      {:else if sectionName === 'modules' && $settingsStore}
-        <ModulesTab settingsLoaded={settingsLoaded} />
+        <GeneralTab />
+      {:else if sectionName === 'modules'}
+        <ModulesTab />
       {:else if sectionName === 'authentication'}
         <AuthenticationTab />
       {:else if sectionName === 'appearance'}

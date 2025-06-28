@@ -51,7 +51,7 @@
   }
 
   onMount(async () => {
-    token = await authClient.getAuthToken(false)
+    token = await authClient.getAuthToken()
     if (token) {
       taskClient = new TasksClient(token)
       loadTasks()

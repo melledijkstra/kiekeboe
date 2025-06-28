@@ -2,16 +2,18 @@
   import { loadModule, type ModuleID } from '@/modules'
   import { mdiHomeOutline, mdiSpa, mdiSprout } from '@mdi/js'
   import { appState, switchAppMode } from '@/app-state.svelte'
-  import { settingsStore } from '@/settings'
+  import { settings } from '@/settings/index.svelte'
   import MetricsPanel from '@/modules/trackers/MetricsPanel.svelte'
   import Account from './Account.svelte'
   import Metrics from './MetricsBar.svelte'
   import RaspberryPi from '../RaspberryPi.svelte'
   import MenuButton from '../atoms/MenuButton.svelte'
+
+  $inspect(settings.state.modules.weather)
 </script>
 
 {#snippet module(moduleId: ModuleID)}
-  {#if $settingsStore.modules?.[moduleId]}
+  {#if settings.state.modules?.[moduleId]}
     {#await loadModule(moduleId) then Module}
       <Module.component />
     {/await}
@@ -32,14 +34,14 @@
       tooltip="Home"
       mdiIcon={mdiHomeOutline}
     />
-    {#if $settingsStore.modules.focus}
+    {#if settings.state.modules.focus}
       <MenuButton
         tooltip="Focus"
         onclick={() => switchAppMode('focus')}
         mdiIcon={mdiSprout}
       />
     {/if}
-    {#if $settingsStore.modules.well_being}
+    {#if settings.state.modules.well_being}
       <MenuButton
         tooltip="Breathing"
         onclick={() => switchAppMode('breathing')}

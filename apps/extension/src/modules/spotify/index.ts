@@ -1,5 +1,5 @@
 import type { Module } from '@/modules'
-import Spotify from './Spotify.svelte'
+import Spotify from './SpotifyMenuItem.svelte'
 
 const module: Module = {
   component: Spotify

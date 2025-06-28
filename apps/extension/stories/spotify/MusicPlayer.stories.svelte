@@ -1,11 +1,14 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import MusicPlayer from '@/components/musicplayer/MusicPlayer.svelte'
+  import { mockController } from './MockMusicPlayerController'
 
-  // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Spotify/WebPlayer',
+    title: 'Spotify/MusicPlayer',
     component: MusicPlayer,
+    args: {
+      controller: mockController
+    }
   })
 </script>
 

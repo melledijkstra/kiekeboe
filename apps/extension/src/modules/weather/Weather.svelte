@@ -30,6 +30,6 @@
       >{currentWeather.location}</span
     >
   {:else}
-    <IconButton icon={mdiCloudOff} tooltip="Weather" onclick={() => alert('Not implemented yet!')} />
+    <IconButton icon={mdiCloudOff} onclick={() => alert('Not implemented yet!')} />
   {/if}
 </div>

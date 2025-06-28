@@ -11,43 +11,35 @@
   } from '@mdi/js'
   import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
+  import { spotifyState } from '@/modules/spotify/spotify.store.svelte'
+  import type { MusicPlayerInterface } from '@/controllers/MusicPlayerInterface'
+  import { onMount } from 'svelte'
 
-  export type TrackFeedbackProps = {
-    playbackState: Spotify.PlaybackState
-    position: number // in ms
-    onSeek?: (position: number) => void
-    onShuffle?: (isShuffling: boolean) => void
-    onPrev?: () => void
-    onNext?: () => void
-    onPlayPause?: () => void
-    onRepeat?: (repeatMode: number) => void
-  }
+  const { controller }: { controller: MusicPlayerInterface } = $props()
 
-  let {
-    playbackState,
-    position = $bindable(),
-    onSeek,
-    onShuffle,
-    onPrev,
-    onNext,
-    onPlayPause,
-    onRepeat
-  }: TrackFeedbackProps = $props()
-
-  let isPaused = $derived(playbackState.paused)
-  let isShuffling = $derived(playbackState.shuffle)
-  let repeatMode = $derived(playbackState.repeat_mode)
-  let repeatModeIcon = $derived(
-    repeatMode === 0
-      ? mdiRepeatOff
-      : repeatMode === 1
-        ? mdiRepeatOnce
-        : mdiRepeat
-  )
-  let track = $derived(playbackState.track_window.current_track)
-  let remaining = $derived(track.duration_ms - position)
+  let isPaused = $derived($spotifyState.playbackState?.paused ?? true)
+  let isShuffling = $derived($spotifyState.playbackState?.shuffle)
+  let repeatMode = $derived($spotifyState.playbackState?.repeat_mode)
+  let repeatModeIcon = $derived.by(() => {
+    switch (repeatMode) {
+      case 1:
+        return mdiRepeatOnce
+      case 2:
+        return mdiRepeat
+      case 0:
+      default:
+        return mdiRepeatOff
+    }
+  })
+  let track = $derived($spotifyState.playbackState?.track_window.current_track)
+  let position = $derived($spotifyState.playbackState?.position ?? 0)
+  let remaining = $derived(track ? track.duration_ms - position : 0)
   let timeLeft = $derived<string>(millisecondsToTime(remaining))
   let currentTime = $derived<string>(millisecondsToTime(position))
+
+  onMount(() => {
+    controller.retrievePlaybackState()
+  })
 </script>
 
 <div class="flex flex-row p-2">
@@ -55,13 +47,13 @@
   <div class="flex flex-row gap-4 mr-5">
     <img
       class="size-20 rounded-sm"
-      src={track.album.images[0].url}
-      alt={track.name}
+      src={track?.album.images[0].url ?? '/icons/album-cover-placeholder.png'}
+      alt={track?.name ?? 'Track cover'}
     />
     <div class="flex flex-col justify-center overflow-hidden">
-      <strong class="truncate text-xl">{track.name}</strong>
+      <strong class="truncate text-xl">{track?.name}</strong>
       <p class="truncate">
-        {track.artists.map((artist) => artist.name).join(', ')}
+        {track?.artists.map((artist) => artist.name).join(', ')}
       </p>
     </div>
   </div>
@@ -71,7 +63,7 @@
       <button
         class="cursor-pointer"
         onclick={() => {
-          onShuffle?.(!isShuffling)
+          controller.toggleShuffle?.(!isShuffling)
         }}
       >
         <Icon
@@ -88,7 +80,9 @@
       <button class="cursor-pointer" onclick={() => onNext?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipNext} />
       </button>
-      <button class="cursor-pointer" onclick={() => onRepeat?.(repeatMode)}>
+      <button class="cursor-pointer"
+        disabled={typeof repeatMode === 'undefined'}
+        onclick={() => repeatMode && onRepeat?.(repeatMode)}>
         <Icon class="size-6 fill-white" path={repeatModeIcon} />
       </button>
     </div>
@@ -97,7 +91,7 @@
       <input
         type="range"
         min="0"
-        max={track.duration_ms}
+        max={track?.duration_ms}
         bind:value={position}
         onchange={() => onSeek?.(position)}
         tabindex="0"

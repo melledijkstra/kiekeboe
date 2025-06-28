@@ -76,3 +76,20 @@ export function getTimePercentage(): string {
   // 1440 minutes in a day
   return `${Math.round(((hours * 60 + minutes) / 1440) * 100)}%`
 }
+
+export function playbackLoop(
+  callback: (position: number) => void,
+  interval: number,
+  initialPosition: number = 0
+): () => void {
+  let position = initialPosition
+
+  const loop = setInterval(() => {
+    position += interval
+    callback(position)
+  }, interval)
+
+  return () => {
+    clearInterval(loop)
+  }
+}

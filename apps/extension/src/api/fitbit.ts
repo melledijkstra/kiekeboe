@@ -1,9 +1,9 @@
-import { BaseClient } from './baseclient'
 import type { SleepResponse } from './definitions/fitbit'
+import { TokenBaseClient } from './tokenbaseclient'
 
 const BASE_URL = 'https://api.fitbit.com'
 
-export class FitbitClient extends BaseClient {
+export class FitbitClient extends TokenBaseClient {
   constructor(token: string) {
     super(BASE_URL, token)
   }

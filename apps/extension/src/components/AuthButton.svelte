@@ -5,13 +5,19 @@
   import { mdiSpotify } from '@mdi/js'
   import type { HTMLButtonAttributes } from 'svelte/elements'
 
-  const classes: Record<OauthProvider, string> = {
-    google:
+  const classes: Record<OauthProvider, string | string[]> = {
+    google: [
       'bg-google hover:bg-google/80 focus:ring-4 focus:outline-hidden focus:ring-google/50 dark:focus:ring-google/55',
-    spotify:
+      'disabled:bg-gray-400 disabled:focus:ring-gray-300 disabled:cursor-auto'
+    ],
+    spotify: [
       'bg-spotify hover:bg-spotify/80 focus:ring-4 focus:outline-hidden focus:ring-spotify/50 dark:focus:ring-spotify/55',
-    fitbit:
-      'bg-fitbit hover:bg-fitbit/80 focus:ring-4 focus:outline-hidden focus:ring-fitbit/50 dark:focus:ring-fitbit/55'
+      'disabled:bg-gray-400 disabled:focus:ring-gray-300 disabled:cursor-auto'
+    ],
+    fitbit: [
+      'bg-fitbit hover:bg-fitbit/80 focus:ring-4 focus:outline-hidden focus:ring-fitbit/50 dark:focus:ring-fitbit/55',
+      'disabled:bg-gray-400 disabled:focus:ring-gray-300 disabled:cursor-auto'
+    ]
   }
 
   const {

@@ -1,24 +1,15 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
-  import SpotifyPlayback from '@/components/musicplayer/TrackFeedback.svelte'
+  import SpotifyPlayback from '@/components/musicplayer/Playback.svelte'
   import { playbackState } from '@/fixtures/spotify/playback'
-  import { fn } from '@storybook/test'
+  import { mockController } from './MockMusicPlayerController'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Spotify/Control',
+    title: 'Spotify/Playback',
     component: SpotifyPlayback,
     args: {
-      playbackState,
-      position: Math.round(
-        playbackState.track_window.current_track.duration_ms / 3
-      ),
-      onSeek: fn(),
-      onShuffle: fn(),
-      onPrev: fn(),
-      onNext: fn(),
-      onPlayPause: fn(),
-      onRepeat: fn()
+      controller: mockController
     }
   })
 </script>

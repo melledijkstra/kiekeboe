@@ -1,9 +1,15 @@
 <script lang="ts">
+  import type { ClassValue, HTMLButtonAttributes } from 'svelte/elements'
   import Icon from './Icon.svelte'
 
-  const { icon, children = null, ...props } = $props()
+  type IconButtonProps = {
+    icon: string;
+    children?: any;
+  } & HTMLButtonAttributes;
 
-  function hasColorClass(classProp: string | string[] | undefined): boolean {
+  const { icon, children = null, ...props }: IconButtonProps = $props()
+
+  function hasColorClass(classProp: ClassValue | null | undefined): boolean {
     if (typeof classProp === 'string') {
       return classProp.includes('text-') || classProp.includes('bg-');
     }
@@ -21,6 +27,7 @@
   class={[
     props.class,
     !hasColor && 'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
+    'disabled:opacity-50 disabled:cursor-not-allowed',
     'block cursor-pointer transition-colors',
   ]}
 >

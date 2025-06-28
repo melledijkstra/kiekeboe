@@ -44,7 +44,8 @@ const oauthConfig: Record<OauthProvider, AuthConfig> = {
       'streaming',
       'app-remote-control',
       'user-read-playback-state',
-      'user-modify-playback-state'
+      'user-modify-playback-state',
+      'playlist-read-private'
     ],
     authEndpoint: 'https://accounts.spotify.com/authorize',
     tokenEndpoint: 'https://accounts.spotify.com/api/token'
@@ -104,14 +105,14 @@ export class AuthClient {
   async isAuthenticated(): Promise<boolean> {
     try {
       if (this.provider === 'google' && typeof chrome !== 'undefined') {
-        const token = await this.getAuthTokenChrome(false)
+        const token = await this.getAuthTokenChrome()
         if (token) {
           return true
         }
         return false
       }
   
-      const token = await this.getAuthToken(false)
+      const token = await this.getAuthToken()
   
       this.logger.log({ token })
   
@@ -125,7 +126,7 @@ export class AuthClient {
     return Date.now() > token.expires_at - 60_000
   }
 
-  async getAuthTokenChrome(interactive = true): Promise<string | undefined> {
+  async getAuthTokenChrome(interactive = false): Promise<string | undefined> {
     try {
       const oauth2 = await chrome.identity.getAuthToken({ interactive })
       return oauth2?.token
@@ -213,7 +214,7 @@ export class AuthClient {
           // if the error is an AuthError, remove the stored token
           // so that the user can re-authenticate
           await browser.storage.local.remove(this.storageKey)
-          this.getAuthToken(false)
+          this.getAuthToken()
         }
       }
     }
@@ -237,12 +238,12 @@ export class AuthClient {
     })
   }
 
-  async getAuthToken(interactive = true): Promise<string | undefined> {
+  async getAuthToken(interactive = false): Promise<string | undefined> {
     if (this.provider === 'google' && typeof chrome !== 'undefined') {
       // if we are on chrome browser then use the preferred auth token
       // method that is already build in
       try {
-        const token = await this.getAuthTokenChrome()
+        const token = await this.getAuthTokenChrome(interactive)
         if (token) {
           return token
         }

@@ -6,7 +6,7 @@
   import { getAllHabits } from "@/db/habits"
   import type { Note } from "@/db/notes"
   import { getAllNotes } from "@/db/notes"
-  import { settingsStore, type Settings } from "@/settings"
+  import { settings, type SettingsState } from "@/settings/index.svelte"
 
   type Export = {
     databases?: {
@@ -14,7 +14,7 @@
       habits?: Habit[]
       notes?: Note[]
     }
-    settings: Settings
+    settings: SettingsState
   }
 
   async function exportData() {
@@ -27,7 +27,7 @@
         habits,
         notes
       },
-      settings: $settingsStore
+      settings: settings.state
     }
     const data = JSON.stringify(exportData)
     const blob = new Blob([data], { type: 'application/json' })

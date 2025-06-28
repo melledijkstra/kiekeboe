@@ -2,6 +2,7 @@ import browser from 'webextension-polyfill'
 import { FocusService } from '@/services/focus'
 import { Logger } from './logger'
 import { commandCenterOpen } from './modules/command-center/messages'
+import { settings } from './settings/index.svelte'
 
 export const logger = new Logger('background')
 
@@ -45,10 +46,9 @@ function isHomepageUrl(url: string) {
 
 browser.commands.onCommand.addListener(async (command) => {
   logger.log('Command received:', command)
-  if (command === "toggle-command-center") {
+  const { modules } = await settings.getSettingsFromStorage()
+  if (command === "toggle-command-center" && modules.command_center) {
     const tab = await getActiveTab()
-    console.log('Active tab:', tab)
-
     // first check if we are on homepage, if so, we can just open the command center
     if (tab?.url && isHomepageUrl(tab.url)) {
       logger.log(tab.url);
@@ -60,14 +60,12 @@ browser.commands.onCommand.addListener(async (command) => {
     const extensionTab = await findExtensionTab()
 
     if (extensionTab) {
-      logger.log('Opening command center in existing tab:', extensionTab.id);
       // if we have an existing tab with the command center, just focus it
       await browser.tabs.update(extensionTab.id, { active: true });
       commandCenterOpen.send()
       return;
     }
     
-    logger.log('Opening command center in new tab, no active tab or unsupported URL:', tab.url);
     browser.tabs.create({
       url: browser.runtime.getURL('/index.html?command-center=true'),
       active: true

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Menu from './Menu.svelte'
+  import Menu from '@/components/SettingsMenu.svelte'
 </script>
 
 <div class="bg-black min-h-screen text-white">
