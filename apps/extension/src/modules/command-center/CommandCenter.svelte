@@ -1,72 +1,19 @@
 <script lang="ts">
   import { Command, Dialog } from 'bits-ui'
   import { log } from '@/logger'
-  import { addToast } from '@/stores/toasts.svelte'
   import { onDestroy, onMount } from 'svelte'
   import Icon from '@/components/atoms/Icon.svelte'
-  import {
-    mdiBookmark,
-    mdiBrain,
-    mdiSearchWeb,
-    mdiSticker,
-  } from '@mdi/js'
   import { type CommandGroups } from './types'
-  import { commandCenterOpen } from './messages'
-  import { remove } from 'lscache'
+  import type { CommandServiceInterface } from './CommandServiceInterface'
+  import { commandCenterState } from './state.svelte'
 
-  const commands: CommandGroups = {
-    Actions: [
-      {
-        name: 'ChatGPT',
-        keywords: ['chatgpt', 'openai', 'gpt'],
-        icon: mdiBrain,
-        action: (prompt) => {
-          if (prompt) {
-            const encodedPrompt = encodeURIComponent(prompt)
-            const chatgptUrl = `https://chat.openai.com/?prompt=${encodedPrompt}`
-            window.open(chatgptUrl, '_blank')
-          }
-        }
-      },
-      {
-        name: 'Search',
-        keywords: ['search', 'find', 'lookup'],
-        icon: mdiSearchWeb,
-        action: (input?: string) => {
-          const query = input?.trim()
-          if (query) {
-            const encodedQuery = encodeURIComponent(query)
-            const searchUrl = `https://www.google.com/search?q=${encodedQuery}`
-            window.open(searchUrl, '_blank')
-          } else {
-            addToast('Please enter a search query.')
-          }
-        }
-      },
-      {
-        name: 'Toast',
-        keywords: ['toast', 'notification'],
-        icon: mdiSticker,
-        action: (input?: string) => {
-          const message = input?.slice(6).trim() || 'Default toast message'
-          addToast(message)
-        }
-      }
-    ],
-    Bookmarks: [{
-      name: 'Open Bookmarks',
-      keywords: ['bookmarks', 'favorites'],
-      icon: mdiBookmark,
-      action: () => {
-        const bookmarksUrl = 'chrome://bookmarks/'
-        window.open(bookmarksUrl, '_blank')
-      }
-    }]
+  type CommandCenterProps = {
+    commandService: CommandServiceInterface
+    forceOpen?: boolean
   }
 
-  const { forceOpen }: { forceOpen?: boolean } = $props()
+  const { forceOpen, commandService }: CommandCenterProps = $props()
 
-  let open = $state(forceOpen ?? false)
   let input = $state('')
 
   function handleCommand(event: KeyboardEvent | MouseEvent) {
@@ -74,38 +21,22 @@
       return
     }
 
-    let found = false
-    const actionCommand = commands.Actions
-
-    for (const command of actionCommand) {
-      if (input.startsWith(`/${command.name.toLowerCase()}`)) {
-        const prompt = input?.split(' ').slice(1).join(' ').trim()
-        log(`Executing command: ${command.name} with prompt: ${prompt}`)
-        command.action(prompt)
-        found = true
-        break
-      }
-    }
-
-    if (!found) {
-      addToast('Command not recognized. Please try again.')
-      return
-    }
+    commandService.execute(input.trim())
 
     // Clear input
     input = ''
-    open = false
+    commandCenterState.isOpen = false
   }
 
   function handleKeypress(event: KeyboardEvent) {
     // Check if metaKey (Mac) or ctrlKey (Windows/Linux) is pressed
     if ((event.metaKey || event.ctrlKey) && event.key === 'p') {
       event.preventDefault() // prevents the browser's print dialog
-      open = !open
+      commandCenterState.isOpen = !commandCenterState.isOpen
     }
 
     if (event.key === 'Escape') {
-      open = false
+      commandCenterState.isOpen = false
     }
   }
 
@@ -119,19 +50,19 @@
   }
 
   onMount(() => {
+    if (forceOpen) {
+      commandCenterState.isOpen = true
+    }
+
+    commandService.initialize()
     const url = new URL(window.location.href);
     if (url.searchParams.get("command-center") === "true") {
-      open = true
+      commandCenterState.isOpen = true
     }
 
     document.addEventListener('command-center:open', () => {
       log('Command center opened via event')
-      open = true
-    })
-
-    commandCenterOpen.on(() => {
-      log('Command center opened via runtime message')
-      open = true
+      commandCenterState.isOpen = true
     })
 
     log('registering command center')
@@ -144,7 +75,7 @@
   })
 </script>
 
-<Dialog.Root bind:open={open} onOpenChangeComplete={removeQueryParam}>
+<Dialog.Root bind:open={commandCenterState.isOpen} onOpenChangeComplete={removeQueryParam}>
   <Dialog.Portal>
     <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/40"
@@ -184,7 +115,7 @@
             >
               No results found.
             </Command.Empty>
-            {#each Object.keys(commands) as commandGroup, index (commandGroup)}
+            {#each Object.keys(commandService.commands) as commandGroup, index (commandGroup)}
               {#if index !== 0}
                 <Command.Separator class="bg-white/5 h-px w-full" />
               {/if}
@@ -193,7 +124,7 @@
                   {commandGroup}
                 </Command.GroupHeading>
                 <Command.GroupItems>
-                  {#each commands[commandGroup as keyof CommandGroups] as command}
+                  {#each commandService.commands[commandGroup as keyof CommandGroups] as command}
                     <Command.Item
                       class="rounded-button data-selected:bg-zinc-400 outline-hidden flex h-10 cursor-pointer select-none items-center gap-2 px-3 py-2.5 text-sm"
                       keywords={command.keywords.map((k) => `/${k}`)}
