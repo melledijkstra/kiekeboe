@@ -16,13 +16,14 @@
   import Icon from '@/components/atoms/Icon.svelte'
   import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
   import { Popover } from 'bits-ui'
+  import { log } from './logger'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
   )
 
   onMount(async () => {
-    console.log('App mounted')
+    log('App mounted')
     await settings.initialize()
   })
 </script>
@@ -111,7 +112,6 @@
 
 {#if settings.state.modules.command_center}
   {#await loadModule('command_center') then Module}
-    {@const CommandCenter = Module.component}
-    <CommandCenter />
+    <Module.component />
   {/await}
 {/if}

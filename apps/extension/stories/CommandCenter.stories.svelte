@@ -7,6 +7,10 @@
   import { mdiTestTube } from '@mdi/js'
 
   class mockCommandService implements CommandServiceInterface {
+    destroy(): void {
+      console.log('Mock command service destroyed')
+    }
+
     get commands(): CommandGroups {
       return {
         Actions: [{

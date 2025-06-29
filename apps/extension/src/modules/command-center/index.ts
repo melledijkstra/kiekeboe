@@ -1,6 +1,6 @@
 import type { Module } from '@/modules'
-import CommandCenter from './CommandCenter.svelte'
+import CommandCenterDynamic from './CommandCenterDynamic.svelte'
 
 export default {
-  component: CommandCenter
+  component: CommandCenterDynamic
 } satisfies Module

@@ -7,7 +7,7 @@
   import type { CommandServiceInterface } from './CommandServiceInterface'
   import { commandCenterState } from './state.svelte'
 
-  type CommandCenterProps = {
+  export type CommandCenterProps = {
     commandService: CommandServiceInterface
     forceOpen?: boolean
   }
@@ -70,6 +70,7 @@
   })
 
   onDestroy(() => {
+    commandService.destroy()
     log('unregistering command center')
     document.removeEventListener('keydown', handleKeypress)
   })

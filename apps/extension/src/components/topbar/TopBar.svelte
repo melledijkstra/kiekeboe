@@ -8,8 +8,6 @@
   import Metrics from './MetricsBar.svelte'
   import RaspberryPi from '../RaspberryPi.svelte'
   import MenuButton from '../atoms/MenuButton.svelte'
-
-  $inspect(settings.state.modules.weather)
 </script>
 
 {#snippet module(moduleId: ModuleID)}

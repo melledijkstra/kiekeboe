@@ -59,10 +59,13 @@ const defaultCommands: CommandGroups = {
 
 export class CommandService implements CommandServiceInterface, ILogger {
   logger: Logger = new Logger('CommandService');
+  
+  private _commands: CommandGroups;
 
-  constructor(private _commands: CommandGroups) {
+  constructor(commands?: CommandGroups) {
+    this.logger.log('Initializing');
     this._commands = {
-      ..._commands,
+      ...commands,
       ...defaultCommands
     }
   }
@@ -73,6 +76,11 @@ export class CommandService implements CommandServiceInterface, ILogger {
       this.logger.log('Command center opened via runtime message')
       commandCenterState.isOpen = true
     })
+  }
+
+  destroy(): void {
+    commandCenterState.isOpen = false;
+    this.logger.log('Destroying');
   }
 
   get commands(): CommandGroups {
