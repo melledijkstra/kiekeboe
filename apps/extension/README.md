@@ -10,6 +10,10 @@ Kiekeboe is a personal homepage extension that enhances your new tab page with a
 
 - **Unplash Images**: Beautiful background images from Unsplash.
 - **Modules**: Enable and disable different modules from the settings page only when you need it!
+- **Spotify Web Player**: Able to play Spotify from the newtab (requires premium)
+- **Weather Widget**: Displays current weather conditions and forecasts for your location.
+- **Quick Notes**: Allows you to jot down notes directly on the homepage.
+- **Pomodoro Timer**: Helps you stay focused with a built-in Pomodoro timer.
 
 ### Modules
 
