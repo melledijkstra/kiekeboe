@@ -1,6 +1,7 @@
 <script lang="ts">
   import { mdiCounter } from '@mdi/js'
   import { AuthClient } from '@/oauth2/auth'
+  import { FitbitAuthProvider } from '@/oauth2/providers'
   import { onMount } from 'svelte'
   import Panel from '@/components/atoms/Panel.svelte'
   import { FitbitClient } from '../../api/fitbit'
@@ -8,7 +9,7 @@
   import IconButton from '@/components/atoms/IconButton.svelte'
   import Sleep from '@/components/atoms/metrics/Sleep.svelte'
 
-  const authClient = new AuthClient('fitbit')
+  const authClient = new AuthClient(new FitbitAuthProvider())
 
   let client = $state<FitbitClient>()
   let open = $state(false)

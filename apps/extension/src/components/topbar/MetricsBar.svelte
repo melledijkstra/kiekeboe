@@ -13,13 +13,14 @@
   import { onMount } from 'svelte'
   import Sleep from '../atoms/metrics/Sleep.svelte'
   import { AuthClient } from '@/oauth2/auth'
+  import { FitbitAuthProvider } from '@/oauth2/providers'
   import { FitbitClient } from '@/api/fitbit'
 
   type Metric = CountDown | WorldClock | Counter
 
   const STORAGE_KEY = 'fitbit::sleep_minutes'
 
-  const authClient = new AuthClient('fitbit')
+  const authClient = new AuthClient(new FitbitAuthProvider())
 
   const props: { metrics?: Metric[] } = $props()
   let sleepMetricEnabled = $state(false)

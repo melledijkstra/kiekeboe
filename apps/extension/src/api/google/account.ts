@@ -1,4 +1,5 @@
 import { AuthClient } from '@/oauth2/auth'
+import { GoogleAuthProvider } from '@/oauth2/providers'
 
 export type Account = {
   name: string
@@ -6,7 +7,7 @@ export type Account = {
   email: string
 }
 
-const client = new AuthClient('google')
+const client = new AuthClient(new GoogleAuthProvider())
 
 export async function fetchAccountInfo() {
   try {

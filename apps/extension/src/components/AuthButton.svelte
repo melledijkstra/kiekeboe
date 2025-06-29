@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OauthProvider } from '@/oauth2/auth'
+  import type { OauthProvider } from '@/oauth2/providers'
   import Button from './atoms/Button.svelte'
   import Icon from './atoms/Icon.svelte'
   import { mdiSpotify } from '@mdi/js'
