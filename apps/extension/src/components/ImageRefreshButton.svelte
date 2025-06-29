@@ -1,5 +1,6 @@
 <script lang="ts">
   import { UnsplashClient } from '@/api/unsplash'
+  import { updateBackgroundImage } from '@/ui'
   import IconButton from './atoms/IconButton.svelte'
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { settings } from '@/settings/index.svelte'
@@ -10,7 +11,7 @@
   async function refreshBackround() {
     const url = await unsplashClient?.refreshDailyImage()
     if (url) {
-      unsplashClient?.loadImage(url)
+      updateBackgroundImage(url)
     }
   }
 

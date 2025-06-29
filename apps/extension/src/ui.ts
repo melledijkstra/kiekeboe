@@ -27,3 +27,13 @@ export function getWelcomeMessage(name: string): string {
 
   return `Good ${momentOfDay}, ${name}`
 }
+
+export function updateBackgroundImage(url: string, callback?: () => void) {
+  const image = new Image()
+  image.src = url
+  image.onload = () => {
+    callback?.()
+    const elem = document.querySelector(':root') as HTMLElement
+    elem?.style.setProperty('--background-image', `url(${url})`)
+  }
+}
