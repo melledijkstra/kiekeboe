@@ -1,31 +1,25 @@
-import {
-  DAILY_IMAGE_KEY,
-  NEXT_IMAGE_KEY,
-  SERVERLESS_HOST_URL
-} from '@/constants'
+import { SERVERLESS_HOST_URL } from '@/constants'
 import browser from 'webextension-polyfill'
-import { formatDate } from '@/date'
+import { addDays, formatDate } from '@/date'
 import { log, Logger } from '@/logger'
 import type { UnsplashResponse } from '@/api/definitions/unsplash'
 import type { ILogger } from '@/interfaces/logger.interface'
+import { ImageCache, type ImageInfo } from './image-cache'
 
 const ENDPOINT = '/api/daily-image'
 
-type ImageInfo = {
-  id: string
-  url: string
-  date?: string
-}
 
 export class UnsplashClient implements ILogger {
   public logger: Logger = new Logger('UnsplashClient')
   private HOST: string
   public query?: string
+  private cache: ImageCache
 
   constructor(host: string = SERVERLESS_HOST_URL, query?: string) {
     this.HOST = host ?? SERVERLESS_HOST_URL
     this.logger.log('UnsplashClient initialized with host:', this.HOST)
     this.query = query
+    this.cache = new ImageCache()
   }
 
   get host(): string {
@@ -61,113 +55,54 @@ export class UnsplashClient implements ILogger {
   }
 
   async retrieveNextImage(): Promise<ImageInfo> {
-    // and fetch a new next image
     const response = await this.fetchUnsplashImage()
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    const nextDailyImage: ImageInfo = {
+    const tomorrow = addDays(new Date(), 1)
+    const next: ImageInfo = {
       id: response.id,
       url: response.urls.full,
       date: formatDate(tomorrow)
     }
 
-    await browser.storage.local.set({
-      [NEXT_IMAGE_KEY]: nextDailyImage
-    })
-
-    return nextDailyImage
+    await this.cache.setNextImageInfo(next)
+    return next
   }
 
   async getDailyImage(): Promise<string | undefined> {
-    const {
-      [DAILY_IMAGE_KEY]: storageImage,
-      [NEXT_IMAGE_KEY]: storageNextImage
-    } = (await browser.storage.local.get([
-      DAILY_IMAGE_KEY,
-      NEXT_IMAGE_KEY
-    ])) as {
-      [DAILY_IMAGE_KEY]: ImageInfo | undefined
-      [NEXT_IMAGE_KEY]: ImageInfo | undefined
-    }
-
-    log({
-      storageImage,
-      storageNextImage
-    })
-
     const today = formatDate(new Date())
+    const cached = await this.cache.getDailyImageInfo()
 
-    if (storageImage && storageImage?.date === today) {
+    if (cached && cached.date === today) {
       log('retrieved daily image from cache')
-      return storageImage.url
+      return cached.url
     }
 
-    log('no daily image in cache, trying to retrieve next one')
-
-    try {
-      // no image in cache, see if we already retrieved next and use that one instead
-      if (storageNextImage) {
-        log('next image exists, use that one instead')
-        // swap the next image to be the current image
-        await browser.storage.local.set({
-          [DAILY_IMAGE_KEY]: {
-            ...storageNextImage,
-            date: today
-          }
-        })
-
-        // make sure we retrieve a next image again
-        this.retrieveNextImage()
-
-        return storageNextImage.url
-      } else {
-        log('no next image neither, fetching a new one')
-        this.retrieveNextImage()
-      }
-
-      const data = await this.fetchUnsplashImage()
-      const dailyImage: ImageInfo = {
-        id: data.id,
-        date: today,
-        url: data.urls.full
-      }
-
-      log('retrieved response, storing in cache', dailyImage.url)
-
-      await browser.storage.local.set({
-        [DAILY_IMAGE_KEY]: dailyImage
-      })
-
-      return dailyImage.url
-    } catch (error) {
-      console.error('Error fetching image:', error)
-      return
+    const next = await this.cache.getNextImageInfo()
+    if (next) {
+      log('next image exists, use that one instead')
+      await this.cache.setDailyImageInfo({ ...next, date: today })
+      await this.cache.clearNextImage()
+      this.retrieveNextImage()
+      return next.url
     }
+
+    this.logger.log('no cached image found, fetching new one')
+    const data = await this.fetchUnsplashImage()
+    const daily: ImageInfo = { id: data.id, url: data.urls.full, date: today }
+    await this.cache.setDailyImageInfo(daily)
+    this.retrieveNextImage()
+    return daily.url
   }
 
   async refreshDailyImage(): Promise<string | undefined> {
-    await browser.storage.local.remove(DAILY_IMAGE_KEY)
-    return await this.getDailyImage()
+    await this.cache.clearDailyImage()
+    return this.getDailyImage()
   }
 
-  loadImage(url: string, callback?: () => void) {
-    const image = new Image()
-    image.src = url
-    image.onload = () => {
-      callback?.()
-      const elem = document.querySelector(':root') as HTMLElement
-      elem?.style.setProperty('--background-image', `url(${url})`)
-    }
+  clearNextImage() {
+    return this.cache.clearNextImage()
   }
 
-  async clearNextImage() {
-    await browser.storage.local.remove(NEXT_IMAGE_KEY)
-    log('Next image cleared from storage')
-  }
-
-  async clearImageCache() {
-    await browser.storage.local.remove([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])
-    log('Daily and next images cleared from storage')
+  clearImageCache() {
+    return this.cache.clearImageCache()
   }
 }
