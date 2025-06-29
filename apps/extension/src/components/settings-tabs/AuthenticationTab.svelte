@@ -1,11 +1,16 @@
 <script lang="ts">
   import AuthButton from '@/components/AuthButton.svelte'
   import { AuthClient } from '@/oauth2/auth'
+  import {
+    GoogleAuthProvider,
+    SpotifyAuthProvider,
+    FitbitAuthProvider
+  } from '@/oauth2/providers'
 
   const clients = {
-    google: new AuthClient('google'),
-    spotify: new AuthClient('spotify'),
-    fitbit: new AuthClient('fitbit')
+    google: new AuthClient(new GoogleAuthProvider()),
+    spotify: new AuthClient(new SpotifyAuthProvider()),
+    fitbit: new AuthClient(new FitbitAuthProvider())
   }
 
   let authState = $state({
