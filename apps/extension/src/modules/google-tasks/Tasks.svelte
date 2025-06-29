@@ -4,11 +4,12 @@
   import TextButton from '@/components/TextButton.svelte'
   import { log } from '@/logger'
   import { AuthClient } from '@/oauth2/auth'
+  import { GoogleAuthProvider } from '@/oauth2/providers'
   import { onMount } from 'svelte'
   import { tasks } from '@/stores/tasks.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
 
-  const authClient = new AuthClient('google')
+  const authClient = new AuthClient(new GoogleAuthProvider())
 
   let open = $state(false)
   let token = $state<string>()

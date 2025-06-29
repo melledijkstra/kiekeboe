@@ -1,15 +1,7 @@
 import browser from 'webextension-polyfill'
-import manifest from '../../manifest.json' with { type: 'json' }
 import { Logger } from '@/logger'
-
-export type OauthProvider = 'google' | 'spotify' | 'fitbit'
-
-type AuthConfig = {
-  clientId: string
-  scopes: string[]
-  authEndpoint: string
-  tokenEndpoint: string
-}
+import type { AuthProvider, OauthProvider } from './providers'
+export type { OauthProvider } from './providers'
 
 type BadAuthReason = 'invalid_token'
 
@@ -25,32 +17,6 @@ class AuthError extends Error {
   }
 }
 
-const oauthConfig: Record<OauthProvider, AuthConfig> = {
-  google: {
-    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-    scopes: manifest.oauth2.scopes,
-    authEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-    tokenEndpoint: 'https://oauth2.googleapis.com/token'
-  },
-  fitbit: {
-    clientId: import.meta.env.VITE_FITBIT_CLIENT_ID,
-    scopes: ['sleep', 'activity'],
-    authEndpoint: 'https://www.fitbit.com/oauth2/authorize',
-    tokenEndpoint: 'https://api.fitbit.com/oauth2/token'
-  },
-  spotify: {
-    clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-    scopes: [
-      'streaming',
-      'app-remote-control',
-      'user-read-playback-state',
-      'user-modify-playback-state',
-      'playlist-read-private'
-    ],
-    authEndpoint: 'https://accounts.spotify.com/authorize',
-    tokenEndpoint: 'https://accounts.spotify.com/api/token'
-  }
-}
 
 const OAUTH2_STORAGE_KEY = 'oauth2'
 
@@ -90,21 +56,21 @@ const base64encode = (input: ArrayBuffer) => {
 }
 
 export class AuthClient {
-  provider: OauthProvider
+  provider: AuthProvider
   logger: Logger
 
-  constructor(provider: OauthProvider) {
+  constructor(provider: AuthProvider) {
     this.provider = provider
-    this.logger = new Logger(`auth:${provider}`)
+    this.logger = new Logger(`auth:${provider.name}`)
   }
 
   get storageKey() {
-    return `${OAUTH2_STORAGE_KEY}.${this.provider}`
+    return `${OAUTH2_STORAGE_KEY}.${this.provider.name}`
   }
 
   async isAuthenticated(): Promise<boolean> {
     try {
-      if (this.provider === 'google' && typeof chrome !== 'undefined') {
+      if (this.provider.name === 'google' && typeof chrome !== 'undefined') {
         const token = await this.getAuthTokenChrome()
         if (token) {
           return true
@@ -147,7 +113,7 @@ export class AuthClient {
   async refreshAccessToken(
     refreshToken: string
   ): Promise<TokenResponse | null> {
-    const config = oauthConfig[this.provider]
+    const config = this.provider
 
     const response = await fetch(config.tokenEndpoint, {
       method: 'POST',
@@ -166,7 +132,7 @@ export class AuthClient {
         throw new AuthError(
           `Failed to refresh token: ${errorBody}`,
           'invalid_token',
-          this.provider
+          this.provider.name
         )
       }
       return null
@@ -240,7 +206,7 @@ export class AuthClient {
   }
 
   async getAuthToken(interactive = false): Promise<string | undefined> {
-    if (this.provider === 'google' && typeof chrome !== 'undefined') {
+    if (this.provider.name === 'google' && typeof chrome !== 'undefined') {
       // if we are on chrome browser then use the preferred auth token
       // method that is already build in
       try {
@@ -250,13 +216,13 @@ export class AuthClient {
         }
       } catch (e) {
         console.error(
-          `${this.provider}: No luck retrieving oauth token using build in functionality, trying manually`,
+          `${this.provider.name}: No luck retrieving oauth token using build in functionality, trying manually`,
           e
         )
       }
     }
 
-    const config = oauthConfig[this.provider]
+    const config = this.provider
 
     const storedToken = await this.getTokenFromStoreOrRefreshToken()
 
