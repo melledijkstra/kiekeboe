@@ -11,7 +11,9 @@
     "dev": "npm run -w @odysea/extension dev",
     "storybook": "npm run -w @odysea/extension storybook",
     "start-server": "npm run -w @odysea/server start",
-    "serverless:dev": "npm run -w @odysea/serverless dev"
+    "serverless:dev": "npm run -w @odysea/serverless dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint"
   },
   "repository": {
     "type": "git",
@@ -31,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/melledijkstra/kiekeboe/issues"
   },
-  "homepage": "https://github.com/melledijkstra/kiekeboe#readme"
+  "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  }
 }
