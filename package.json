@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "A personal ecosystem",
+  "author": "Melle Dijkstra",
+  "license": "GPL-3.0-only",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -15,12 +17,15 @@
     "test": "turbo run test",
     "lint": "turbo run lint"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/melledijkstra/kiekeboe.git"
-  },
-  "engines": {
-    "node": ">=20"
   },
   "keywords": [
     "chrome",
@@ -28,13 +33,8 @@
     "homepage",
     "productivity"
   ],
-  "author": "Melle Dijkstra",
-  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/melledijkstra/kiekeboe/issues"
   },
-  "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
-  "devDependencies": {
-    "turbo": "^1.11.3"
-  }
+  "homepage": "https://github.com/melledijkstra/kiekeboe#readme"
 }
