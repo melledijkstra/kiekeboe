@@ -1,5 +1,8 @@
 name: CI
 
+env:
+  CI: true
+
 on:
   push:
     branches: [main]
@@ -7,7 +10,7 @@ on:
     branches: [main]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +24,6 @@ jobs:
       # - name: Lint server
       #   run: npm run -w @odysea/server lint
       - name: Test server
-        run: npm run -w @odysea/server test -- --run
+        run: npm run -w @odysea/server test
       - name: Test serverless
-        run: npm run -w @odysea/serverless test -- --run
+        run: npm run -w @odysea/serverless test
