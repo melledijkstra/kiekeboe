@@ -33,7 +33,6 @@
     "storybook": "^8.6.12",
     "svelte": "^5.34.7",
     "tailwindcss": "^4.1.10",
-    "typescript": "^5.7.3",
     "vite": "^6.3.5",
     "vite-plugin-static-copy": "^2.3.0",
     "webextension-polyfill": "^0.12.0"
