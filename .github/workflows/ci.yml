@@ -19,11 +19,9 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      - name: Build extension
-        run: npm run -w @odysea/extension build
+      - name: Build Packages
+        run: npm run build
       # - name: Lint server
       #   run: npm run -w @odysea/server lint
-      - name: Test server
-        run: npm run -w @odysea/server test
-      - name: Test serverless
-        run: npm run -w @odysea/serverless test
+      - name: Test Packages
+        run: npm run test

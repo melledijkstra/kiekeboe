@@ -3,22 +3,32 @@
   "version": "1.0.0",
   "private": true,
   "description": "A personal ecosystem",
+  "author": "Melle Dijkstra",
+  "license": "GPL-3.0-only",
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run -w @odysea/extension dev",
-    "storybook": "npm run -w @odysea/extension storybook",
-    "start-server": "npm run -w @odysea/server start",
-    "serverless:dev": "npm run -w @odysea/serverless dev"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "lint": "turbo run lint",
+    "extension": "turbo run --filter=@odysea/extension",
+    "server": "turbo run --filter=@odysea/server",
+    "serverless": "turbo run --filter=@odysea/serverless"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/melledijkstra/kiekeboe.git"
-  },
-  "engines": {
-    "node": ">=20"
   },
   "keywords": [
     "chrome",
@@ -26,10 +36,9 @@
     "homepage",
     "productivity"
   ],
-  "author": "Melle Dijkstra",
-  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/melledijkstra/kiekeboe/issues"
   },
-  "homepage": "https://github.com/melledijkstra/kiekeboe#readme"
+  "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
+  "packageManager": "npm@10.8.2"
 }

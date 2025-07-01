@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "deno run --allow-net --allow-env --watch --env-file main.ts",
     "start": "deno run --allow-net --allow-env --env-file main.ts",
-    "test": "vitest"
+    "lint": "deno lint",
+    "test": "vitest run",
+    "test:watch": "vitest --watch"
   },
   "keywords": [
     "serverless",

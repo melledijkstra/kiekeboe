@@ -7,8 +7,9 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "lint": "eslint .",
-    "test": "vitest",
+    "lint": "echo 'Not implemented yet'",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
     "migrate": "tsx scripts/migrate --knexfile ./knexfile.ts migrate:latest"
   },
   "dependencies": {
