@@ -32,15 +32,15 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
   }
   
   async setVolume(volume: number): Promise<void> {
-    fn();
+    fn(() => volume);
   }
   
   async seek(position: number): Promise<void> {
-    fn();
+    fn(() => position);
   }
   
   async toggleShuffle(shuffle: boolean): Promise<void> {
-    fn();
+    fn(() => shuffle);
   }
 }
 

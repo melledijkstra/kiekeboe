@@ -32,7 +32,7 @@
       ? 'block'
       : 'hidden'} absolute bottom-full p-1 bg-black rounded text-white shadow-md"
   >
-    {#each otherDevices as device}
+    {#each otherDevices as device (device.id)}
       <button
         class="flex text-xs w-full justify-between items-center hover:bg-green-800 cursor-pointer"
         onclick={() => onActivate(device.id)}

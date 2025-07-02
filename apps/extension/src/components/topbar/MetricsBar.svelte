@@ -90,7 +90,7 @@
 
 {#if !!metrics.length}
   <div class="flex flex-row gap-2">
-    {#each metrics as metric}
+    {#each metrics as metric, i (i)}
       {#if isClock(metric)}
         <Clock metric={metric} />
       {:else if isCounter(metric)}

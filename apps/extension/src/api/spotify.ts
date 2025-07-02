@@ -78,7 +78,7 @@ export class SpotifyClient extends TokenBaseClient {
   }
 
   async startPlayback(contextUri?: string, offset?: number) {
-    const body: Record<string, any> = {
+    const body: Record<string, unknown> = {
       position_ms: 0
     }
 

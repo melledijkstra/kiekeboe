@@ -20,7 +20,7 @@
   <h1 class="text-2xl font-bold mb-4">Your Playlists</h1>
   {#if playlists?.length}
     <ul class="space-y-2 h-full overflow-y-auto">
-      {#each playlists as playlist}
+      {#each playlists as playlist (playlist.id)}
         <li>
           <button
             class={[

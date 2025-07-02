@@ -96,7 +96,7 @@
         />
       </ul>
     {:else}
-      <AuthButton provider={'google'} onclick={triggerAuthFlow} />
+      <AuthButton provider="google" onclick={triggerAuthFlow} />
     {/if}
   </div>
 </div>

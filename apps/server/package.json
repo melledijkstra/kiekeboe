@@ -7,7 +7,7 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "lint": "echo 'Not implemented yet'",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "migrate": "tsx scripts/migrate --knexfile ./knexfile.ts migrate:latest"
@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
-    "@types/node": "^24.0.3"
+    "@types/express": "^5.0.1"
   }
 }

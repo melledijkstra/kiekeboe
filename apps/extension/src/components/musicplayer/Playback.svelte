@@ -17,9 +17,9 @@
 
   const { controller }: { controller: MusicPlayerInterface } = $props()
 
-  let isPaused = $derived($spotifyState.playbackState?.paused ?? true)
-  let isShuffling = $derived($spotifyState.playbackState?.shuffle)
-  let repeatMode = $derived($spotifyState.playbackState?.repeat_mode)
+  let isPaused = $derived(spotifyState.playbackState?.paused ?? true)
+  let isShuffling = $derived(spotifyState.playbackState?.shuffle)
+  let repeatMode = $derived(spotifyState.playbackState?.repeat_mode)
   let repeatModeIcon = $derived.by(() => {
     switch (repeatMode) {
       case 1:
@@ -31,8 +31,8 @@
         return mdiRepeatOff
     }
   })
-  let track = $derived($spotifyState.playbackState?.track_window.current_track)
-  let position = $derived($spotifyState.playbackState?.position ?? 0)
+  let track = $derived(spotifyState.playbackState?.track_window.current_track)
+  let position = $derived(spotifyState.playbackState?.position ?? 0)
   let remaining = $derived(track ? track.duration_ms - position : 0)
   let timeLeft = $derived<string>(millisecondsToTime(remaining))
   let currentTime = $derived<string>(millisecondsToTime(position))
@@ -71,18 +71,18 @@
           path={mdiShuffleVariant}
         />
       </button>
-      <button class="cursor-pointer" onclick={() => onPrev?.()}>
+      <button class="cursor-pointer" onclick={() => controller.previousTrack?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipPrevious} />
       </button>
-      <button class="cursor-pointer" onclick={() => onPlayPause?.()}>
+      <button class="cursor-pointer" onclick={() => controller.onPlayPause?.()}>
         <Icon class="size-6 fill-white" path={isPaused ? mdiPlay : mdiPause} />
       </button>
-      <button class="cursor-pointer" onclick={() => onNext?.()}>
+      <button class="cursor-pointer" onclick={() => controller.nextTrack?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipNext} />
       </button>
       <button class="cursor-pointer"
         disabled={typeof repeatMode === 'undefined'}
-        onclick={() => repeatMode && onRepeat?.(repeatMode)}>
+        onclick={() => repeatMode && controller.switchRepeatMode?.(repeatMode)}>
         <Icon class="size-6 fill-white" path={repeatModeIcon} />
       </button>
     </div>
@@ -93,7 +93,7 @@
         min="0"
         max={track?.duration_ms}
         bind:value={position}
-        onchange={() => onSeek?.(position)}
+        onchange={() => controller.seek?.(position)}
         tabindex="0"
         class="bg-gray-200/50 rounded-full h-2 accent-green-700"
       />

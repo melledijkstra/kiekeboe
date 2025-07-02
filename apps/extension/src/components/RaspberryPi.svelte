@@ -9,7 +9,7 @@
   async function fetchDatabaseStatus(URI?: string) {
     try {
       raspberryStatus = await isRaspberryAlive(URI ?? settings.state.network.databaseUri)
-    } catch (error) {
+    } catch {
       raspberryStatus = false
     }
   }

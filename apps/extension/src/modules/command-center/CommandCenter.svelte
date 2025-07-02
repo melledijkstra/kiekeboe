@@ -125,7 +125,7 @@
                   {commandGroup}
                 </Command.GroupHeading>
                 <Command.GroupItems>
-                  {#each commandService.commands[commandGroup as keyof CommandGroups] as command}
+                  {#each commandService.commands[commandGroup as keyof CommandGroups] as command (command.name)}
                     <Command.Item
                       class="rounded-button data-selected:bg-zinc-400 outline-hidden flex h-10 cursor-pointer select-none items-center gap-2 px-3 py-2.5 text-sm"
                       keywords={command.keywords.map((k) => `/${k}`)}

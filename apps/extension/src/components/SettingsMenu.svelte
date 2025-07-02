@@ -50,7 +50,7 @@
     'flex flex-col text-zinc-600 dark:text-white',
     props.class
   ]}>
-    {#each sections as sectionName}
+    {#each sections as sectionName (sectionName)}
       <Tabs.Trigger
         value={sectionName}
         class={[
@@ -66,7 +66,7 @@
     class="w-px h-full dark:bg-zinc-200 bg-zinc-700 mx-2"
     orientation="vertical"
   />
-  {#each sections as sectionName}
+  {#each sections as sectionName (sectionName)}
     <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
       {#if sectionName === 'general' && !settings.state.loaded}
         <div>Loading...</div>

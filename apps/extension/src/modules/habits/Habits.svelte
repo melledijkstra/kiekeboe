@@ -26,7 +26,6 @@
 
 <div class="relative">
   <IconButton
-    tooltip="Habits"
     onclick={() => (open = !open)}
     icon={mdiInfinity}
   />
@@ -45,7 +44,7 @@
       >
     </div>
     <ul class="mt-4">
-      {#each $habits as habit}
+      {#each $habits as habit, i (i)}
         <li style:color={habit.color} class="p-2 border-b">{habit.name}</li>
       {/each}
     </ul>

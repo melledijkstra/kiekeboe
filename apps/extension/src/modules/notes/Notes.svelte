@@ -47,7 +47,7 @@
     </textarea>
     <button class="block my-2 text-white" onclick={createNote}>Save</button>
     <ul>
-      {#each $notes as note}
+      {#each $notes as note, i (i)}
         <li class="text-white border-t-[1px]">
           <h4 class="text-lg">
             {note.title}

@@ -14,10 +14,6 @@
   import { resetTitle, setTitle } from '@/app-state.svelte'
   import Panel from '@/components/atoms/Panel.svelte'
 
-  type Props = {
-    onMinutePassed: () => void
-  }
-
   const { onMinutePassed } = $props()
 
   let pState = $state<PomodoroState>({
@@ -26,7 +22,6 @@
     duration: 0,
     isRunning: false
   })
-  let seconds = $state(0)
   let audio = $state<HTMLAudioElement>(new Audio())
   let timeLeft = $derived(Timer.formatRemainingTime(pState.timeRemaining))
 

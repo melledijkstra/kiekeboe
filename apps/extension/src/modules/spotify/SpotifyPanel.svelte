@@ -31,7 +31,7 @@
   })
 </script>
 
-<Panel class={'min-w-[500] max-h-96'} nopadding>
+<Panel class="min-w-[500] max-h-96" nopadding>
   {#if !SpotifyController?.hasLockAcquired()}
     <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
     <p class="text-center text-sm">

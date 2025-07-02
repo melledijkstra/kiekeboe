@@ -7,6 +7,7 @@ import { AuthClient } from "@/oauth2/auth";
 import { playbackLoop } from "@/time/utils";
 import type { MusicPlayerInterface } from "./MusicPlayerInterface";
 import type { ILogger } from "@/interfaces/logger.interface";
+import type { Track } from "@/api/definitions/spotify";
 
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
@@ -131,7 +132,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     spotifyState.position = position
   }
 
-  async getCurrentTrack(): Promise<any> {
+  async getCurrentTrack(): Promise<Track> {
     // await this.apiClient?.getCurrentTrack()
     throw new Error('Method not implemented.');
   }
@@ -169,11 +170,13 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
       this.logger.log('retrievePlaybackState: user is not playing music through the Web SDK, trying to retrieve from Web API');
       const playbackState = await this.api?.getPlaybackState()
       if (playbackState) {
-        spotifyState.playbackState = playbackState
-        return playbackState
+        this.logger.log('retrievePlaybackState: Playback state retrieved from Web API', playbackState);
+        // spotifyState.playbackState = playbackState
+        // return playbackState
+        return
       } else {
         this.logger.log('retrievePlaybackState: No playback state available from Web API');
-        return undefined
+        return
       }
     }
   }

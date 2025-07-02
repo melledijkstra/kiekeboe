@@ -68,7 +68,7 @@
       </div>
       <hr class="my-2" />
       <!-- list of saved metrics -->
-      {#each trackers.countdowns as countdown, i}
+      {#each trackers.countdowns as countdown, i (i)}
         <div class="flex flex-row justify-between gap-2">
           <Countdown metric={countdown} />
           <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
@@ -76,7 +76,7 @@
           </button>
         </div>
       {/each}
-      {#each trackers.worldClocks as worldClock, i}
+      {#each trackers.worldClocks as worldClock, i (i)}
         <div class="flex flex-row justify-between gap-2">
           <WorldClock metric={worldClock} />
           <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">

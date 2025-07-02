@@ -13,7 +13,7 @@
 
 <!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
 <Story name="Default">
-  {#snippet children()}
+  {#snippet template()}
     <Form />
   {/snippet}
 </Story>
