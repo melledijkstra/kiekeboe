@@ -84,6 +84,7 @@ export class Settings implements ILogger {
 
     if (!changeListenersSet) {
       browser.storage.sync.onChanged.addListener((changes) => this.onStorageSettingsChanged(changes))
+      changeListenersSet = true
     }
 
     this._loading = false

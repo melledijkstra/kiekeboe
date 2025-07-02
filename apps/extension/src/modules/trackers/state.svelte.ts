@@ -66,7 +66,10 @@ class Trackers {
       if (stored) {
         this.counters = JSON.parse(stored) as Counter[]
       }
-    } catch(ignored) {}
+    } catch {
+      this.counters = []
+      localStorage.removeItem(STORAGE_KEYS.counters) // clear invalid data
+    }
   }
 
   private loadCountdowns() {
@@ -75,7 +78,10 @@ class Trackers {
       if (stored) {
         this.countdowns = JSON.parse(stored) as CountDown[]
       }
-    } catch(ignored) {}
+    } catch {
+      this.countdowns = []
+      localStorage.removeItem(STORAGE_KEYS.countdowns) // clear invalid data
+    }
   }
 
   private loadClocks() {
@@ -84,7 +90,10 @@ class Trackers {
       if (stored) {
         this.worldClocks = JSON.parse(stored) as WorldClock[]
       }
-    } catch(ignored) {}
+    } catch {
+      this.worldClocks = []
+      localStorage.removeItem(STORAGE_KEYS.worldClocks) // clear invalid data
+    }
   }
 
   addCountdown(name: string, date: string, pinned: boolean) {

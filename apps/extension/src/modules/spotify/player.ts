@@ -36,7 +36,7 @@ export async function initializeSpotifyPlayer(
   authClient: AuthClient,
   initialVolume: number = 0.5
 ): Promise<Spotify.Player> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       window.onSpotifyWebPlaybackSDKReady = () => {
         logger.log('Spotify Web Playback SDK is ready, setting up player')
@@ -53,7 +53,7 @@ export async function initializeSpotifyPlayer(
 
         resolve(player)
       }
-      await loadSpotifySDK()
+      loadSpotifySDK()
     } catch (error) {
       reject(error)
     }

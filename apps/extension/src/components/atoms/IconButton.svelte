@@ -1,13 +1,14 @@
 <script lang="ts">
   import type { ClassValue, HTMLButtonAttributes } from 'svelte/elements'
   import Icon from './Icon.svelte'
+  import type { Snippet } from 'svelte'
 
   type IconButtonProps = {
     icon: string;
-    children?: any;
+    children?: Snippet;
   } & HTMLButtonAttributes;
 
-  const { icon, children = null, ...props }: IconButtonProps = $props()
+  const { icon, children, ...props }: IconButtonProps = $props()
 
   function hasColorClass(classProp: ClassValue | null | undefined): boolean {
     if (typeof classProp === 'string') {

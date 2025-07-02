@@ -1,12 +1,14 @@
 <script lang="ts">
-  interface IconProps extends Partial<HTMLOrSVGElement> {
+  import type { HTMLAttributes } from "svelte/elements"
+
+  type IconProps = {
 		path: string
 		class?: string
     size?: number
     viewbox?: `${number} ${number} ${number} ${number}`
     flip?: string
     rotate?: number
-  }
+  } & HTMLAttributes<SVGElement>
 
   const {
 		path,

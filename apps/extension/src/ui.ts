@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
 
 export async function retrieveUsername(): Promise<string | undefined> {
-  let { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
+  const { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
     NAME_STORAGE_KEY
   )) as { name: string }
 

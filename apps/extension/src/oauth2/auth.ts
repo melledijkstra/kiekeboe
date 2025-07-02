@@ -117,7 +117,7 @@ export class AuthClient {
       this.logger.log({ token })
   
       return !!token
-    } catch (error) {
+    } catch {
       return false
     }
   }
@@ -181,7 +181,8 @@ export class AuthClient {
   async getTokenFromStoreOrRefreshToken(): Promise<string | undefined> {
     const storeToken = await this.getAuthTokenFromStorage()
 
-    let { access_token, refresh_token, expires_at } = storeToken ?? {}
+    let { access_token } = storeToken ?? {};
+    const { refresh_token, expires_at } = storeToken ?? {}
 
     this.logger.log('token in storage?', { storeToken })
 

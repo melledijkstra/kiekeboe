@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Tooltip } from "bits-ui";
-  import IconButton from "./IconButton.svelte"
   import Icon from "./Icon.svelte"
 
   type MenuButtonProps = {

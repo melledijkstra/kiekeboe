@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_ENV=development vite build --watch --mode development",
     "build": "vite build",
-    "lint": "echo 'Not implemented yet'",
+    "lint": "eslint .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -27,7 +27,6 @@
     "@types/node": "^24.0.3",
     "@types/webextension-polyfill": "^0.12.3",
     "autoprefixer": "^10.4.21",
-    "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "sass-embedded": "^1.89.2",
     "storybook": "^8.6.12",

@@ -1,10 +1,31 @@
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
+import svelte from 'eslint-plugin-svelte';
 import svelteParser from "svelte-eslint-parser";
+import tsParser from "@typescript-eslint/parser";
+import { globalIgnores } from 'eslint/config';
+import globals from 'globals';
 
 export default ts.config([
   js.configs.recommended,
-  ts.configs.recommended,
+  ...ts.configs.recommended,
+  ...svelte.configs.recommended,
+  globalIgnores([
+    "**/node_modules/",
+    "**/dist/",
+    "**/.dist/",
+    "**/coverage/",
+    "apps/mobile/",
+    "apps/extension/public"
+  ]),
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        Spotify: "readonly"
+      }
+    }
+  },
   {
     files: [
       "**/*.svelte",
@@ -17,6 +38,9 @@ export default ts.config([
     ],
     languageOptions: {
       parser: svelteParser,
+      parserOptions: {
+        parser: tsParser
+      }
     },
   },
 ]);

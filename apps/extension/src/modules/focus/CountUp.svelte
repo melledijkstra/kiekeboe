@@ -4,13 +4,8 @@
   import { formatSeconds } from '@/time/utils'
   import { onMount } from 'svelte'
 
-  type Props = {
-    onMinutePassed: () => void
-  }
-
   const { onMinutePassed } = $props()
 
-  let startTime = $state<number | null>(null)
   let seconds = $state(0)
   let displaySeconds = $derived(formatSeconds(seconds))
   let timer = $state(
@@ -21,12 +16,10 @@
   )
 
   function start() {
-    startTime = Date.now()
     timer.start()
   }
 
   function stop() {
-    startTime = null
     seconds = 0
     timer.stop()
   }

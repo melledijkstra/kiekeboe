@@ -18,7 +18,6 @@
     value = $bindable<string>(),
     placeholder,
     label = null,
-    labelProps = {},
     ...props
   }: SelectProps = $props()
 </script>
@@ -37,7 +36,7 @@
   {#if placeholder}
     <option value="" disabled selected>{placeholder}</option>
   {/if}
-  {#each props.options || [] as option}
+  {#each props.options || [] as option (option.value)}
     <option value={option.value}>{option.label}</option>
   {/each}
 </select>

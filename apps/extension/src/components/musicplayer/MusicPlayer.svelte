@@ -44,12 +44,12 @@
 
 <div class="flex flex-row gap-3">
   <ul class="py-2">
-    {#each playlists as playlist}
+    {#each playlists as playlist (playlist.id)}
       <li>{@render renderPlaylist(playlist)}</li>
     {/each}
   </ul>
   <ul class="py-2">
-    {#each tracks as track}
+    {#each tracks as track (track.id)}
       <li>{@render renderTrack(track)}</li>
     {/each}
   </ul>

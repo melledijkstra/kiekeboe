@@ -1,10 +1,10 @@
-export function log(...data: any[]) {
+export function log(...data: unknown[]) {
   if (import.meta.env.MODE === 'development') {
     console.log(...data)
   }
 }
 
-function error(...data: any[]) {
+function error(...data: unknown[]) {
   if (import.meta.env.MODE === 'development') {
     console.error(...data)
   }

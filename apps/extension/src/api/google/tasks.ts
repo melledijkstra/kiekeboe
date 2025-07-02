@@ -65,7 +65,7 @@ export class TasksClient extends TokenBaseClient {
   }
 
   async updateTask(task: Task) {
-    throw new Error('Not implemented yet!')
+    throw new Error('Update Task not implemented yet!' + task.id)
   }
 
   async createTask(

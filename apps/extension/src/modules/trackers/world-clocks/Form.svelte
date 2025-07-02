@@ -3,7 +3,6 @@
   import Toggle from '@/components/atoms/Toggle.svelte'
   import { mdiClockPlusOutline } from '@mdi/js'
   import { trackers } from '../state.svelte'
-  import { onDestroy, onMount } from 'svelte'
   import TextInput from '@/components/TextInput.svelte'
   import Select from '@/components/atoms/Select.svelte'
 

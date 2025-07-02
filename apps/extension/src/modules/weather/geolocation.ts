@@ -47,7 +47,7 @@ export async function getCurrentPosition(): Promise<
 > {
   try {
     return await getGeolocationBrowser()
-  } catch (err) {
+  } catch {
     log('Failed to retrieve geolocation through browser, trying API service...')
     // if we can't get geolocation through browser we try through API service
     const data = await cachedFetchGeolocation()

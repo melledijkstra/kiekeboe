@@ -63,7 +63,7 @@ function isValidModule(module: unknown): module is Module {
   return typeof module === 'object' && module !== null && 'component' in module
 }
 
-let loadedModules = new Map<ModuleID, Module>()
+const loadedModules = new Map<ModuleID, Module>()
 
 export async function loadModule(id: ModuleID): Promise<Module> {
   const module = MODULE_CONFIG.find((m) => m.id === id)

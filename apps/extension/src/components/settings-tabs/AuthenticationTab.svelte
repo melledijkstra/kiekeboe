@@ -22,7 +22,7 @@
 </script>
 
 <h1 class="text-xl mb-3">Authentication</h1>
-{#await retrieveAuthState() then _ignore}
+{#await retrieveAuthState()}
   <div class="flex flex-col gap-3">
     <p class="text-sm">
       <strong>Google:</strong>
@@ -30,7 +30,7 @@
         <AuthButton
           class="mt-2"
           disabled={authState.google}
-          provider={'google'}
+          provider="google"
           onclick={async () => {
             const token = await clients.google.getAuthToken(true)
             authState.google = !!token
@@ -43,7 +43,7 @@
       <AuthButton
         class="mt-2"
         disabled={authState.spotify}
-        provider={'spotify'}
+        provider="spotify"
         onclick={async () => {
           const token = await clients.spotify.getAuthToken(true)
           authState.spotify = !!token
@@ -56,7 +56,7 @@
       <AuthButton
         class="mt-2"
         disabled={authState.fitbit}
-        provider={'fitbit'}
+        provider="fitbit"
         onclick={async () => {
           const token = await clients.fitbit.getAuthToken(true)
           authState.fitbit = !!token
