@@ -22,10 +22,21 @@ export default ts.config([
     languageOptions: {
       globals: {
         ...globals.browser,
+      }
+    }
+  },
+  // Extension Configuration
+  {
+    files: [
+      "apps/extension/**/*.{js,ts,svelte,svelte.js,svelte.ts}",
+    ],
+    languageOptions: {
+      globals: {
         Spotify: "readonly"
       }
     }
   },
+  // Svelte Configuration
   {
     files: [
       "**/*.svelte",
