@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { UnsplashClient } from '@/api/unsplash'
+  import { updateBackgroundImage } from '@/ui'
 
   let client = $state<UnsplashClient>()
   let loaded = $state(false)
@@ -19,7 +20,7 @@
     const url = await client?.getDailyImage()
 
     if (url) {
-      client?.loadImage(url, () => {
+      updateBackgroundImage(url, () => {
         loaded = true
       })
     }

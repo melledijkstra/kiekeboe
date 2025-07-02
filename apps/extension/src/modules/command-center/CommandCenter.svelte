@@ -41,7 +41,7 @@
   }
 
   function removeQueryParam(isOpen: boolean) {
-    console.log('Removing query param, isOpen:', isOpen)
+    log('Removing query param, isOpen:', isOpen)
     const url = new URL(window.location.href);
     if (!isOpen && url.searchParams.has("command-center")) {
       url.searchParams.delete("command-center");

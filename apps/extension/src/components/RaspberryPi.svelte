@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isRaspberryAlive } from '@/api/raspberry'
+  import { log } from '@/logger'
   import { settings } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
 
@@ -15,7 +16,7 @@
   }
 
   onMount(() => {
-    console.log('RaspberryPi mounted')
+    log('RaspberryPi mounted')
   })
 
   $effect(() => {

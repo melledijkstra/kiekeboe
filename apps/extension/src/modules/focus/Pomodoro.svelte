@@ -13,6 +13,7 @@
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
   import Panel from '@/components/atoms/Panel.svelte'
+  import { log } from '@/logger'
 
   const { onMinutePassed } = $props()
 
@@ -40,7 +41,7 @@
     const durationMinutes = Math.floor(state.duration / 60000)
     const oldMinutes = Math.floor(pState.timeRemaining / 60000)
     const newMinutes = Math.floor(state.timeRemaining / 60000)
-    console.log(oldMinutes, newMinutes)
+    log(oldMinutes, newMinutes)
     if (oldMinutes !== durationMinutes && oldMinutes > newMinutes) {
       onMinutePassed()
     }

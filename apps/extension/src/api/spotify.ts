@@ -1,11 +1,14 @@
 import type { AuthClient } from '@/oauth2/auth'
 import type { Device, PlaybackState, Playlist } from './definitions/spotify'
 import { TokenBaseClient } from './tokenbaseclient'
-import { log } from '@/logger'
+import { Logger } from '@/logger'
+import type { ILogger } from '@/interfaces/logger.interface'
 
 const BASE_URL = 'https://api.spotify.com/v1'
 
-export class SpotifyClient extends TokenBaseClient {
+export class SpotifyClient extends TokenBaseClient implements ILogger {
+  logger = new Logger('SpotifyClient')
+
   constructor(private authClient: AuthClient) {
     super(BASE_URL, '')
   }
@@ -102,7 +105,7 @@ export class SpotifyClient extends TokenBaseClient {
 
   async getPlaybackState() {
     await this.retrieveAccessToken()
-    log('Retrieving playback state from Spotify Web API')
+    this.logger.log('Retrieving playback state from Spotify Web API')
     const response = await this.request<PlaybackState>('/me/player')
 
     if (response) {
