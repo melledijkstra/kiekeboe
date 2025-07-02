@@ -1,8 +1,10 @@
+import { log } from "@/logger";
+
 let isAlive = false;
 
 export const isRaspberryAlive = async (databaseUri?: string): Promise<boolean> => {
   const _databaseUri = databaseUri ?? 'http://raspberrypi.local:3000';
-  console.debug('Checking if Raspberry Pi is alive', {
+  log('Checking if Raspberry Pi is alive', {
     uri: _databaseUri
   });
   try {

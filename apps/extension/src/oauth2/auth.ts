@@ -265,6 +265,11 @@ export class AuthClient {
         storedToken
       })
       return storedToken
+    } else if (!interactive) {
+      this.logger.log(
+        'no token retrieved, but not interactive, so returning nothing'
+      )
+      return
     }
 
     this.logger.log(

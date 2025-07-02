@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Playlist } from "@/api/definitions/spotify"
   import type { SpotifyController } from "@/controllers/SpotifyController"
+  import { log } from "@/logger"
   import { onMount } from "svelte"
 
   const { controller }: { controller?: SpotifyController } = $props()
@@ -29,7 +30,7 @@
             ]}
             onclick={() => {
               // Handle playlist click, e.g., navigate to playlist details
-              console.log(`Clicked on playlist: ${playlist.name}`)
+              log(`Clicked on playlist: ${playlist.name}`)
               controller?.api?.startPlayback(playlist.uri)
             }}
           >

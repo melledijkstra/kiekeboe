@@ -1,4 +1,5 @@
 import { dbPromise, storeInDB } from '@/db'
+import { log } from '@/logger'
 
 export type FocusSession = {
   topic?: string
@@ -12,7 +13,7 @@ export type FocusSession = {
 }
 
 export async function storeFocusSession(session: FocusSession) {
-  console.log('Storing focus session', session)
+  log('Storing focus session', session)
   await storeInDB('focus', session)
 }
 

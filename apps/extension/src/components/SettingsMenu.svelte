@@ -10,6 +10,7 @@
   import GeneralTab from '@/components/settings-tabs/GeneralTab.svelte'
   import type { HTMLAttributes } from 'svelte/elements'
   import { Separator, Tabs } from 'bits-ui'
+  import { log } from '@/logger'
 
   const sections = [
     'general',
@@ -35,7 +36,7 @@
   }
 
   onMount(() => {
-    console.log('SettingsMenu mounted')
+    log('SettingsMenu mounted')
     settings.initialize()
   })
 </script>

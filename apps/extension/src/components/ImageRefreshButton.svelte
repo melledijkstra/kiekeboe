@@ -5,6 +5,7 @@
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { settings } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
+  import { log } from '@/logger'
 
   let unsplashClient = $state<UnsplashClient>()
 
@@ -16,7 +17,7 @@
   }
 
   $effect(() => {
-    console.log('ImageRefreshButton effect triggered', {
+    log('ImageRefreshButton effect triggered', {
       loaded: settings.state.loaded,
       serverlessHost: settings.state.network.serverlessHost,
       unsplashHost: unsplashClient?.host
@@ -36,7 +37,7 @@
     }
 
     if (settings.state.ui.dailyImageQuery !== unsplashClient.query) {
-      console.log(
+      log(
         'query changed',
         settings.state.ui.dailyImageQuery
       )
@@ -47,7 +48,7 @@
   })
 
   onMount(async () => {
-    console.log('ImageRefreshButton mounted')
+    log('ImageRefreshButton mounted')
     unsplashClient = new UnsplashClient(
       settings.state.network.serverlessHost,
       settings.state.ui.dailyImageQuery

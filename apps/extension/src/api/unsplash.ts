@@ -1,13 +1,12 @@
 import { SERVERLESS_HOST_URL } from '@/constants'
 import browser from 'webextension-polyfill'
 import { addDays, formatDate } from '@/date'
-import { log, Logger } from '@/logger'
+import { Logger } from '@/logger'
 import type { UnsplashResponse } from '@/api/definitions/unsplash'
 import type { ILogger } from '@/interfaces/logger.interface'
-import { ImageCache, type ImageInfo } from './image-cache'
+import { ImageCache, type ImageInfo } from '../cache/image-cache'
 
 const ENDPOINT = '/api/daily-image'
-
 
 export class UnsplashClient implements ILogger {
   public logger: Logger = new Logger('UnsplashClient')
@@ -30,6 +29,7 @@ export class UnsplashClient implements ILogger {
     if (!host || host.trim() === '') {
       throw new Error('Serverless host domain cannot be empty')
     }
+    this.logger.log('Setting new host for UnsplashClient:', host)
     this.HOST = host
   }
 
@@ -72,13 +72,13 @@ export class UnsplashClient implements ILogger {
     const cached = await this.cache.getDailyImageInfo()
 
     if (cached && cached.date === today) {
-      log('retrieved daily image from cache')
+      this.logger.log('retrieved daily image from cache')
       return cached.url
     }
 
     const next = await this.cache.getNextImageInfo()
     if (next) {
-      log('next image exists, use that one instead')
+      this.logger.log('next image exists, use that one instead')
       await this.cache.setDailyImageInfo({ ...next, date: today })
       await this.cache.clearNextImage()
       this.retrieveNextImage()

@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 import { DAILY_IMAGE_KEY, NEXT_IMAGE_KEY } from '@/constants'
-import { log, Logger } from '@/logger'
+import { Logger } from '@/logger'
+import type { ILogger } from '@/interfaces/logger.interface'
 
 export type ImageInfo = {
   id: string
@@ -8,8 +9,8 @@ export type ImageInfo = {
   date?: string
 }
 
-export class ImageCache {
-  private logger = new Logger('ImageCache')
+export class ImageCache implements ILogger {
+  logger = new Logger('ImageCache')
 
   async getDailyImageInfo(): Promise<ImageInfo | undefined> {
     const { [DAILY_IMAGE_KEY]: storedImage } = (await browser.storage.local.get(
@@ -42,11 +43,11 @@ export class ImageCache {
 
   async clearNextImage() {
     await browser.storage.local.remove(NEXT_IMAGE_KEY)
-    log('Next image cleared from storage')
+    this.logger.log('Next image cleared from storage')
   }
 
   async clearImageCache() {
     await browser.storage.local.remove([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])
-    log('Daily and next images cleared from storage')
+    this.logger.log('Daily and next images cleared from storage')
   }
 }
