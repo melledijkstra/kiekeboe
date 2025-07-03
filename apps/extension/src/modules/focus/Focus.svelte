@@ -1,7 +1,7 @@
 <script lang="ts">
   import Pomodoro from './Pomodoro.svelte'
   import CountUp from './CountUp.svelte'
-  import TextInput from '@/components/TextInput.svelte'
+  import Input from '@/components/atoms/Input.svelte'
   import Button from '@/components/atoms/Button.svelte'
   import { onDestroy } from 'svelte'
   import { storeFocusSession } from '@/db/focus'
@@ -63,5 +63,5 @@
   {/if}
 
   <label for="focusItem">What are you focussing on?</label>
-  <TextInput id="focusItem" class="bg-black/50 text-white" bind:value={focusItem} />
+  <Input id="focusItem" class="bg-black/50 text-white" type="text" bind:value={focusItem} />
 </div>
