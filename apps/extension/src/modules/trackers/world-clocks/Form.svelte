@@ -3,7 +3,7 @@
   import Toggle from '@/components/atoms/Toggle.svelte'
   import { mdiClockPlusOutline } from '@mdi/js'
   import { trackers } from '../state.svelte'
-  import TextInput from '@/components/TextInput.svelte'
+  import Input from '@/components/atoms/Input.svelte'
   import Select from '@/components/atoms/Select.svelte'
 
   const { onSubmitted }: { onSubmitted?: () => void } = $props()
@@ -38,12 +38,13 @@
     }))}
     placeholder="Select timezone"
     label="Timezone" />
-  <TextInput
+  <Input
     id="world-clock-name"
     label="Name"
     class="mb-2"
     placeholder="World Clock Name"
     required
+    type="text"
     bind:value={inputName}
   />
   <Toggle bind:checked={inputPinned} label="Pin?" />

@@ -3,7 +3,6 @@
   import Toggle from '@/components/atoms/Toggle.svelte'
   import { trackers } from '../state.svelte'
   import { mdiCalendarPlusOutline } from '@mdi/js'
-  import TextInput from '@/components/TextInput.svelte'
   import Input from '@/components/atoms/Input.svelte'
 
   const { onSubmitted }: { onSubmitted?: () => void } = $props()
@@ -39,11 +38,12 @@
     required
     bind:value={inputDate}
   />
-  <TextInput
+  <Input
     label="Name"
     class="mb-2"
     placeholder="Countdown Name"
     required
+    type="text"
     bind:value={inputName}
   />
   <Toggle bind:checked={inputPinned} label="Pin?" />

@@ -1,17 +1,19 @@
 <script>
   import Button from "@/components/atoms/Button.svelte"
-  import TextInput from "@/components/TextInput.svelte"
+  import Input from "@/components/atoms/Input.svelte"
   import { settings } from "@/settings/index.svelte"
 </script>
 
 <h1 class="text-xl">Network Settings</h1>
-<TextInput
+<Input
   class="mb-2"
   label="Database URI"
+  type="text"
   bind:value={settings.state.network.databaseUri}
 />
-<TextInput
+<Input
   label="Serverless Host"
+  type="text"
   bind:value={settings.state.network.serverlessHost}
 />
 <Button class="mt-2" onclick={() => settings.saveSettingsToStorage()}>
