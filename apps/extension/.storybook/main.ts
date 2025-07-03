@@ -6,9 +6,8 @@ const config: StorybookConfig = {
     '../stories/**/*.stories.@(js|ts|svelte)'
   ],
   addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "@storybook/addon-svelte-csf",
+    getAbsolutePath("@storybook/addon-svelte-csf"),
+    getAbsolutePath("@storybook/addon-docs")
   ],
   framework: {
     name: getAbsolutePath("@storybook/svelte-vite"),
