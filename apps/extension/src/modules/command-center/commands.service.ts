@@ -88,20 +88,16 @@ export class CommandService implements CommandServiceInterface, ILogger {
   }
 
   execute(input: string): void {
-    let commandItem: CommandItem | undefined;
+    const commandItem = this.findCommand(input)
 
     if (!commandItem) {
       addToast('Command not recognized. Please try again.')
       return
     }
 
-    if (commandItem) {
-      const prompt = input?.split(' ').slice(1).join(' ').trim()
-      this.logger.log(`Executing command: ${commandItem.name} with prompt: ${prompt}`)
-      commandItem.action();
-    } else {
-      console.warn(`Command not found for input: ${input}`);
-    }
+    const prompt = input?.split(' ').slice(1).join(' ').trim()
+    this.logger.log(`Executing command: ${commandItem.name} with prompt: ${prompt}`)
+    commandItem.action(prompt)
   }
 
   findCommand(input: string): CommandItem | undefined {
