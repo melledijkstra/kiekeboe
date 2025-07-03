@@ -4,6 +4,7 @@ import { Logger } from "@/logger";
 import { initializeSpotifyPlayer } from "@/modules/spotify/player";
 import { spotifyState } from "@/modules/spotify/spotify.store.svelte";
 import { AuthClient } from "@/oauth2/auth";
+import { SpotifyAuthProvider } from "@/oauth2/providers";
 import { playbackLoop } from "@/time/utils";
 import type { MusicPlayerInterface } from "./MusicPlayerInterface";
 import type { ILogger } from "@/interfaces/logger.interface";
@@ -12,7 +13,7 @@ import type { Track } from "@/api/definitions/spotify";
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
 
-  private authClient: AuthClient = new AuthClient('spotify');
+  private authClient: AuthClient = new AuthClient(new SpotifyAuthProvider());
   public api?: SpotifyClient;
   public player?: Spotify.Player;
   static hasLock: boolean = false;
