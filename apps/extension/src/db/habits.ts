@@ -1,4 +1,4 @@
-import { dbPromise, storeInDB } from '@/db'
+import { addItem, getAllItems } from '@/db/simple'
 
 export type Habit = {
   name: string
@@ -7,10 +7,9 @@ export type Habit = {
 }
 
 export async function addHabit(habit: Habit) {
-  await storeInDB('habits', habit)
+  await addItem('habits', habit)
 }
 
 export async function getAllHabits(): Promise<Habit[]> {
-  const db = await dbPromise
-  return await db.getAll('habits')
+  return await getAllItems('habits')
 }
