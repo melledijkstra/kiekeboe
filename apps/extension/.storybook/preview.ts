@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/svelte'
+import type { Preview } from '@storybook/svelte-vite'
 import '../src/app.css'
 
 export const initialGlobals = {

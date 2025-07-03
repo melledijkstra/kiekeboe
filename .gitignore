@@ -7,3 +7,8 @@ dist/
 node_modules/
 
 .turbo/
+
+# Storybook
+storybook-static/
+debug-storybook.log
+

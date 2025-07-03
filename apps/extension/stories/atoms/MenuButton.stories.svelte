@@ -2,7 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import MenuButton from '@/components/atoms/MenuButton.svelte'
   import { mdiAirplane, mdiSpa } from '@mdi/js'
-  import { fn } from '@storybook/test'
+  import { fn } from 'storybook/test'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({

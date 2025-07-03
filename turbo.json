@@ -27,6 +27,12 @@
     "test:watch": {
       "cache": false,
       "persistent": true
+    },
+    "storybook": {
+      "persistent": true,
+      "cache": false,
+      "dependsOn": ["^storybook"],
+      "outputs": []
     }
   }
 }

@@ -1,7 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import CommandCenter from '@/modules/command-center/CommandCenter.svelte'
-  import { fn } from '@storybook/test'
+  import { fn } from 'storybook/test'
   import type { CommandServiceInterface } from '@/modules/command-center/CommandServiceInterface'
   import type { CommandGroups } from '@/modules/command-center/types'
   import { mdiTestTube } from '@mdi/js'

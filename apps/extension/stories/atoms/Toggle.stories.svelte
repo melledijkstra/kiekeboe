@@ -1,7 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import Toggle from '@/components/atoms/Toggle.svelte'
-  import { fn } from '@storybook/test'
+  import { fn } from 'storybook/test'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
