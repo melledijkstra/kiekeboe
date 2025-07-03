@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import { Logger } from '@/logger'
-import type { AuthProvider, OauthProvider } from './providers'
+import type { AuthProvider } from './providers'
 export type { OauthProvider } from './providers'
 
 type BadAuthReason = 'invalid_token'

@@ -1,5 +1,6 @@
 <script lang="ts">
   import AuthButton from '@/components/AuthButton.svelte'
+  import { log } from '@/logger'
   import { AuthClient } from '@/oauth2/auth'
   import {
     GoogleAuthProvider,
@@ -20,14 +21,16 @@
   })
 
   async function retrieveAuthState() {
+    log('Retrieving authentication state from all providers...')
     authState.google = await clients.google.isAuthenticated()
     authState.spotify = await clients.spotify.isAuthenticated()
     authState.fitbit = await clients.fitbit.isAuthenticated()
+    log('Authentication state retrieved:', authState)
   }
 </script>
 
 <h1 class="text-xl mb-3">Authentication</h1>
-{#await retrieveAuthState()}
+{#await retrieveAuthState() then}
   <div class="flex flex-col gap-3">
     <p class="text-sm">
       <strong>Google:</strong>
