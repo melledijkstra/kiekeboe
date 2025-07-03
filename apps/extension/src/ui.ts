@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
-import { log } from '@/logger'
+import { cacheImage } from '@/cache/messages'
 
 export async function retrieveUsername(): Promise<string | undefined> {
   const { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
@@ -29,21 +29,25 @@ export function getWelcomeMessage(name: string): string {
   return `Good ${momentOfDay}, ${name}`
 }
 
-export async function updateBackgroundImage(url: string, callback?: () => void): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    const image = new Image()
-    image.onerror = (error) => {
-      log(`error loading background image: ${url}`, error)
-      reject(new Error(`Failed to load background image: ${url}`))
+export async function updateBackgroundImage(
+  url: string,
+  callback?: () => void,
+) {
+  let src = url
+  try {
+    const cached = await cacheImage.send(url)
+    if (cached) {
+      src = cached
     }
-    image.onload = () => {
-      log(`background image loaded: ${url}`)
-      callback?.()
-      const elem = document.querySelector(':root') as HTMLElement
-      elem?.style.setProperty('--background-image', `url(${url})`)
-      resolve()
-    }
-    image.src = url
-    log(`background image loaded in browser: ${url}`)
-  })
+  } catch (err) {
+    console.error('Failed to retrieve cached image', err)
+  }
+
+  const image = new Image()
+  image.src = src
+  image.onload = () => {
+    callback?.()
+    const elem = document.querySelector(':root') as HTMLElement
+    elem?.style.setProperty('--background-image', `url(${src})`)
+  }
 }

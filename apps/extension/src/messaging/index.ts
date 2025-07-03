@@ -32,8 +32,8 @@ export function createMessage<Request = void, Response = void>(identifier: strin
             Promise.resolve(promise).then((r) => {
               sendResponse(r)
             })
-            return true
           }
+          return true
         }
       )
     }
