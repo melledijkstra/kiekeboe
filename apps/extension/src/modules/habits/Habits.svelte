@@ -1,7 +1,7 @@
 <script lang="ts">
   import Panel from '@/components/atoms/Panel.svelte'
   import IconButton from '@/components/atoms/IconButton.svelte'
-  import { addNewHabit, habits, initializeHabits } from '@/stores/habits.svelte'
+  import { habits } from '@/stores/habits.svelte'
   import { mdiInfinity } from '@mdi/js'
   import { onMount } from 'svelte'
 
@@ -9,12 +9,12 @@
   let open = $state(false)
 
   onMount(() => {
-    initializeHabits()
+    habits.initialize()
   })
 
   async function handleAddHabit() {
     if (newHabit.trim()) {
-      await addNewHabit({
+      await habits.add({
         name: newHabit,
         color: '#eee',
         dateCreated: new Date()

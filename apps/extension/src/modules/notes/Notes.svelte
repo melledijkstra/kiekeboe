@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import TextButton from '@/components/TextButton.svelte'
-  import { addNewNote, initializeNotes, notes } from '@/stores/notes.svelte'
+  import { notes } from '@/stores/notes.svelte'
   import { formatDate } from '@/date'
 
   let open = $state(false)
@@ -9,7 +9,7 @@
   let inputText = $state('')
 
   function createNote() {
-    addNewNote({
+    notes.add({
       title: inputTitle,
       text: inputText,
       dateCreated: new Date()
@@ -19,7 +19,7 @@
   }
 
   onMount(async () => {
-    initializeNotes()
+    notes.initialize()
   })
 </script>
 
