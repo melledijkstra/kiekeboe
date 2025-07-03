@@ -3,6 +3,7 @@ import { FocusService } from '@/services/focus'
 import { Logger } from './logger'
 import { commandCenterOpen } from './modules/command-center/messages'
 import { settings } from './settings/index.svelte'
+import { cacheImage } from '@/cache/messages'
 
 export const logger = new Logger('background')
 
@@ -11,6 +12,30 @@ declare global {
 }
 
 const services = []
+
+cacheImage.on(async (url) => {
+  logger.log('cacheImage request received', url)
+  if (!url) return ''
+  const cache = await caches.open('image-cache')
+  const match = await cache.match(url)
+  if (match) {
+    const data = await match.blob()
+    return blobToDataUrl(data)
+  }
+  const response = await fetch(url)
+  await cache.put(url, response.clone())
+  const blob = await response.blob()
+  return blobToDataUrl(blob)
+})
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.onerror = () => reject(new Error('Failed to read blob'))
+    reader.readAsDataURL(blob)
+  })
+}
 
 browser.runtime.onInstalled.addListener(({ reason }) => {
   logger.log('Extension installed:', reason)
