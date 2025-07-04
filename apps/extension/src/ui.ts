@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
+import { log } from '@/logger'
 
 export async function retrieveUsername(): Promise<string | undefined> {
   const { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
@@ -28,12 +29,21 @@ export function getWelcomeMessage(name: string): string {
   return `Good ${momentOfDay}, ${name}`
 }
 
-export function updateBackgroundImage(url: string, callback?: () => void) {
-  const image = new Image()
-  image.src = url
-  image.onload = () => {
-    callback?.()
-    const elem = document.querySelector(':root') as HTMLElement
-    elem?.style.setProperty('--background-image', `url(${url})`)
-  }
+export async function updateBackgroundImage(url: string, callback?: () => void): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const image = new Image()
+    image.onerror = (error) => {
+      log(`error loading background image: ${url}`, error)
+      reject(new Error(`Failed to load background image: ${url}`))
+    }
+    image.onload = () => {
+      log(`background image loaded: ${url}`)
+      callback?.()
+      const elem = document.querySelector(':root') as HTMLElement
+      elem?.style.setProperty('--background-image', `url(${url})`)
+      resolve()
+    }
+    image.src = url
+    log(`background image loaded in browser: ${url}`)
+  })
 }

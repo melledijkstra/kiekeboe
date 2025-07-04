@@ -6,5 +6,6 @@
   "deno.enablePaths": [
     "./apps/serverless",
   ],
-  "editor.inlayHints.enabled": "off"
+  "editor.inlayHints.enabled": "off",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

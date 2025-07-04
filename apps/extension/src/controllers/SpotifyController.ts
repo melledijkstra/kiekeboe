@@ -8,7 +8,7 @@ import { SpotifyAuthProvider } from "@/oauth2/providers";
 import { playbackLoop } from "@/time/utils";
 import type { MusicPlayerInterface } from "./MusicPlayerInterface";
 import type { ILogger } from "@/interfaces/logger.interface";
-import type { Track } from "@/api/definitions/spotify";
+import type { Track } from "SpotifyApi";
 
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
@@ -23,6 +23,23 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
   constructor() {
     SpotifyController.hasLock = acquireTabLock();
+  }
+
+  switchRepeatMode(repeatMode: string | number): Promise<void> {
+    if (!this.api) {
+      throw new Error('Spotify API client is not initialized');
+    }
+    return this.api?.toggleRepeatMode(repeatMode)
+  }
+
+  togglePlayPause(): Promise<void> {
+    if (this.player) {
+      return this.player.togglePlay()
+    } else if (spotifyState.playbackState?.is_playing) {
+      return this.api?.pause()
+    } else {
+      return this.api?.play()
+    }
   }
 
   async initialize() {

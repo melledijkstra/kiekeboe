@@ -1,5 +1,5 @@
 import type { AuthClient } from '@/oauth2/auth'
-import type { Device, PlaybackState, Playlist } from './definitions/spotify'
+import type { Device, PlaybackState, Playlist } from 'SpotifyApi'
 import { TokenBaseClient } from './tokenbaseclient'
 import { Logger } from '@/logger'
 import type { ILogger } from '@/interfaces/logger.interface'
@@ -113,5 +113,28 @@ export class SpotifyClient extends TokenBaseClient implements ILogger {
     }
 
     return undefined
+  }
+
+  async toggleRepeatMode(repeatMode: string | number): Promise<void> {
+    await this.retrieveAccessToken()
+    const mode = typeof repeatMode === 'number' ? repeatMode : (repeatMode === 'off' ? 'off' : 'context')
+    
+    await this.request(`/me/player/repeat?state=${mode}`, {
+      method: 'PUT'
+    })
+  }
+
+  async play() {
+    await this.retrieveAccessToken()
+    await this.request('/me/player/play', {
+      method: 'PUT',
+    })
+  }
+
+  async pause() {
+    await this.retrieveAccessToken()
+    await this.request('/me/player/pause', {
+      method: 'PUT',
+    })
   }
 }

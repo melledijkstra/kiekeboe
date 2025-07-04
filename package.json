@@ -13,7 +13,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",
-    "test": "turbo run test",
+    "test": "turbo run test --filter=!@odysea/serverless",
+    "test:all": "turbo run test",
     "test:watch": "turbo run test:watch",
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
@@ -33,7 +34,7 @@
     "globals": "^16.3.0",
     "svelte-eslint-parser": "^1.2.0",
     "turbo": "^2.5.4",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.1",
     "@types/node": "^24.0.10",
     "vitest": "^3.1.1"
