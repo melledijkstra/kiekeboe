@@ -9,6 +9,7 @@ import { playbackLoop } from "@/time/utils";
 import type { MusicPlayerInterface } from "./MusicPlayerInterface";
 import type { ILogger } from "@/interfaces/logger.interface";
 import type { Track } from "SpotifyApi";
+import { playerPlaybackStateToApiPlaybackState } from "@/transforms/spotify";
 
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
@@ -80,10 +81,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
       const availableDevices = await this.api?.availableDevices()
       if (availableDevices?.length) {
-        spotifyState.update((s) => ({
-          ...s,
-          devices: availableDevices,
-        }))
+        spotifyState.devices = availableDevices
       }
     })
 
@@ -118,10 +116,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
     this.logger.log('playerStateChanged: Playback state changed', state);
 
-    spotifyState.update((s) => ({
-      ...s,
-      playbackState: state,
-    }))
+    spotifyState.playbackState = playerPlaybackStateToApiPlaybackState(state)
 
     if (!state.paused) {
       if (SpotifyController.cancelPlaybackLoop) {
@@ -183,7 +178,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     const playbackState = await this.player?.getCurrentState()
  
     if (playbackState) {
-      spotifyState.playbackState = playbackState
+      spotifyState.playbackState = playerPlaybackStateToApiPlaybackState(playbackState)
     } else {
       this.logger.log('retrievePlaybackState: user is not playing music through the Web SDK, trying to retrieve from Web API');
       const playbackState = await this.api?.getPlaybackState()

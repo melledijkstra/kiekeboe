@@ -1,7 +1,7 @@
 <script lang="ts">
   import { isRaspberryAlive } from '@/api/raspberry'
   import { log } from '@/logger'
-  import { settings } from '@/settings/index.svelte'
+  import { settingsStore } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
 
   let raspberryStatus: boolean | null = $state(null)
@@ -9,7 +9,7 @@
 
   async function fetchDatabaseStatus(URI?: string) {
     try {
-      raspberryStatus = await isRaspberryAlive(URI ?? settings.state.network.databaseUri)
+      raspberryStatus = await isRaspberryAlive(URI ?? $settingsStore.network.databaseUri)
     } catch {
       raspberryStatus = false
     }
@@ -20,16 +20,16 @@
   })
 
   $effect(() => {
-    if (!settings.state.loaded) {
+    if (!$settingsStore.loaded) {
       return
     }
 
     if (
-      settings.state.network.databaseUri && 
-      settings.state.network.databaseUri !== lastCheckedUri
+      $settingsStore.network.databaseUri && 
+      $settingsStore.network.databaseUri !== lastCheckedUri
     ) {
-      fetchDatabaseStatus(settings.state.network.databaseUri)
-      lastCheckedUri = settings.state.network.databaseUri
+      fetchDatabaseStatus($settingsStore.network.databaseUri)
+      lastCheckedUri = $settingsStore.network.databaseUri
     }
   })
 </script>

@@ -6,7 +6,7 @@
   import { getAllHabits } from "@/db/habits"
   import type { Note } from "@/db/notes"
   import { getAllNotes } from "@/db/notes"
-  import { settings, type SettingsState } from "@/settings/index.svelte"
+  import { settingsStore, type SettingsState } from "@/settings/index.svelte"
 
   type Export = {
     databases?: {
@@ -27,7 +27,7 @@
         habits,
         notes
       },
-      settings: settings.state
+      settings: structuredClone($settingsStore)
     }
     const data = JSON.stringify(exportData)
     const blob = new Blob([data], { type: 'application/json' })

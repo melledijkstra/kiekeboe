@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { settings } from '@/settings/index.svelte'
+  import { settings, settingsStore } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
   import NetworkTab from '@/components/settings-tabs/NetworkTab.svelte'
   import AboutTab from '@/components/settings-tabs/AboutTab.svelte'
@@ -69,7 +69,7 @@
   />
   {#each sections as sectionName (sectionName)}
     <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
-      {#if sectionName === 'general' && !settings.state.loaded}
+      {#if sectionName === 'general' && !$settingsStore.loaded}
         <div>Loading...</div>
       {/if}
       {#if sectionName === 'general'}

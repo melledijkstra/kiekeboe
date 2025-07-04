@@ -4,7 +4,7 @@
   import Curtain from '@/components/Curtain.svelte'
   import Welcome from '@/components/Welcome.svelte'
   import { onMount } from 'svelte'
-  import { settings } from '@/settings/index.svelte'
+  import { settings, settingsStore } from '@/settings/index.svelte'
   import { appState } from '@/app-state.svelte.ts'
   import { mdiTuneVertical } from '@mdi/js'
   import { loadModule } from '@/modules'
@@ -56,7 +56,7 @@
         <Clock />
         <Welcome />
         <div class="mt-4 text-lg empty:h-7">
-          {#if settings.state.ui.showCurrentTask && currentTask}
+          {#if $settingsStore.ui.showCurrentTask && currentTask}
             <input type="checkbox" class="scale-150 text-white mr-1" disabled />
             <span class="text-white text-lg">{currentTask.title}</span>
           {/if}
@@ -96,12 +96,12 @@
       <ImageRefreshButton />
     </div>
     <div class="flex flex-row gap-5">
-      {#if settings.state.modules.notes}
+      {#if $settingsStore.modules.notes}
         {#await loadModule('notes') then Module}
           <Module.component />
         {/await}
       {/if}
-      {#if settings.state.modules.google_tasks}
+      {#if $settingsStore.modules.google_tasks}
         {#await loadModule('google_tasks') then Module}
           <Module.component />
         {/await}
@@ -110,7 +110,7 @@
   </footer>
 </div>
 
-{#if settings.state.modules.command_center}
+{#if $settingsStore.modules.command_center}
   {#await loadModule('command_center') then Module}
     <Module.component />
   {/await}
