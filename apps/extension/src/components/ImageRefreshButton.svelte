@@ -3,7 +3,7 @@
   import { updateBackgroundImage } from '@/ui'
   import IconButton from './atoms/IconButton.svelte'
   import { mdiCameraRetakeOutline } from '@mdi/js'
-  import { settings } from '@/settings/index.svelte'
+  import { settingsStore } from '@/settings/index.svelte'
   import { onMount } from 'svelte'
   import { log } from '@/logger'
 
@@ -18,16 +18,16 @@
 
   $effect(() => {
     log('ImageRefreshButton effect triggered', {
-      loaded: settings.state.loaded,
-      serverlessHost: settings.state.network.serverlessHost,
+      loaded: $settingsStore.loaded,
+      serverlessHost: $settingsStore.network.serverlessHost,
       unsplashHost: unsplashClient?.host
     })
     if (
-      settings.state.loaded && 
-      settings.state.network.serverlessHost &&
-      settings.state.network.serverlessHost !== unsplashClient?.host
+      $settingsStore.loaded && 
+      $settingsStore.network.serverlessHost &&
+      $settingsStore.network.serverlessHost !== unsplashClient?.host
     ) {
-      unsplashClient?.setHost(settings.state.network.serverlessHost)
+      unsplashClient?.setHost($settingsStore.network.serverlessHost)
     }
   })
 
@@ -36,12 +36,12 @@
       return
     }
 
-    if (settings.state.ui.dailyImageQuery !== unsplashClient.query) {
+    if ($settingsStore.ui.dailyImageQuery !== unsplashClient.query) {
       log(
         'query changed',
-        settings.state.ui.dailyImageQuery
+        $settingsStore.ui.dailyImageQuery
       )
-      unsplashClient.query = settings.state.ui.dailyImageQuery
+      unsplashClient.query = $settingsStore.ui.dailyImageQuery
       // if query changes we need to clean cached images
       unsplashClient.clearNextImage()
     }
@@ -50,10 +50,10 @@
   onMount(async () => {
     log('ImageRefreshButton mounted')
     unsplashClient = new UnsplashClient(
-      settings.state.network.serverlessHost,
-      settings.state.ui.dailyImageQuery
+      $settingsStore.network.serverlessHost,
+      $settingsStore.ui.dailyImageQuery
     )
   })
 </script>
 
-<IconButton disabled={!settings.state.loaded} onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
+<IconButton disabled={!$settingsStore.loaded} onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
