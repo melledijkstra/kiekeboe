@@ -17,7 +17,6 @@
     <span class="text-base">{title}</span>
   </p>
   <p class="text-gray-400">
-    {id}: {settings.state.modules[id]} (default: {DEFAULT_SETTINGS
-      .modules?.[id]})
+    {id}: {settings.state.modules[id]} (default: {DEFAULT_SETTINGS.modules?.[id]})
   </p>
 {/each}

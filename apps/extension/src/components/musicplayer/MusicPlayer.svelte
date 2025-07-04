@@ -6,6 +6,7 @@
   import type { MediaItem } from 'MusicPlayer'
   import { spotifyState } from '@/modules/spotify/spotify.store.svelte'
   import { apiPlaybackStateToPlayerPlaybackState, trackToMediaItem } from '@/transforms/spotify'
+  import { onMount } from 'svelte'
 
   const { controller }: { controller: MusicPlayerInterface } = $props()
 
@@ -38,6 +39,10 @@
   function seek(position: number) {
     controller.seek?.(position)
   }
+
+  onMount(() => {
+    controller.retrievePlaybackState()
+  })
 </script>
 
 {#snippet renderPlaylist(playlist: Playlist)}
