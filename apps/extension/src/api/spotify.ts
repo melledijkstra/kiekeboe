@@ -6,7 +6,7 @@ import type { ILogger } from '@/interfaces/logger.interface'
 
 const BASE_URL = 'https://api.spotify.com/v1'
 
-export class SpotifyClient extends TokenBaseClient implements ILogger {
+export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   logger = new Logger('SpotifyClient')
 
   constructor(private authClient: AuthClient) {

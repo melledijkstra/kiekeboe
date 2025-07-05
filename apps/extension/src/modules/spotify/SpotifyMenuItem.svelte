@@ -2,7 +2,7 @@
   import { mdiSpotify } from '@mdi/js'
   import { Popover } from 'bits-ui'
   import Icon from '@/components/atoms/Icon.svelte'
-  import SpotifyPlayback from './SpotifyPanel.svelte'
+  import SpotifyPanel from './SpotifyPanel.svelte'
 </script>
 
 <Popover.Root>
@@ -14,5 +14,5 @@
   >
     <Icon path={mdiSpotify} size={40} />
   </Popover.Trigger>
-  <SpotifyPlayback />
+  <SpotifyPanel />
 </Popover.Root>

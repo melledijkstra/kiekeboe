@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { settings } from '@/settings/index.svelte'
-  import { onMount } from 'svelte'
+  import { settingsStore } from '@/settings/index.svelte'
   import NetworkTab from '@/components/settings-tabs/NetworkTab.svelte'
   import AboutTab from '@/components/settings-tabs/AboutTab.svelte'
   import ExportTab from '@/components/settings-tabs/ExportTab.svelte'
@@ -10,35 +9,34 @@
   import GeneralTab from '@/components/settings-tabs/GeneralTab.svelte'
   import type { HTMLAttributes } from 'svelte/elements'
   import { Separator, Tabs } from 'bits-ui'
-  import { log } from '@/logger'
 
   const sections = [
     'general',
     'modules',
     'authentication',
     'appearance',
-    'export',
     'network',
+    'export',
     'about'
-  ]
+  ] as const
+
+  type Section = (typeof sections)[number]
 
   const props: HTMLAttributes<HTMLDivElement> = $props()
 
-  let tab = $state(getSelectedTabFromUrl())
+  let tab = $state<Section>(getSelectedTabFromUrl() ?? 'general')
 
-  function getSelectedTabFromUrl() {
-    return document.location.hash.replace('#', '')
+  function getSelectedTabFromUrl(): Section | undefined {
+    const hash = document.location.hash.replace('#', '')
+    if (hash && sections.includes(hash as Section)) {
+      return hash as Section
+    }
   }
 
-  function selectTab(value: string) {
+  function selectTab(value: Section) {
     tab = value
     document.location.hash = value.toString()
   }
-
-  onMount(() => {
-    log('SettingsMenu mounted')
-    settings.initialize()
-  })
 </script>
 
 <Tabs.Root
@@ -46,11 +44,9 @@
   class="flex h-full"
   bind:value={() => tab, selectTab}
 >
-  <Tabs.List class={[
-    'p-5',
-    'flex flex-col text-zinc-600 dark:text-white',
-    props.class
-  ]}>
+  <Tabs.List
+    class={['p-5', 'flex flex-col text-zinc-600 dark:text-white', props.class]}
+  >
     {#each sections as sectionName (sectionName)}
       <Tabs.Trigger
         value={sectionName}
@@ -58,7 +54,8 @@
           sectionName === tab ? 'underline' : '',
           'dark:hover:text-slate-300 hover:text-zinc-800',
           'text-left text-lg font-bold capitalize'
-        ]}>
+        ]}
+      >
         {sectionName}
       </Tabs.Trigger>
     {/each}
@@ -69,7 +66,7 @@
   />
   {#each sections as sectionName (sectionName)}
     <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
-      {#if sectionName === 'general' && !settings.state.loaded}
+      {#if sectionName === 'general' && !$settingsStore.loaded}
         <div>Loading...</div>
       {/if}
       {#if sectionName === 'general'}
@@ -80,10 +77,10 @@
         <AuthenticationTab />
       {:else if sectionName === 'appearance'}
         <AppearanceTab />
-      {:else if sectionName === 'export'}
-        <ExportTab />
       {:else if sectionName === 'network'}
         <NetworkTab />
+      {:else if sectionName === 'export'}
+        <ExportTab />
       {:else if sectionName === 'about'}
         <AboutTab />
       {/if}

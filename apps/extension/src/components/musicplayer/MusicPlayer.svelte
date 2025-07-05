@@ -5,9 +5,44 @@
   import type { MusicPlayerInterface } from '@/controllers/MusicPlayerInterface'
   import type { MediaItem } from 'MusicPlayer'
   import { spotifyState } from '@/modules/spotify/spotify.store.svelte'
-  import { trackToMediaItem } from '@/transforms/spotify'
+  import { apiPlaybackStateToPlayerPlaybackState, trackToMediaItem } from '@/transforms/spotify'
+  import { onMount } from 'svelte'
 
   const { controller }: { controller: MusicPlayerInterface } = $props()
+
+  function toggleShuffle(shuffle: boolean) {
+    controller.toggleShuffle(shuffle)
+  }
+
+  function previousTrack() {
+    controller.previousTrack?.()
+  }
+
+  function playPause() {
+    // Use play or pause based on current playback state
+    if (!spotifyState.playbackState?.is_playing) {
+      controller.play()
+    } else {
+      controller.pause()
+    }
+  }
+
+  function nextTrack() {
+    controller.nextTrack()
+  }
+
+  function switchRepeatMode(mode: number) {
+    // Optional controller method
+    controller.switchRepeatMode?.(mode)
+  }
+
+  function seek(position: number) {
+    controller.seek?.(position)
+  }
+
+  onMount(() => {
+    controller.retrievePlaybackState()
+  })
 </script>
 
 {#snippet renderPlaylist(playlist: Playlist)}
@@ -54,5 +89,17 @@
     {/each}
   </ul>
 </div>
-<TrackFeedback controller={controller} />
-<Devices onActivate={() => {}} />
+<TrackFeedback
+  playbackState={apiPlaybackStateToPlayerPlaybackState(spotifyState.playbackState)}
+  onToggleShuffle={toggleShuffle}
+  onPreviousTrack={previousTrack}
+  onPlayPause={playPause}
+  onNextTrack={nextTrack}
+  onSwitchRepeatMode={switchRepeatMode}
+  onSeek={seek}
+/>
+<Devices
+  playerDeviceId={spotifyState.deviceId} 
+  devices={spotifyState.devices}
+  onActivate={(deviceId) => controller.activateDevice(deviceId)}
+/>

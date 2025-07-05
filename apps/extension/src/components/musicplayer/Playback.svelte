@@ -11,15 +11,30 @@
   } from '@mdi/js'
   import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
-  import { spotifyState } from '@/modules/spotify/spotify.store.svelte'
-  import type { MusicPlayerInterface } from '@/controllers/MusicPlayerInterface'
-  import { onMount } from 'svelte'
+  
+  type PlaybackProps = {
+    playbackState?: Spotify.PlaybackState
+    onToggleShuffle?: (shuffle: boolean) => void
+    onPreviousTrack?: () => void
+    onPlayPause?: () => void
+    onNextTrack?: () => void
+    onSwitchRepeatMode?: (mode: number) => void
+    onSeek?: (position: number) => void
+  }
 
-  const { controller }: { controller: MusicPlayerInterface } = $props()
+  const {
+    playbackState,
+    onToggleShuffle,
+    onPreviousTrack,
+    onPlayPause,
+    onNextTrack,
+    onSwitchRepeatMode,
+    onSeek
+  }: PlaybackProps = $props()
 
-  let isPaused = $derived(spotifyState.playbackState?.is_playing ?? true)
-  let isShuffling = $derived(spotifyState.playbackState?.shuffle_state ?? false)
-  let repeatMode = $derived(spotifyState.playbackState?.repeat_state ?? 0)
+  let isPaused = $derived(playbackState?.paused ?? true)
+  let isShuffling = $derived(playbackState?.shuffle)
+  let repeatMode = $derived(playbackState?.repeat_mode)
   let repeatModeIcon = $derived.by(() => {
     switch (repeatMode) {
       case 1:
@@ -31,15 +46,11 @@
         return mdiRepeatOff
     }
   })
-  let track = $derived(spotifyState.playbackState?.item)
-  let position = $derived(spotifyState.playbackState?.progress_ms ?? 0)
+  let track = $derived(playbackState?.track_window.current_track)
+  let position = $derived(playbackState?.position ?? 0)
   let remaining = $derived(track ? track.duration_ms - position : 0)
   let timeLeft = $derived<string>(millisecondsToTime(remaining))
   let currentTime = $derived<string>(millisecondsToTime(position))
-
-  onMount(() => {
-    controller.retrievePlaybackState()
-  })
 </script>
 
 <div class="flex flex-row p-2">
@@ -47,7 +58,7 @@
   <div class="flex flex-row gap-4 mr-5">
     <img
       class="size-20 rounded-sm"
-      src={track?.album.images[0].url ?? '/icons/album-cover-placeholder.png'}
+      src={track?.album?.images[0]?.url ?? '/icons/album-cover-placeholder.png'}
       alt={track?.name ?? 'Track cover'}
     />
     <div class="flex flex-col justify-center overflow-hidden">
@@ -63,7 +74,7 @@
       <button
         class="cursor-pointer"
         onclick={() => {
-          controller.toggleShuffle?.(!isShuffling)
+          onToggleShuffle?.(!isShuffling)
         }}
       >
         <Icon
@@ -71,18 +82,18 @@
           path={mdiShuffleVariant}
         />
       </button>
-      <button class="cursor-pointer" onclick={() => controller.previousTrack()}>
+      <button class="cursor-pointer" onclick={() => onPreviousTrack?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipPrevious} />
       </button>
-      <button class="cursor-pointer" onclick={() => controller.togglePlayPause?.()}>
+      <button class="cursor-pointer" onclick={() => onPlayPause?.()}>
         <Icon class="size-6 fill-white" path={isPaused ? mdiPlay : mdiPause} />
       </button>
-      <button class="cursor-pointer" onclick={() => controller.nextTrack()}>
+      <button class="cursor-pointer" onclick={() => onNextTrack?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipNext} />
       </button>
       <button class="cursor-pointer"
         disabled={typeof repeatMode === 'undefined'}
-        onclick={() => repeatMode && controller.switchRepeatMode(repeatMode)}>
+        onclick={() => repeatMode && onSwitchRepeatMode?.(repeatMode)}>
         <Icon class="size-6 fill-white" path={repeatModeIcon} />
       </button>
     </div>
@@ -92,8 +103,9 @@
         type="range"
         min="0"
         max={track?.duration_ms}
-        bind:value={position}
-        onchange={() => controller.seek?.(position)}
+        value={position}
+        oninput={(e) => (position = e.currentTarget.valueAsNumber)}
+        onchange={(e) => onSeek?.(e.currentTarget.valueAsNumber)}
         tabindex="0"
         class="bg-gray-200/50 rounded-full h-2 accent-green-700"
       />

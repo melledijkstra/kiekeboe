@@ -12,7 +12,7 @@
     google: new AuthClient(new GoogleAuthProvider()),
     spotify: new AuthClient(new SpotifyAuthProvider()),
     fitbit: new AuthClient(new FitbitAuthProvider())
-  }
+  } as const
 
   let authState = $state({
     google: false,
@@ -25,7 +25,6 @@
     authState.google = await clients.google.isAuthenticated()
     authState.spotify = await clients.spotify.isAuthenticated()
     authState.fitbit = await clients.fitbit.isAuthenticated()
-    log('Authentication state retrieved:', authState)
   }
 </script>
 

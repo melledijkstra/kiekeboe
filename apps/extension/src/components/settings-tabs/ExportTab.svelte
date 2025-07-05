@@ -27,7 +27,7 @@
         habits,
         notes
       },
-      settings: settings.state
+      settings: settings.export()
     }
     const data = JSON.stringify(exportData)
     const blob = new Blob([data], { type: 'application/json' })

@@ -3,11 +3,18 @@
   import { updateBackgroundImage } from '@/ui'
   import IconButton from './atoms/IconButton.svelte'
   import { mdiCameraRetakeOutline } from '@mdi/js'
-  import { settings } from '@/settings/index.svelte'
-  import { onMount } from 'svelte'
+  import { settingsStore } from '@/settings/index.svelte'
   import { log } from '@/logger'
 
-  let unsplashClient = $state<UnsplashClient>()
+  let unsplashClient = $state<UnsplashClient>(
+    new UnsplashClient(
+      $settingsStore.network.serverlessHost,
+      $settingsStore.ui.dailyImageQuery
+    )
+  )
+
+  let serverlessHost = $derived($settingsStore.network.serverlessHost)
+  let dailyImageQuery = $derived($settingsStore.ui.dailyImageQuery)
 
   async function refreshBackround() {
     const url = await unsplashClient?.refreshDailyImage()
@@ -18,42 +25,31 @@
 
   $effect(() => {
     log('ImageRefreshButton effect triggered', {
-      loaded: settings.state.loaded,
-      serverlessHost: settings.state.network.serverlessHost,
+      serverlessHost,
       unsplashHost: unsplashClient?.host
     })
-    if (
-      settings.state.loaded && 
-      settings.state.network.serverlessHost &&
-      settings.state.network.serverlessHost !== unsplashClient?.host
-    ) {
-      unsplashClient?.setHost(settings.state.network.serverlessHost)
+
+    if (!!serverlessHost && serverlessHost !== unsplashClient?.host) {
+      unsplashClient.setHost(serverlessHost)
     }
   })
 
   $effect(() => {
-    if (!unsplashClient) {
-      return
-    }
+    log('query changed', {
+      dailyImageQuery,
+      unsplashQuery: unsplashClient.query
+    })
 
-    if (settings.state.ui.dailyImageQuery !== unsplashClient.query) {
-      log(
-        'query changed',
-        settings.state.ui.dailyImageQuery
-      )
-      unsplashClient.query = settings.state.ui.dailyImageQuery
+    if (dailyImageQuery !== unsplashClient.query) {
+      unsplashClient.query = dailyImageQuery
       // if query changes we need to clean cached images
       unsplashClient.clearNextImage()
     }
   })
-
-  onMount(async () => {
-    log('ImageRefreshButton mounted')
-    unsplashClient = new UnsplashClient(
-      settings.state.network.serverlessHost,
-      settings.state.ui.dailyImageQuery
-    )
-  })
 </script>
 
-<IconButton disabled={!settings.state.loaded} onclick={refreshBackround} icon={mdiCameraRetakeOutline} />
+<IconButton
+  disabled={!$settingsStore.loaded}
+  onclick={refreshBackround}
+  icon={mdiCameraRetakeOutline}
+/>

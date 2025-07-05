@@ -148,6 +148,8 @@ declare namespace Spotify {
     ((event: ErrorTypes, cb: ErrorListener) => void)
 
   class Player {
+    // edit 5 July 2025 - not part of original Spotify SDK
+    static version: string
     readonly _options: PlayerInit & { id: string }
     constructor(options: PlayerInit)
 
