@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 import { Logger } from '@/logger'
 import type { AuthProvider } from './providers'
+import { base64encode, generateRandomString, sha256 } from './utils'
 export type { OauthProvider } from './providers'
 
 type BadAuthReason = 'invalid_token'
@@ -17,7 +18,6 @@ class AuthError extends Error {
   }
 }
 
-
 const OAUTH2_STORAGE_KEY = 'oauth2'
 
 type TokenResponse = {
@@ -33,26 +33,6 @@ type TokenStore = {
   access_token: string
   expires_at: number
   refresh_token: string
-}
-
-const generateRandomString = (length: number) => {
-  const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const values = crypto.getRandomValues(new Uint8Array(length))
-  return values.reduce((acc, x) => acc + possible[x % possible.length], '')
-}
-
-const sha256 = async (plain: string) => {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(plain)
-  return window.crypto.subtle.digest('SHA-256', data)
-}
-
-const base64encode = (input: ArrayBuffer) => {
-  return btoa(String.fromCharCode(...new Uint8Array(input)))
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
 }
 
 export class AuthClient {
@@ -155,16 +135,15 @@ export class AuthClient {
     // Subtract some buffer (60 seconds) to ensure we refresh before actual expiry
     const isTokenExpired = !expires_at || Date.now() > expires_at - 60_000
 
-    this.logger.log('expired?', { isTokenExpired, refresh_token })
-
     if (isTokenExpired && refresh_token) {
       try {
+        this.logger.log('token expired, trying to refresh it')
         // Refresh the token
         const newTokens = await this.refreshAccessToken(refresh_token)
 
         if (!newTokens) {
           throw new Error(
-            'Failed to refresh token – user must re-authenticate.'
+            'Failed to refresh token - user must re-authenticate.'
           )
         }
 

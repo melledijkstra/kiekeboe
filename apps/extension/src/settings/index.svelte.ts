@@ -50,21 +50,27 @@ export const settingsStore = writable<SettingsState>(DEFAULT_SETTINGS)
 export class Settings implements ILogger {
   logger = new Logger('settings')
   private settingsCopy: SettingsState = DEFAULT_SETTINGS
-  private _loading = false
-  private _unsub?: () => void
+  // flag to indicate if the settings store is currently loading
+  private loading = false
+  // flag to indicate if the settings were changed locally
+  // this is used to prevent triggering the storage change listener when settings
+  // were changed by the same source as the listener
+  private isLocalSettingsChange = false
 
-  get state() {
-    return settingsStore
-  }
+  private _unsub?: () => void
 
   constructor() {
     this._unsub = settingsStore.subscribe((value) => {
-      this.logger.log('Settings store updated', value)
       this.settingsCopy = value
     })
   }
 
   public async initialize() {
+    if (this.settingsCopy.loaded || this.loading) {
+      this.logger.log('Settings store is already initialized or loading from storage')
+      return
+    }
+
     this.logger.log('Initializing settings state')
     await this.syncSettingsStoreWithStorage()
   }
@@ -75,23 +81,21 @@ export class Settings implements ILogger {
   }
 
   async syncSettingsStoreWithStorage() {
-    this.logger.log('syncing settings store with storage', this._loading)
-    if (this._loading) {
+    if (this.loading) {
       this.logger.log('Settings store is already loading, skipping sync')
       return
     }
 
-    this._loading = true
+    this.loading = true
 
     const { settings: storageSettings } = (await browser.storage.sync.get(
       SETTINGS_KEY
     )) as { settings: Settings }
     
-    this.logger.log('syncing settings store with storage', {
+    this.logger.log('syncing settings store with storage...', {
       storageSettings
     })
 
-    // this.#state = Object.assign(this.#state, storageSettings, { loaded: true })
     settingsStore.set({
       ...DEFAULT_SETTINGS,
       ...storageSettings,
@@ -103,7 +107,7 @@ export class Settings implements ILogger {
       changeListenersSet = true
     }
 
-    this._loading = false
+    this.loading = false
   }
 
   async getSettingsFromStorage(): Promise<SettingsState> {
@@ -115,6 +119,7 @@ export class Settings implements ILogger {
   }
 
   async saveSettingsToStorage() {
+    this.isLocalSettingsChange = true
     // make sure we don't save the loaded property to storage
     const settingsToStore = structuredClone(this.settingsCopy)
     delete settingsToStore.loaded
@@ -122,6 +127,7 @@ export class Settings implements ILogger {
       settingsToStore
     })
     await browser.storage.sync.set({ settings: settingsToStore })
+    this.isLocalSettingsChange = false;
   }
 
   removeSettingsChangeListener() {
@@ -131,7 +137,8 @@ export class Settings implements ILogger {
   onStorageSettingsChanged = (
     changes: Storage.StorageAreaOnChangedChangesType
   ) => {
-    if (!changes[SETTINGS_KEY]) {
+    // ignore changes if they are from the same source as the listener
+    if (!changes[SETTINGS_KEY] || this.isLocalSettingsChange) {
       return
     }
 
@@ -145,6 +152,13 @@ export class Settings implements ILogger {
       ...newSettings,
       loaded: true // ensure loaded is set to true
     }))
+  }
+
+  export(): SettingsState {
+    const exportSettings = structuredClone(this.settingsCopy)
+    // remove the loaded property from the exported settings
+    delete exportSettings.loaded
+    return exportSettings
   }
 }
 

@@ -1,7 +1,8 @@
 <script lang="ts">
   import Input from "@/components/atoms/Input.svelte"
-  import Button from "@/components/atoms/Button.svelte"
   import { settings, settingsStore } from "@/settings/index.svelte"
+
+  let unsplashQuery = $state($settingsStore.ui.dailyImageQuery)
 </script>
 
 <h1 class="mb-2 text-xl">Appearance Settings</h1>
@@ -10,8 +11,11 @@
   name="unsplash-query"
   placeholder="Unsplash Query"
   type="text"
-  bind:value={$settingsStore.ui.dailyImageQuery}
+  bind:value={unsplashQuery}
+  onkeydown={(e) => {
+    if (e.key === "Enter") {
+      $settingsStore.ui.dailyImageQuery = unsplashQuery
+      settings.saveSettingsToStorage()
+    }
+  }}
 />
-<Button class="mt-2" onclick={() => settings.saveSettingsToStorage()}>
-  Save Settings
-</Button>

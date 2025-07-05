@@ -5,7 +5,6 @@
 
 <h1 class="text-xl">General Settings</h1>
 <Toggle
-  disabled={!$settingsStore.loaded}
   label="Show currently focussed task (required Google Tasks)"
   parentClass="my-2"
   onchange={() => settings.saveSettingsToStorage()}

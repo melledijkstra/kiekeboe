@@ -1,4 +1,5 @@
 export interface MusicPlayerInterface {
+  activateDevice(deviceId: string): void
   switchRepeatMode(repeatMode: string | number): Promise<void>;
   retrievePlaybackState(): Promise<Spotify.PlaybackState | undefined>;
   initialize(): Promise<void>;

@@ -6,6 +6,19 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
 
   }
 
+  activateDevice(deviceId: string): void {
+    console.log(`Activating device with ID: ${deviceId}`);
+    throw new Error('Method not implemented.');
+  }
+
+  async switchRepeatMode(repeatMode: string | number): Promise<void> {
+    fn(() => repeatMode);
+  }
+
+  async togglePlayPause(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
   async retrievePlaybackState(): Promise<Spotify.PlaybackState | undefined> {
     fn();
     return;
@@ -16,7 +29,7 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
   }
   
   async play(): Promise<void> {
-    fn();
+    return fn(() => 'play');
   }
   
   async pause(): Promise<void> {

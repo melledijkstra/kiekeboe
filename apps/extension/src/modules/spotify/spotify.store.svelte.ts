@@ -8,6 +8,7 @@ type SpotifyState = {
   playbackState?: PlaybackState;
   position: number; // Position in milliseconds
   devices: Device[]; // List of available devices
+  deviceId?: string; // Device ID of Web SDK Player
 }
 
 export const spotifyState = $state<SpotifyState>({

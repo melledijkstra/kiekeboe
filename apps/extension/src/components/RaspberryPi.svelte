@@ -2,10 +2,11 @@
   import { isRaspberryAlive } from '@/api/raspberry'
   import { log } from '@/logger'
   import { settingsStore } from '@/settings/index.svelte'
-  import { onMount } from 'svelte'
 
   let raspberryStatus: boolean | null = $state(null)
-  let lastCheckedUri: string | null = $state(null)
+
+  let settingsLoaded = $derived($settingsStore.loaded)
+  let databaseUri = $derived($settingsStore.network.databaseUri)
 
   async function fetchDatabaseStatus(URI?: string) {
     try {
@@ -15,21 +16,14 @@
     }
   }
 
-  onMount(() => {
-    log('RaspberryPi mounted')
-  })
-
   $effect(() => {
-    if (!$settingsStore.loaded) {
+    if (!settingsLoaded) {
       return
     }
 
-    if (
-      $settingsStore.network.databaseUri && 
-      $settingsStore.network.databaseUri !== lastCheckedUri
-    ) {
-      fetchDatabaseStatus($settingsStore.network.databaseUri)
-      lastCheckedUri = $settingsStore.network.databaseUri
+    log('Raspberry Pi database URI changed, checking status...', databaseUri)
+    if (databaseUri) {
+      fetchDatabaseStatus(databaseUri)
     }
   })
 </script>

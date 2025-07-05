@@ -1,7 +1,7 @@
-import { SpotifyClient } from "@/api/spotify";
+import { SpotifyApiClient } from "@/api/spotify";
 import { acquireTabLock, lockExists, releaseTabLock } from "@/lock";
 import { Logger } from "@/logger";
-import { initializeSpotifyPlayer } from "@/modules/spotify/player";
+import { initializeSpotifyPlayer } from "@/modules/spotify/spotify-sdk";
 import { spotifyState } from "@/modules/spotify/spotify.store.svelte";
 import { AuthClient } from "@/oauth2/auth";
 import { SpotifyAuthProvider } from "@/oauth2/providers";
@@ -15,11 +15,13 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
 
   private authClient: AuthClient = new AuthClient(new SpotifyAuthProvider());
-  public api?: SpotifyClient;
+  public api?: SpotifyApiClient = new SpotifyApiClient(this.authClient);
   public player?: Spotify.Player;
+
+  private initialized: boolean = false;
+  public isPlayerActive: boolean = false;
   static hasLock: boolean = false;
-  static deviceId: string | null = null;
-  private isActiveDevice: boolean = false;
+
   private static cancelPlaybackLoop?: () => void;
 
   constructor() {
@@ -33,20 +35,22 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     return this.api?.toggleRepeatMode(repeatMode)
   }
 
-  togglePlayPause(): Promise<void> {
-    if (this.player) {
+  async togglePlayPause(): Promise<void> {
+    if (spotifyState.deviceId && this.player) {
       return this.player.togglePlay()
-    } else if (spotifyState.playbackState?.is_playing) {
-      return this.api?.pause()
-    } else {
-      return this.api?.play()
     }
   }
 
   async initialize() {
-    this.authClient.getAuthToken()
-    this.api = new SpotifyClient(this.authClient)
-    this.initializeSpotifyPlayer(this.authClient)
+    if (this.initialized) {
+      this.logger.log('SpotifyController is already initialized');
+      return;
+    }
+
+    if (SpotifyController.hasLock) {
+      await this.initializeSpotifyPlayer(this.authClient)
+    }
+    this.initialized = true;
   }
 
   destroy() {
@@ -56,6 +60,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
     if (this.player) {
       this.player.disconnect()
+      delete this.player
     }
   }
 
@@ -67,27 +72,26 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     return SpotifyController.hasLock;
   }
 
-  private async initializeSpotifyPlayer(authClient: AuthClient) {
-    const token = await authClient.getAuthToken();
-    if (!token) {
-      throw new Error('Failed to get Spotify auth token');
+  private async retrieveDevices(): Promise<void> {
+    const availableDevices = await this.api?.availableDevices()
+    if (availableDevices?.length) {
+      spotifyState.devices = availableDevices
     }
+  }
 
+  private async initializeSpotifyPlayer(authClient: AuthClient) {
     this.player = await initializeSpotifyPlayer(authClient)
 
     this.player.addListener('ready', async ({ device_id }) => {
-      this.logger.log('ready with Device ID', device_id)
-      SpotifyController.deviceId = device_id
+      this.logger.log(`Ready with Device ID: %c${device_id}`, 'font-style: italic; color: lightgreen;')
+      spotifyState.deviceId = device_id
 
-      const availableDevices = await this.api?.availableDevices()
-      if (availableDevices?.length) {
-        spotifyState.devices = availableDevices
-      }
+      this.retrieveDevices()
     })
 
     this.player.addListener('not_ready', ({ device_id }) => {
       this.logger.log('device ID has gone offline', device_id)
-      SpotifyController.deviceId = null
+      delete spotifyState.deviceId
     })
 
     this.player.addListener('player_state_changed', (state) => this.playerStateChanged(state))
@@ -108,8 +112,8 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
   async playerStateChanged(state: Spotify.PlaybackState) {
     if (!state) {
       this.logger.log('playerStateChanged: No playback state available');
-      if (this.isActiveDevice) {
-        this.isActiveDevice = false
+      if (spotifyState.deviceId) {
+        delete spotifyState.deviceId
       }
       return
     }
@@ -130,14 +134,15 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     } else {
       SpotifyController.cancelPlaybackLoop?.()
     }
-
-    this.isActiveDevice = !!(await this.player?.getCurrentState())
   }
 
   async activateDevice(deviceIdToActivate: string) {
     const result = await this.api?.transferPlaybackDevice(deviceIdToActivate)
-    if (result && SpotifyController.deviceId === deviceIdToActivate) {
-      this.isActiveDevice = true
+    if (result && spotifyState.deviceId === deviceIdToActivate) {
+      spotifyState.devices = spotifyState.devices.map(device => ({
+        ...device,
+        is_active: device.id === deviceIdToActivate
+      }))
     }
   }
 

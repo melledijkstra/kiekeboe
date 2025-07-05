@@ -58,7 +58,7 @@
   <div class="flex flex-row gap-4 mr-5">
     <img
       class="size-20 rounded-sm"
-      src={track?.album.images[0].url ?? '/icons/album-cover-placeholder.png'}
+      src={track?.album?.images[0]?.url ?? '/icons/album-cover-placeholder.png'}
       alt={track?.name ?? 'Track cover'}
     />
     <div class="flex flex-col justify-center overflow-hidden">

@@ -1,8 +1,8 @@
 import type { Module } from '@/modules'
-import Spotify from './SpotifyMenuItem.svelte'
+import SpotifyMenuItem from './SpotifyMenuItem.svelte'
 
 const module: Module = {
-  component: Spotify
+  component: SpotifyMenuItem
 }
 
 export default module

@@ -9,7 +9,7 @@ const SPOTIFY_SDK_FILE = 'spotify-sdk.min.js'
 /**
  * Handles the loading of the Spotify SDK within the Chrome Extension
  */
-export function loadSpotifySDK(): Promise<void> {
+function loadSpotifySDK(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     logger.log('Loading Spotify SDK')
     const sdkFile = browser.runtime.getURL(SPOTIFY_SDK_FILE)
@@ -22,13 +22,31 @@ export function loadSpotifySDK(): Promise<void> {
     const script = document.createElement('script')
     script.src = sdkFile
     script.onload = () => {
-      logger.log('Spotify SDK loaded')
+      logger.log(`Spotify SDK loaded: %c${Spotify.Player.version}`, 'font-style: italic; color: lightgreen;')
       resolve()
     }
     script.onerror = () => {
+      logger.error('Failed to load Spotify SDK', sdkFile, script)
       reject(new Error('Failed to load Spotify SDK'))
     }
     document.head.appendChild(script)
+  })
+}
+
+function isSpotifySDKLoaded(): boolean {
+  return typeof window?.Spotify !== 'undefined' && typeof window.Spotify?.Player !== 'undefined'
+}
+
+function createPlayer(authClient: AuthClient, initialVolume: number): Spotify.Player {
+  return new window.Spotify.Player({
+    name: 'Personal Homepage Player',
+    getOAuthToken: async (callback) => {
+      const token = await authClient.getAuthToken()
+      if (token) {
+        callback(token)
+      }
+    },
+    volume: initialVolume,
   })
 }
 
@@ -38,19 +56,16 @@ export async function initializeSpotifyPlayer(
 ): Promise<Spotify.Player> {
   return new Promise((resolve, reject) => {
     try {
+      if (isSpotifySDKLoaded()) {
+        logger.log('Spotify SDK is already loaded, creating player')
+        const player = createPlayer(authClient, initialVolume)
+        resolve(player)
+        return
+      }
+      
       window.onSpotifyWebPlaybackSDKReady = () => {
         logger.log('Spotify Web Playback SDK is ready, setting up player')
-        const player = new window.Spotify.Player({
-          name: 'Personal Homepage Player',
-          getOAuthToken: async (callback) => {
-            const token = await authClient.getAuthToken()
-            if (token) {
-              callback(token)
-            }
-          },
-          volume: initialVolume
-        })
-
+        const player = createPlayer(authClient, initialVolume)
         resolve(player)
       }
       loadSpotifySDK()

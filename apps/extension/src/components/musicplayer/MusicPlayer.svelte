@@ -11,7 +11,7 @@
   const { controller }: { controller: MusicPlayerInterface } = $props()
 
   function toggleShuffle(shuffle: boolean) {
-    controller.toggleShuffle?.(shuffle)
+    controller.toggleShuffle(shuffle)
   }
 
   function previousTrack() {
@@ -21,14 +21,14 @@
   function playPause() {
     // Use play or pause based on current playback state
     if (!spotifyState.playbackState?.is_playing) {
-      controller.play?.()
+      controller.play()
     } else {
-      controller.pause?.()
+      controller.pause()
     }
   }
 
   function nextTrack() {
-    controller.nextTrack?.()
+    controller.nextTrack()
   }
 
   function switchRepeatMode(mode: number) {
@@ -98,4 +98,8 @@
   onSwitchRepeatMode={switchRepeatMode}
   onSeek={seek}
 />
-<Devices devices={spotifyState.devices} onActivate={() => {}} />
+<Devices
+  playerDeviceId={spotifyState.deviceId} 
+  devices={spotifyState.devices}
+  onActivate={(deviceId) => controller.activateDevice(deviceId)}
+/>
