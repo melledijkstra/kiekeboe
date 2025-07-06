@@ -14,6 +14,7 @@ Kiekeboe is a personal homepage extension that enhances your new tab page with a
 - **Weather Widget**: Displays current weather conditions and forecasts for your location.
 - **Quick Notes**: Allows you to jot down notes directly on the homepage.
 - **Pomodoro Timer**: Helps you stay focused with a built-in Pomodoro timer.
+- **Popup Controls**: Quickly control Spotify playback and focus mode from the browser toolbar popup.
 
 ### Modules
 
