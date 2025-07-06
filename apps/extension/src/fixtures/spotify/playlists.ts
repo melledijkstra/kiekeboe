@@ -1,4 +1,4 @@
-import type { Playlist } from "@/api/definitions/spotify";
+import type { Playlist } from "SpotifyApi";
 
 export const playlists: Playlist[] = [
   {

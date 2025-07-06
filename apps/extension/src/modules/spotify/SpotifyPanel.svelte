@@ -4,7 +4,7 @@
   import { SpotifyController } from '@/controllers/SpotifyController'
   import MusicPlayer from '@/components/musicplayer/MusicPlayer.svelte'
 
-  let controller = $state<SpotifyController>(new SpotifyController())
+  const { controller }: { controller: SpotifyController } = $props()
 
   function cleanup() {
     controller?.destroy()
@@ -14,13 +14,14 @@
   onMount(async () => {
     window.addEventListener('beforeunload', cleanup)
 
-    controller.initialize()
+    await controller.initialize()
+    controller.syncState()
   })
 
   onDestroy(cleanup)
 </script>
 
-<Panel class="min-w-[500] max-h-96" nopadding>
+<Panel class="flex flex-col min-w-[500] max-h-96" nopadding>
   {#if !SpotifyController?.hasLockAcquired()}
     <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
     <p class="text-center text-sm">

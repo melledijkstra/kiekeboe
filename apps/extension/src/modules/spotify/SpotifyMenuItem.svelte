@@ -3,6 +3,9 @@
   import { Popover } from 'bits-ui'
   import Icon from '@/components/atoms/Icon.svelte'
   import SpotifyPanel from './SpotifyPanel.svelte'
+  import { SpotifyController } from '@/controllers/SpotifyController'
+  
+  let controller = $state<SpotifyController>(new SpotifyController())
 </script>
 
 <Popover.Root>
@@ -14,5 +17,5 @@
   >
     <Icon path={mdiSpotify} size={40} />
   </Popover.Trigger>
-  <SpotifyPanel />
+  <SpotifyPanel controller={controller} />
 </Popover.Root>

@@ -8,8 +8,9 @@
     title: 'Spotify/Devices',
     component: Devices,
     args: {
+      playerDeviceId: devices[0]?.id,
       devices,
-      onActivate: fn()
+      onActivate: fn(),
     }
   })
 </script>

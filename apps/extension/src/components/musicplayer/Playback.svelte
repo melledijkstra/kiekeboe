@@ -11,30 +11,30 @@
   } from '@mdi/js'
   import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
+  import type { State } from 'MusicPlayer'
   
   type PlaybackProps = {
-    playbackState?: Spotify.PlaybackState
+    playbackState?: State
     onToggleShuffle?: (shuffle: boolean) => void
     onPreviousTrack?: () => void
     onPlayPause?: () => void
     onNextTrack?: () => void
     onSwitchRepeatMode?: (mode: number) => void
-    onSeek?: (position: number) => void
+    onSeek?: (position_ms: number) => void
   }
 
   const {
-    playbackState,
+    playbackState: state,
     onToggleShuffle,
     onPreviousTrack,
     onPlayPause,
     onNextTrack,
-    onSwitchRepeatMode,
+    // onSwitchRepeatMode,
     onSeek
   }: PlaybackProps = $props()
 
-  let isPaused = $derived(playbackState?.paused ?? true)
-  let isShuffling = $derived(playbackState?.shuffle)
-  let repeatMode = $derived(playbackState?.repeat_mode)
+  let isShuffling = $derived(state?.shuffle ?? false)
+  let repeatMode = $derived(0)
   let repeatModeIcon = $derived.by(() => {
     switch (repeatMode) {
       case 1:
@@ -46,11 +46,11 @@
         return mdiRepeatOff
     }
   })
-  let track = $derived(playbackState?.track_window.current_track)
-  let position = $derived(playbackState?.position ?? 0)
-  let remaining = $derived(track ? track.duration_ms - position : 0)
+  let mediaItem = $derived(state?.currentItem)
+  let position_ms = $derived(state?.position_ms ?? 0)
+  let remaining = $derived(mediaItem ? mediaItem.duration_ms - position_ms : 0)
   let timeLeft = $derived<string>(millisecondsToTime(remaining))
-  let currentTime = $derived<string>(millisecondsToTime(position))
+  let currentTime = $derived<string>(millisecondsToTime(position_ms))
 </script>
 
 <div class="flex flex-row p-2">
@@ -58,13 +58,13 @@
   <div class="flex flex-row gap-4 mr-5">
     <img
       class="size-20 rounded-sm"
-      src={track?.album?.images[0]?.url ?? '/icons/album-cover-placeholder.png'}
-      alt={track?.name ?? 'Track cover'}
+      src={mediaItem?.album?.coverArtUrl ?? '/icons/album-cover-placeholder.png'}
+      alt={mediaItem?.title ?? 'Track cover'}
     />
     <div class="flex flex-col justify-center overflow-hidden">
-      <strong class="truncate text-xl">{track?.name}</strong>
+      <strong class="truncate text-xl">{mediaItem?.title ?? 'No item playing'}</strong>
       <p class="truncate">
-        {track?.artists.map((artist) => artist.name).join(', ')}
+        {mediaItem?.artist.name ?? '-'}
       </p>
     </div>
   </div>
@@ -86,15 +86,13 @@
         <Icon class="size-6 fill-white" path={mdiSkipPrevious} />
       </button>
       <button class="cursor-pointer" onclick={() => onPlayPause?.()}>
-        <Icon class="size-6 fill-white" path={isPaused ? mdiPlay : mdiPause} />
+        <Icon class="size-6 fill-white" path={state?.isPlaying ? mdiPause : mdiPlay} />
       </button>
       <button class="cursor-pointer" onclick={() => onNextTrack?.()}>
         <Icon class="size-6 fill-white" path={mdiSkipNext} />
       </button>
-      <button class="cursor-pointer"
-        disabled={typeof repeatMode === 'undefined'}
-        onclick={() => repeatMode && onSwitchRepeatMode?.(repeatMode)}>
-        <Icon class="size-6 fill-white" path={repeatModeIcon} />
+      <button class="cursor-pointer" disabled={true}>
+        <Icon class="size-6 fill-white peer-disabled:fill-amber-600" path={repeatModeIcon} />
       </button>
     </div>
     <div class="mt-2 flex flex-row gap-2 items-center justify-between text-sm">
@@ -102,9 +100,8 @@
       <input
         type="range"
         min="0"
-        max={track?.duration_ms}
-        value={position}
-        oninput={(e) => (position = e.currentTarget.valueAsNumber)}
+        max={mediaItem?.duration_ms}
+        value={position_ms}
         onchange={(e) => onSeek?.(e.currentTarget.valueAsNumber)}
         tabindex="0"
         class="bg-gray-200/50 rounded-full h-2 accent-green-700"

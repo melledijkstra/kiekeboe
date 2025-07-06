@@ -29,7 +29,7 @@ export class TokenBaseClient extends BaseClient {
     return this.token
   }
 
-  retrieveAccessToken(token: string) {
+  setAccessToken(token: string) {
     this.token = token
   }
 }

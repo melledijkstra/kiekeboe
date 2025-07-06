@@ -1,17 +1,24 @@
+import type { ILogger } from '@/interfaces/logger.interface'
 import { Logger } from '@/logger'
 
 const logger = new Logger('cache')
 
-type CacheItem = {
-  data: unknown
+type CacheItem<T> = {
+  data: T
   timestamp: number
   ttl: number
 }
 
-const cache: Record<string, CacheItem | undefined> = {}
+const cache: Record<string, CacheItem<unknown> | undefined> = {}
 
-// For a five-minute TTL (Time To Live)
-const MIN_5 = 5 * 60 * 1000 // 5 minutes in milliseconds
+// Default TTL Times (Time To Live)
+export const SEC_30 = 30 * 1000
+export const MIN_1 = 1 * 60 * 1000
+export const MIN_3 = 3 * 60 * 1000
+export const MIN_5 = 5 * 60 * 1000
+export const MIN_10 = 10 * 60 * 1000
+export const MIN_15 = 15 * 60 * 1000
+
 
 export function get(key: string) {
   const cachedItem = cache[key]
@@ -25,10 +32,10 @@ export function get(key: string) {
   }
 }
 
-export function set(key: string, value: unknown, ttl = MIN_5) {
+export function set(key: string, value: unknown, ttl = MIN_5): void {
   cache[key] = {
     data: value,
-    timestamp: Date.now(), // store insertion time
+    timestamp: Date.now(),
     ttl: ttl ?? MIN_5
   }
 }
@@ -66,4 +73,31 @@ export function withCache<T, A extends unknown[]>(
   }
 
   return cachedFunction
+}
+
+export class MemoryCache implements ILogger {
+  logger = new Logger('MemoryCache')
+  private cache: Record<string, CacheItem<unknown> | undefined> = {}
+
+  get<T>(key: string): T | undefined {
+    const cachedItem = this.cache[key]
+    if (!cachedItem) {
+      return
+    }
+    
+    if (Date.now() - cachedItem.timestamp > cachedItem.ttl) {
+      delete this.cache[key]
+    } else {
+      this.logger.log('Cache hit:', key)
+      return cachedItem.data as T
+    }
+  }
+  
+  set(key: string, value: unknown, ttl = MIN_5) {
+    this.cache[key] = {
+      data: value,
+      timestamp: Date.now(), // store insertion time
+      ttl: ttl ?? MIN_5
+    }
+  }
 }

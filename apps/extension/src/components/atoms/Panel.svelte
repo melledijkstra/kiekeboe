@@ -23,7 +23,7 @@
     'dark:bg-black/60 dark:text-white',
     // light theme
     'bg-white/40 text-black',
-    'max-h-[600px] max-w-[900px] z-40',
+    'max-h-[600px] max-w-[900px] z-40 overflow-hidden',
     props.class
   ]}
 >
@@ -31,7 +31,5 @@
     // align with panel background
     "dark:text-black/40 text-white/40"
   ]} />
-  <div class="overflow-y-auto h-full">
     {@render children()}
-  </div>
 </Popover.Content>

@@ -5,12 +5,12 @@ declare module 'MusicPlayer' {
     name: string;
   }
 
-  type MediaItem = {
+  type Track = {
     id: string;
     title: string;
     artist: Artist;
     album: Album;
-    duration: number; // in seconds
+    duration_ms: number; // in milliseconds
     coverArtUrl?: string; // optional
   }
 
@@ -22,14 +22,32 @@ declare module 'MusicPlayer' {
     coverArtUrl?: string; // optional
   }
 
-  export interface MusicPlayer {
-    play: (mediaItem: MediaItem) => void;
-    pause: () => void;
-    stop: () => void;
-    next: () => void;
-    previous: () => void;
-    setVolume: (volume: number) => void;
-    getCurrentTrack: () => string | null;
-    onTrackChange: (callback: (track: string) => void) => void;
+  type Playlist = {
+    id: string;
+    title: string;
+    description?: string; // optional
+    tracks: Track[];
+    coverArtUrl?: string; // optional
+  }
+
+  interface MusicPlayerInterface {
+    getPlaylists(): Promise<Playlist[]>;
+    play(mediaItem?: Track | Playlist | Album): void;
+    pause(): void;
+    next(): void;
+    previous(): void;
+    seek(position_ms: number): Promise<void>;
+    initialize?(): Promise<void>;
+    setVolume(volume: number): void;
+    getState(): Promise<State>;
+    activateDevice?(deviceId: string): void;
+  }
+
+  type State = {
+    currentItem?: Track;
+    isPlaying: boolean;
+    volume: number; // 0-100
+    position_ms: number; // in milliseconds
+    shuffle: boolean;
   }
 }

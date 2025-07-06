@@ -1,9 +1,34 @@
 import { fn } from '@storybook/test'
-import type { MusicPlayerInterface } from '@/controllers/MusicPlayerInterface';
+import type { MusicPlayerInterface, Playlist, State } from 'MusicPlayer';
 
 export class MockMusicPlayerController implements MusicPlayerInterface {
-  constructor() {
+  constructor() {}
 
+  async getPlaylists(): Promise<Playlist[]> {
+    const playlists = [];
+    for (let i = 0; i < 10; i++) {
+      const playlist: Playlist = {
+        id: `playlist-${i}`,
+        title: `Playlist ${i}`,
+        description: `Description for playlist ${i}`,
+        tracks: [],
+        coverArtUrl: `https://example.com/cover-${i}.jpg`
+      };
+      playlists.push(playlist);
+    }
+    return playlists;
+  }
+
+  next(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  previous(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  getState(): Promise<State> {
+    throw new Error('Method not implemented.');
   }
 
   activateDevice(deviceId: string): void {
@@ -29,7 +54,7 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
   }
   
   async play(): Promise<void> {
-    return fn(() => 'play');
+    fn();
   }
   
   async pause(): Promise<void> {

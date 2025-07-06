@@ -21,28 +21,28 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
     const token = await this.authClient.getAuthToken()
 
     if (token) {
-      super.retrieveAccessToken(token)
+      super.setAccessToken(token)
     }
   }
 
   async transferPlaybackDevice(deviceId: string) {
     await this.retrieveAccessToken()
-    const response = await this.request(`/me/player`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        device_ids: [deviceId],
-        play: false
+    try {
+      await this.request(`/me/player`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          device_ids: [deviceId],
+          play: false
+        })
       })
-    })
-
-    if (response) {
       return true
+    } catch (error) {
+      this.logger.error('Failed to transfer playback device:', error)
+      return false
     }
-
-    return false
   }
 
   async availableDevices(): Promise<Device[] | undefined> {
@@ -124,10 +124,15 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
     })
   }
 
-  async play() {
+  async play(context_uri?: string) {
     await this.retrieveAccessToken()
+
+    const body = context_uri ? {
+      context_uri
+    } : {}
     await this.request('/me/player/play', {
       method: 'PUT',
+      body: JSON.stringify(body),
     })
   }
 

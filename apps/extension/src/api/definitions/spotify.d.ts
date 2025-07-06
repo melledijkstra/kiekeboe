@@ -5,8 +5,8 @@ declare module 'SpotifyApi' {
     is_private_session: boolean
     is_restricted: boolean
     name: string
-    type: string
-    volume_percent: number
+    type: "computer" | "smartphone" | "speaker"
+    volume_percent: number // 0-100
     supports_volume: boolean
   }
 

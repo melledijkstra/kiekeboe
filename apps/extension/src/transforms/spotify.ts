@@ -1,7 +1,7 @@
-import type { Track, PlaybackState } from 'SpotifyApi';
-import type { MediaItem } from 'MusicPlayer';
+import type { Track as SpotifyTrack, PlaybackState, Playlist as SpotifyPlaylist } from 'SpotifyApi';
+import type { Playlist, Track } from 'MusicPlayer';
 
-export function trackToMediaItem(track: Track): MediaItem {
+export function spotifyTrackToMPTrack(track: SpotifyTrack): Track {
   return {
     id: track.id,
     title: track.name,
@@ -19,7 +19,7 @@ export function trackToMediaItem(track: Track): MediaItem {
       releaseDate: track.album.release_date,
       coverArtUrl: track.album.images[0]?.url
     },
-    duration: Math.floor(track.duration_ms / 1000),
+    duration_ms: Math.floor(track.duration_ms / 1000),
     coverArtUrl: track.album.images[0]?.url
   };
 }
@@ -164,3 +164,11 @@ export function apiPlaybackStateToPlayerPlaybackState(
     }
   }
 }
+
+export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => ({
+  id: playlist.uri,
+  title: playlist.name,
+  description: playlist.description || '',
+  tracks: [],
+  coverArtUrl: playlist.images[0]?.url || ''
+})
