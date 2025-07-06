@@ -10,7 +10,7 @@ function manifestTransformer(content: string, mode: string) {
   const envVars = loadEnv(mode, process.cwd())
   content = content.replace(
     '%CLIENT_ID%',
-    envVars.VITE_GOOGLE_EXTENSION_CLIENT_ID
+    envVars.VITE_GOOGLE_CLIENT_ID
   )
   content = content.replace('%VERSION%', packageJson.version)
   return content

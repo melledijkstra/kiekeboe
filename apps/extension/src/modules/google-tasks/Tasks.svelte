@@ -116,7 +116,7 @@
         />
         Tasks
       </h3>
-      <select class="mb-2 text-black" bind:value={selectedTaskList} on:change={loadTasks}>
+      <select class="mb-2 text-black" bind:value={selectedTaskList} onchange={loadTasks}>
         {#each taskLists as list (list.id)}
           <option value={list.id}>{list.title}</option>
         {/each}
@@ -133,11 +133,11 @@
               <input
                 class="flex-1 bg-transparent border-b text-white"
                 bind:value={editingTitle}
-                on:keypress={(e) => e.key === 'Enter' && saveEdit(task)}
+                onkeypress={(e) => e.key === 'Enter' && saveEdit(task)}
               />
               <button class="text-xs" onclick={() => saveEdit(task)}>Save</button>
             {:else}
-              <span class="flex-1" on:dblclick={() => { editingTask = task.id; editingTitle = task.title }}>
+              <span class="flex-1" ondblclick={() => { editingTask = task.id; editingTitle = task.title }}>
                 {task.title}
               </span>
             {/if}
