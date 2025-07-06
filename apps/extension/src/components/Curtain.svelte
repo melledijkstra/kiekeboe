@@ -1,30 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { UnsplashClient } from '@/api/unsplash'
-  import { updateBackgroundImage } from '@/ui'
+  import { setBackgroundImage } from '@/ui'
 
-  let client = $state<UnsplashClient>()
+  let client = $state<UnsplashClient>(new UnsplashClient())
   let loaded = $state(false)
 
-  onMount(() => {
-    client = new UnsplashClient()
-
+  onMount(async () => {
     if (document.body.id !== 'curtain-image') {
       document.body.id = 'curtain-image'
     }
-    
-    setBackgroundImage()
-  })
 
-  async function setBackgroundImage() {
     const url = await client?.getDailyImage()
 
     if (url) {
-      updateBackgroundImage(url, () => {
-        loaded = true
-      })
+      await setBackgroundImage(url)
+      loaded = true
     }
-  }
+  })
 </script>
 
 <style lang="postcss">

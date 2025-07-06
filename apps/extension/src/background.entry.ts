@@ -1,9 +1,15 @@
+/// <reference lib="webworker" />
 import browser from 'webextension-polyfill'
 import { FocusService } from '@/services/focus'
-import { Logger } from './logger'
-import { commandCenterOpen } from './modules/command-center/messages'
-import { settings } from './settings/index.svelte'
-import { cacheImage } from '@/cache/messages'
+import { Logger } from '@/logger'
+import { commandCenterOpen } from '@/modules/command-center/messages'
+import { settings } from '@/settings/index.svelte'
+import { findExtensionTab, getActiveTab, isHomepageUrl } from '@/background/utils'
+import { trimCache } from './background/image-cache'
+
+const UNSPLASH_IMAGE_DOMAIN = 'https://images.unsplash.com'
+
+declare const self: ServiceWorkerGlobalScope;
 
 export const logger = new Logger('background')
 
@@ -12,30 +18,6 @@ declare global {
 }
 
 const services = []
-
-cacheImage.on(async (url) => {
-  logger.log('cacheImage request received', url)
-  if (!url) return ''
-  const cache = await caches.open('image-cache')
-  const match = await cache.match(url)
-  if (match) {
-    const data = await match.blob()
-    return blobToDataUrl(data)
-  }
-  const response = await fetch(url)
-  await cache.put(url, response.clone())
-  const blob = await response.blob()
-  return blobToDataUrl(blob)
-})
-
-function blobToDataUrl(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onloadend = () => resolve(reader.result as string)
-    reader.onerror = () => reject(new Error('Failed to read blob'))
-    reader.readAsDataURL(blob)
-  })
-}
 
 browser.runtime.onInstalled.addListener(({ reason }) => {
   logger.log('Extension installed:', reason)
@@ -49,25 +31,6 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
     })
   }
 })
-
-async function getActiveTab() {
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-  return tabs[0];
-}
-
-async function findExtensionTab() {
-  const tabs = await browser.tabs.query({});
-  const extensionUrl = `chrome-extension://${browser.runtime.id}/index.html`;
-
-  return tabs.find(tab =>
-    tab.url?.startsWith(extensionUrl) || tab.url?.startsWith('chrome://newtab')
-  );
-}
-
-function isHomepageUrl(url: string) {
-  return url.startsWith(`chrome-extension://${browser.runtime.id}/index.html`) ||
-  url.startsWith('chrome://newtab')
-}
 
 browser.commands.onCommand.addListener(async (command) => {
   logger.log('Command received:', command)
@@ -102,6 +65,33 @@ browser.notifications.onClicked.addListener((notificationId) => {
   logger.log('Notification clicked:', notificationId)
   browser.tabs.create({ url: '/index.html' })
 })
+
+self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+
+  if (url.startsWith(UNSPLASH_IMAGE_DOMAIN)) {
+    event.respondWith((async () => {
+      const imageCache = await caches.open('image-cache')
+      const match = await imageCache.match(event.request)
+      if (match) {
+        logger.log('Serving cached image:', event.request.url)
+        return match
+      }
+      const response = await fetch(event.request)
+      imageCache.put(event.request, response.clone())
+      return response
+    })())
+  }
+})
+
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', e => {
+  // clean up any stale entries right away
+  e.waitUntil(trimCache());
+});
 
 logger.log('Service worker activated')
 services.push(new FocusService())

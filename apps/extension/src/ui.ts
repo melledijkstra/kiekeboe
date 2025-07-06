@@ -1,6 +1,8 @@
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
-import { cacheImage } from '@/cache/messages'
+import { Logger } from '@/logger'
+
+const logger = new Logger('ui')
 
 export async function retrieveUsername(): Promise<string | undefined> {
   const { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
@@ -29,25 +31,34 @@ export function getWelcomeMessage(name: string): string {
   return `Good ${momentOfDay}, ${name}`
 }
 
-export async function updateBackgroundImage(
-  url: string,
-  callback?: () => void,
-) {
-  let src = url
-  try {
-    const cached = await cacheImage.send(url)
-    if (cached) {
-      src = cached
+async function fetchImage(src: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => {
+      resolve(image.src)
     }
-  } catch (err) {
-    console.error('Failed to retrieve cached image', err)
+    image.onerror = (err) => {
+      logger.error('Failed to load image', err)
+      reject(err)
+    }
+    image.src = src
+  });
+}
+
+function setSrc(src: string) {
+  const elem = document.querySelector(':root') as HTMLElement
+  if (!elem) {
+    logger.error('Root element not found for setting background image')
+    return
   }
 
-  const image = new Image()
-  image.src = src
-  image.onload = () => {
-    callback?.()
-    const elem = document.querySelector(':root') as HTMLElement
-    elem?.style.setProperty('--background-image', `url(${src})`)
-  }
+  elem.style.setProperty('--background-image', `url(${src})`)
+}
+
+export async function setBackgroundImage(url: string) {
+  logger.time('updateBackgroundImage')
+  fetchImage(url).then((src) => {
+    setSrc(src)
+    logger.timeEnd('updateBackgroundImage')
+  })
 }
