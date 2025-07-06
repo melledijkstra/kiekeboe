@@ -48,13 +48,16 @@ describe('ui.ts', () => {
     })
   })
 
-  describe('updateBackgroundImage', () => {
+  describe('setBackgroundImage', () => {
     let originalImage: typeof globalThis.Image;
 
     beforeEach(() => {
       originalImage = globalThis.Image;
       vi.stubGlobal('Image', class {
         _src: string = '';
+        get src() {
+          return this._src;
+        }
         set src(value: string) {
           this._src = value;
           // Simulate image loading
@@ -73,7 +76,7 @@ describe('ui.ts', () => {
       vi.unstubAllGlobals();
     })
 
-    it('should update the background image', async () => {
+    it('should set the background image', async () => {
       // setup
       const mockUrl = 'https://example.com/image.jpg'
       const mockRootElement = document.createElement('div')

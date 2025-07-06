@@ -47,6 +47,7 @@ async function fetchImage(src: string): Promise<string> {
 
 function setSrc(src: string) {
   const elem = document.querySelector(':root') as HTMLElement
+
   if (!elem) {
     logger.error('Root element not found for setting background image')
     return
@@ -56,9 +57,6 @@ function setSrc(src: string) {
 }
 
 export async function setBackgroundImage(url: string) {
-  logger.time('updateBackgroundImage')
-  fetchImage(url).then((src) => {
-    setSrc(src)
-    logger.timeEnd('updateBackgroundImage')
-  })
+  const src = await fetchImage(url)
+  setSrc(src)
 }
