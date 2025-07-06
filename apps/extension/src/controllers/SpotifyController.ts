@@ -1,5 +1,4 @@
 import { SpotifyApiClient } from "@/api/spotify";
-import type { PlaybackState } from "SpotifyApi";
 import { acquireTabLock, lockExists, releaseTabLock } from "@/lock";
 import { Logger } from "@/logger";
 import { initializeSpotifyPlayer } from "@/modules/spotify/spotify-sdk";
@@ -11,7 +10,7 @@ import type { Album, MusicPlayerInterface, Playlist, State, Track } from "MusicP
 import type { ILogger } from "@/interfaces/logger.interface";
 import { MPState } from "@/components/musicplayer/state.svelte";
 import { MemoryCache, MIN_1 } from "@/cache/memory";
-import { convertSpotifyPlaylist } from "@/transforms/spotify";
+import { convertApiPlayerState, convertPlayerState, convertSpotifyPlaylist } from "@/transforms/spotify";
 
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
@@ -133,7 +132,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
     this.logger.log('playerStateChanged: Playback state changed', state);
 
-    MPState.state = this.convertPlayerState(state);
+    MPState.state = convertPlayerState(state);
 
     if (!state.paused) {
       if (SpotifyController.cancelPlaybackLoop) {
@@ -151,7 +150,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
   async setupPlaybackLoop(state: State) {
     if (SpotifyController.cancelPlaybackLoop) {
-      this.logger.log('Playback loop already set up, skipping');
+      this.logger.log('Playback loop already set up, cancelling previous loop');
       SpotifyController.cancelPlaybackLoop();
     }
 
@@ -186,27 +185,42 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
   }
 
   async play() {
+    this.logger.log('Resuming playback', { isPlayerActive: this.isPlayerActive });
     if (this.isPlayerActive) {
       await this.player?.resume()
     } else {
       await this.api.play()
+      MPState.state.isPlaying = true
     }
   }
 
   async pause() {
+    this.logger.log('Pausing playback', { isPlayerActive: this.isPlayerActive });
     if (this.isPlayerActive) {
       await this.player?.pause()
     } else {
       await this.api?.pause()
+      // manually update state since we won't get a state change event
+      MPState.state.isPlaying = false
     }
   }
 
   async next() {
-    await this.player?.nextTrack()
+    if (this.isPlayerActive) {
+      await this.player?.nextTrack()
+    } else {
+      await this.api.nextTrack()
+      this.syncState()
+    }
   }
 
   async previous() {
-    await this.player?.previousTrack()
+    if (this.isPlayerActive) {
+      await this.player?.previousTrack()
+    } else {
+      await this.api.previousTrack()
+      this.syncState()
+    }
   }
 
   async setVolume(volume: number) {
@@ -217,75 +231,22 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     console.log('Seeking to position:', position, this.isPlayerActive);
     if (this.isPlayerActive) {
       await this.player?.seek(position)
-    }
-  }
-
-  private convertPlayerState(state: Spotify.PlaybackState): State {
-    const currentTrack = state.track_window.current_track;
-    const album = currentTrack.album;
-    const artists = currentTrack.artists;
-    const mainArtist = artists[0];
-    return {
-      isPlaying: !state.paused,
-      volume: 0,
-      position_ms: state.position,
-      shuffle: false,
-      currentItem: {
-        id: currentTrack.id ?? currentTrack.uri,
-        title: currentTrack.name,
-        duration_ms: currentTrack.duration_ms,
-        artist: {
-          id: mainArtist.uri,
-          name: mainArtist.name
-        },
-        album: {
-          id: album.uri,
-          title: album.name,
-          artist: {
-            id: mainArtist.uri,
-            name: mainArtist.name
-          },
-          coverArtUrl: album.images[0]?.url
-        },
-      }
-    }
-  }
-
-  private convertApiPlayerState(state: PlaybackState): State {
-    const track = state.item
-    const device = state.device
-    const album = track.album
-    return {
-      isPlaying: state.is_playing,
-      volume: device.volume_percent ?? 0,
-      position_ms: state.progress_ms,
-      shuffle: state.shuffle_state,
-      currentItem: {
-        id: track.id,
-        title: track.name,
-        duration_ms: track.duration_ms,
-        artist: {
-          id: track.artists?.[0]?.uri ?? '',
-          name: track.artists?.[0]?.name ?? ''
-        },
-        album: {
-          id: album.id,
-          title: album.name,
-          artist: {
-            id: album.artists?.[0]?.uri ?? '',
-            name: album.artists?.[0]?.name ?? ''
-          },
-          coverArtUrl: album.images[0]?.url ?? ''
-        },
-      },
+    } else {
+      await this.api.seek(position)
+      // manually update state since we won't get a state change event
+      MPState.state.position_ms = position;
+      this.setupPlaybackLoop(MPState.state);
     }
   }
 
   async getState(): Promise<State> {
+    this.logger.log('Retrieving Spotify playback state', {
+      isPlayerActive: this.isPlayerActive,
+    });
     if (this.isPlayerActive && this.player) {
       const playbackState = await this.player.getCurrentState()
       if (playbackState) {
-        return this.convertPlayerState(playbackState)
+        return convertPlayerState(playbackState)
       }
     }
 
@@ -293,7 +254,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     const playbackState = await this.api?.getPlaybackState()
     if (playbackState) {
       this.logger.log('Playback state retrieved from Web API', playbackState);
-      return this.convertApiPlayerState(playbackState)
+      return convertApiPlayerState(playbackState)
     } else {
       this.logger.log('No playback state available from Web API');
       return {

@@ -23,7 +23,7 @@
     'dark:bg-black/60 dark:text-white',
     // light theme
     'bg-white/40 text-black',
-    'max-h-[600px] max-w-[900px] z-40 overflow-hidden',
+    'max-h-[600px] max-w-[900px] z-40',
     props.class
   ]}
 >

@@ -1,5 +1,9 @@
-import type { Track as SpotifyTrack, PlaybackState, Playlist as SpotifyPlaylist } from 'SpotifyApi';
-import type { Playlist, Track } from 'MusicPlayer';
+import type {
+  Track as SpotifyTrack,
+  PlaybackState as ApiPlaybackState,
+  Playlist as SpotifyPlaylist
+} from 'SpotifyApi';
+import type { Playlist, State, Track } from 'MusicPlayer';
 
 export function spotifyTrackToMPTrack(track: SpotifyTrack): Track {
   return {
@@ -19,150 +23,9 @@ export function spotifyTrackToMPTrack(track: SpotifyTrack): Track {
       releaseDate: track.album.release_date,
       coverArtUrl: track.album.images[0]?.url
     },
-    duration_ms: Math.floor(track.duration_ms / 1000),
+    duration_ms: track.duration_ms,
     coverArtUrl: track.album.images[0]?.url
   };
-}
-
-export function playerPlaybackStateToApiPlaybackState(
-  playbackState: Spotify.PlaybackState
-): PlaybackState {
-  return {
-    is_playing: playbackState.paused ? false : true,
-    progress_ms: playbackState.position,
-    device: {
-      id: '',
-      is_active: false,
-      is_private_session: false,
-      is_restricted: false,
-      name: '',
-      type: '',
-      volume_percent: 0,
-      supports_volume: false
-    },
-    repeat_state: '',
-    shuffle_state: false,
-    context: {
-      type: '',
-      href: '',
-      external_urls: {
-        spotify: ''
-      },
-      uri: ''
-    },
-    timestamp: 0,
-    item: {
-      album: {
-        album_type: 0,
-        total_tracks: 0,
-        available_markets: [],
-        external_urls: {
-          spotify: ''
-        },
-        href: '',
-        id: '',
-        images: [],
-        name: '',
-        release_date: '',
-        release_date_precision: '',
-        restrictions: {
-          reason: ''
-        },
-        type: 'album',
-        uri: '',
-        artists: []
-      },
-      artists: [],
-      disc_number: 0,
-      duration_ms: 0,
-      explicit: false,
-      external_ids: {
-        isrc: '',
-        ean: '',
-        upc: ''
-      },
-      external_urls: {
-        spotify: ''
-      },
-      href: '',
-      id: '',
-      is_playable: false,
-      restrictions: {
-        reason: ''
-      },
-      name: '',
-      popularity: 0,
-      preview_url: '',
-      track_number: 0,
-      uri: '',
-      is_local: false,
-      type: 'track',
-      available_markets: ['ES']
-    },
-    currently_playing_type: '',
-    actions: {
-      interrupting_playback: false,
-      pausing: false,
-      resuming: false,
-      seeking: false,
-      skipping_next: false,
-      skipping_prev: false,
-      toggling_repeat_context: false,
-      toggling_shuffle: false,
-      toggling_repeat_track: false,
-      transferring_playback: false
-    }
-  };
-}
-
-export function apiPlaybackStateToPlayerPlaybackState(
-  playbackState?: PlaybackState
-): Spotify.PlaybackState | undefined {
-  if (!playbackState) {
-    return;
-  }
-
-  return {
-    paused: !playbackState.is_playing,
-    position: playbackState.progress_ms,
-    shuffle: playbackState.shuffle_state,
-    context: {
-      metadata: null,
-      uri: null
-    },
-    disallows: {},
-    duration: 0,
-    loading: false,
-    timestamp: 0,
-    repeat_mode: 0,
-    playback_id: '',
-    playback_quality: '',
-    playback_features: {
-      hifi_status: ''
-    },
-    restrictions: {},
-    track_window: {
-      current_track: {
-        album: playbackState.item.album,
-        artists: [],
-        duration_ms: 0,
-        id: null,
-        is_playable: false,
-        name: '',
-        uid: '',
-        uri: '',
-        media_type: 'audio',
-        type: 'track',
-        track_type: 'audio',
-        linked_from: {
-          uri: null,
-          id: null
-        }
-      },
-      previous_tracks: [],
-      next_tracks: []
-    }
-  }
 }
 
 export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => ({
@@ -172,3 +35,64 @@ export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => (
   tracks: [],
   coverArtUrl: playlist.images[0]?.url || ''
 })
+
+export const convertApiPlayerState = (state: ApiPlaybackState): State => {
+  const track = state.item
+  const device = state.device
+  const album = track.album
+  return {
+    isPlaying: state.is_playing,
+    volume: device.volume_percent ?? 0,
+    position_ms: state.progress_ms,
+    shuffle: state.shuffle_state,
+    currentItem: {
+      id: track.id,
+      title: track.name,
+      duration_ms: track.duration_ms,
+      artist: {
+        id: track.artists?.[0]?.uri ?? '',
+        name: track.artists?.[0]?.name ?? ''
+      },
+      album: {
+        id: album.id,
+        title: album.name,
+        artist: {
+          id: album.artists?.[0]?.uri ?? '',
+          name: album.artists?.[0]?.name ?? ''
+        },
+        coverArtUrl: album.images[0]?.url ?? ''
+      },
+    },
+  }
+}
+
+export const convertPlayerState = (state: Spotify.PlaybackState): State => {
+  const currentTrack = state.track_window.current_track;
+  const album = currentTrack.album;
+  const artists = currentTrack.artists;
+  const mainArtist = artists[0];
+  return {
+    isPlaying: !state.paused,
+    volume: 0,
+    position_ms: state.position,
+    shuffle: false,
+    currentItem: {
+      id: currentTrack.id ?? currentTrack.uri,
+      title: currentTrack.name,
+      duration_ms: currentTrack.duration_ms,
+      artist: {
+        id: mainArtist.uri,
+        name: mainArtist.name
+      },
+      album: {
+        id: album.uri,
+        title: album.name,
+        artist: {
+          id: mainArtist.uri,
+          name: mainArtist.name
+        },
+        coverArtUrl: album.images[0]?.url
+      },
+    }
+  }
+}

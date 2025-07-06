@@ -19,32 +19,37 @@
 
 <div
   class={[
-    "relative flex justify-end gap-1 py-1 px-2 w-full text-white rounded-b-xl",
+    "relative justify-between flex gap-1 py-1 px-2 w-full text-white rounded-b-xl",
     "transition-colors duration-1000",
     isActiveDevice ? 'bg-green-700' : 'transparent',
   ]}
 >
-  {#if activeDevice}
-    <Icon class="inline" path={mdiVolumeHigh} size={15} />
+  {#if Spotify.Player?.version}
+    <p class="">v{Spotify.Player.version}</p>
   {/if}
-  <button
-    onclick={() => (open = !open)}
-    class={['text-xs hover:underline cursor-pointer']}
-  >
-    {activeDevice?.name ?? 'Select Device'}
-  </button>
-  <div
-    class="{open
-      ? 'block'
-      : 'hidden'} absolute bottom-full p-1 bg-black rounded text-white shadow-md"
-  >
-    {#each otherDevices as device (device.id)}
-      <button
-        class="flex text-xs w-full justify-between items-center hover:bg-green-800 cursor-pointer"
-        onclick={() => onActivate(device.id)}
-      >
-        <p>{device.name}</p>
-      </button>
-    {/each}
+  <div class="relative">
+    {#if activeDevice}
+      <Icon class="inline" path={mdiVolumeHigh} size={15} />
+    {/if}
+    <button
+      onclick={() => (open = !open)}
+      class={['text-xs hover:underline cursor-pointer']}
+    >
+      {activeDevice?.name ?? 'Select Device'}
+    </button>
+    <div
+      class="{open
+        ? 'block'
+        : 'hidden'} absolute bottom-full p-1 bg-black rounded text-white shadow-md"
+    >
+      {#each otherDevices as device (device.id)}
+        <button
+          class="flex text-xs w-full justify-between items-center hover:bg-green-800 cursor-pointer"
+          onclick={() => onActivate(device.id)}
+        >
+          <p>{device.name}</p>
+        </button>
+      {/each}
+    </div>
   </div>
 </div>

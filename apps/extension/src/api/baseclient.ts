@@ -44,7 +44,11 @@ export class BaseClient {
       }
     })
 
-    if (response.ok && response.status !== 204) {
+    if (
+      response.ok &&
+      response.status !== 204 &&
+      response.headers.get('content-type')?.includes('application/json')
+    ) {
       return (await response.json()) as T
     }
   }

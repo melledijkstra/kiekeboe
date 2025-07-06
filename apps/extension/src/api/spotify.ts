@@ -127,19 +127,42 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   async play(context_uri?: string) {
     await this.retrieveAccessToken()
 
-    const body = context_uri ? {
-      context_uri
-    } : {}
-    await this.request('/me/player/play', {
+    const options: RequestInit = {
       method: 'PUT',
-      body: JSON.stringify(body),
-    })
+    }
+
+    if (context_uri) {
+      options.body = JSON.stringify({ context_uri });
+    }
+
+    await this.request('/me/player/play', options)
   }
 
   async pause() {
     await this.retrieveAccessToken()
     await this.request('/me/player/pause', {
       method: 'PUT',
+    })
+  }
+
+  async previousTrack() {
+    await this.retrieveAccessToken()
+    await this.request('/me/player/previous', {
+      method: 'POST'
+    })
+  }
+
+  async nextTrack() {
+    await this.retrieveAccessToken()
+    await this.request('/me/player/next', {
+      method: 'POST'
+    })
+  }
+
+  async seek(position_ms: number) {
+    await this.retrieveAccessToken()
+    await this.request(`/me/player/seek?position_ms=${position_ms}`, {
+      method: 'PUT'
     })
   }
 }

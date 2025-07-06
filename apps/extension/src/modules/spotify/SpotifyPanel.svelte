@@ -21,7 +21,7 @@
   onDestroy(cleanup)
 </script>
 
-<Panel class="flex flex-col min-w-[500] max-h-96" nopadding>
+<Panel class="flex flex-col w-[600px] h-[500px]" nopadding>
   {#if !SpotifyController?.hasLockAcquired()}
     <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
     <p class="text-center text-sm">

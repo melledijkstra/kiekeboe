@@ -10,7 +10,7 @@
 
   onMount(async () => {
     try {
-      playlists = await controller?.api?.userPlaylists()
+      playlists = await controller?.getPlaylists()
     } catch (error) {
       console.error("Failed to fetch playlists:", error)
     }
