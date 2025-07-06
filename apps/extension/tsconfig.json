@@ -6,7 +6,7 @@
     "target": "ESNext",
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "Webworker"],
     "types": ["vite/client", "@types/chrome"],
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.

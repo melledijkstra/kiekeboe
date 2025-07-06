@@ -36,4 +36,22 @@ export class Logger {
   error(...data: unknown[]) {
     error(`[${this.name}]`, ...data)
   }
+
+  private generateLabel(label?: string): string {
+    return label ? `[${this.name}] ${label}` : `[${this.name}]`
+  }
+
+  time(label?: string) {
+    if (this.disabled) {
+      return
+    }
+    console.time(this.generateLabel(label))
+  }
+
+  timeEnd(label?: string) {
+    if (this.disabled) {
+      return
+    }
+    console.timeEnd(this.generateLabel(label))
+  }
 }

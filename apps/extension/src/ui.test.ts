@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { retrieveUsername, storeUsername, getWelcomeMessage, updateBackgroundImage } from './ui'
+import { retrieveUsername, storeUsername, getWelcomeMessage, setBackgroundImage } from './ui'
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants';
 
@@ -48,13 +48,16 @@ describe('ui.ts', () => {
     })
   })
 
-  describe('updateBackgroundImage', () => {
+  describe('setBackgroundImage', () => {
     let originalImage: typeof globalThis.Image;
 
     beforeEach(() => {
       originalImage = globalThis.Image;
       vi.stubGlobal('Image', class {
         _src: string = '';
+        get src() {
+          return this._src;
+        }
         set src(value: string) {
           this._src = value;
           // Simulate image loading
@@ -73,19 +76,17 @@ describe('ui.ts', () => {
       vi.unstubAllGlobals();
     })
 
-    it('should update the background image and call the callback', async () => {
+    it('should set the background image', async () => {
       // setup
       const mockUrl = 'https://example.com/image.jpg'
-      const mockCallback = vi.fn()
       const mockRootElement = document.createElement('div')
       mockRootElement.style.setProperty = vi.fn()
       document.querySelector = vi.fn().mockReturnValue(mockRootElement)
 
       // act
-      await updateBackgroundImage(mockUrl, mockCallback)
+      await setBackgroundImage(mockUrl)
 
       // assert
-      expect(mockCallback).toHaveBeenCalled()
       expect(mockRootElement.style.setProperty).toHaveBeenCalledWith('--background-image', `url(${mockUrl})`)
     })
   })
