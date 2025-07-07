@@ -105,7 +105,7 @@ const defaultCommands: CommandGroups = {
       icon: mdiSkipNext,
       action: async () => {
         await ensureSpotifyInitialized()
-        spotifyController.nextTrack()
+        spotifyController.next()
       }
     },
     {
@@ -114,7 +114,7 @@ const defaultCommands: CommandGroups = {
       icon: mdiSkipPrevious,
       action: async () => {
         await ensureSpotifyInitialized()
-        spotifyController.previousTrack()
+        spotifyController.previous()
       }
     }
   ]
