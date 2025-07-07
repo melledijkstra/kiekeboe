@@ -4,7 +4,7 @@
   import { mockController } from './MockMusicPlayerController'
 
   const { Story } = defineMeta({
-    title: 'Spotify/MusicPlayer',
+    title: 'Music Player/MusicPlayer',
     component: MusicPlayer,
     args: {
       controller: mockController

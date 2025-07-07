@@ -14,19 +14,8 @@
 
   const { forceOpen, commandService }: CommandCenterProps = $props()
 
+  let commandRoot: Command.Root | null = $state(null)
   let input = $state('')
-
-  function handleCommand(event: KeyboardEvent | MouseEvent) {
-    if (event instanceof KeyboardEvent && event.key !== 'Enter') {
-      return
-    }
-
-    commandService.execute(input.trim())
-
-    // Clear input
-    input = ''
-    commandCenterState.isOpen = false
-  }
 
   function handleKeypress(event: KeyboardEvent) {
     // Check if metaKey (Mac) or ctrlKey (Windows/Linux) is pressed
@@ -41,9 +30,9 @@
   }
 
   function removeQueryParam(isOpen: boolean) {
-    log('Removing query param, isOpen:', isOpen)
     const url = new URL(window.location.href);
     if (!isOpen && url.searchParams.has("command-center")) {
+      log('Removing query param, isOpen:', isOpen)
       url.searchParams.delete("command-center");
       window.history.replaceState({}, '', url.toString());
     }
@@ -70,6 +59,7 @@
   })
 
   onDestroy(() => {
+    commandCenterState.isOpen = false
     commandService.destroy()
     log('unregistering command center')
     document.removeEventListener('keydown', handleKeypress)
@@ -89,6 +79,7 @@
         This is the command menu. Use the arrow keys to navigate.
       </Dialog.Description>
       <Command.Root
+        bind:this={commandRoot}
         id="command-center"
         class={[
           'rounded-xl shadow-md backdrop-blur-xs',
@@ -103,8 +94,6 @@
           id="command-input"
           class="focus-override h-input placeholder:text-zinc-200/50 focus:outline-hidden inline-flex truncate rounded-tl-xl rounded-tr-xl p-4 text-sm transition-colors focus:ring-0"
           placeholder="Type a command..."
-          
-          onkeydown={handleCommand}
           bind:value={input}
         />
         <Command.List
@@ -127,9 +116,13 @@
                 <Command.GroupItems>
                   {#each commandService.commands[commandGroup as keyof CommandGroups] as command (command.name)}
                     <Command.Item
-                      class="rounded-button data-selected:bg-zinc-400 outline-hidden flex h-10 cursor-pointer select-none items-center gap-2 px-3 py-2.5 text-sm"
+                      class="rounded data-selected:bg-zinc-400 outline-hidden flex h-10 cursor-pointer select-none items-center gap-2 px-3 py-2.5 text-sm"
                       keywords={command.keywords.map((k) => `/${k}`)}
-                      onclick={handleCommand}
+                      onSelect={() => {
+                        command.action(input.trim())
+                        commandCenterState.isOpen = false
+                        input = ''
+                      }}
                     >
                       <Icon path={command.icon} class="size-4" />
                       {command.name}

@@ -3,7 +3,7 @@
   import SpotifyPanel from '@/modules/spotify/SpotifyPanel.svelte'
   
   const { Story } = defineMeta({
-    title: 'Spotify/SpotifyPanel',
+    title: 'Music Player/SpotifyPanel',
     component: SpotifyPanel,
   })
 </script>

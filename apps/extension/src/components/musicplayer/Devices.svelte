@@ -1,55 +1,78 @@
 <script lang="ts">
   import type { Device } from 'SpotifyApi'
   import Icon from '@/components/atoms/Icon.svelte'
-  import { mdiVolumeHigh } from '@mdi/js'
+  import { mdiCellphone, mdiMonitor, mdiSpeaker } from '@mdi/js'
+  import { DropdownMenu } from 'bits-ui'
 
   type DevicesProps = {
     devices: Device[]
     onActivate: (deviceId: string) => void
     playerDeviceId?: string
+    sdkVersion?: string
   }
 
-  let open = $state(false)
-
-  const { playerDeviceId, devices, onActivate }: DevicesProps = $props()
+  const { playerDeviceId, devices, onActivate, sdkVersion }: DevicesProps = $props()
   const activeDevice = $derived(devices.find((device) => device.is_active))
   const otherDevices = $derived(devices.filter((device) => !device.is_active))
   const isActiveDevice = $derived(playerDeviceId === activeDevice?.id)
 </script>
 
+{#snippet icon(type: Device['type'])}
+  {#if type === 'smartphone'}
+    <Icon path={mdiCellphone} size={12} />
+  {:else if type === 'computer'}
+    <Icon path={mdiMonitor} size={12} />
+  {:else if type === 'speaker'}
+    <Icon path={mdiSpeaker} size={12} />
+  {:else}
+    <Icon path={mdiCellphone} size={12} />
+  {/if}
+{/snippet}
+
+{#snippet device(device: Device)}
+  <div class="flex flex-row items-center gap-1">
+    {@render icon(device.type)}
+    <span class="text-xs">{device.name}</span>
+  </div>
+{/snippet}
+
 <div
   class={[
-    "relative justify-between flex gap-1 py-1 px-2 w-full text-white rounded-b-xl",
-    "transition-colors duration-1000",
-    isActiveDevice ? 'bg-green-700' : 'transparent',
+    'relative flex justify-between gap-1 py-1 px-2 w-full text-white rounded',
+    'text-xs',
+    'transition-colors duration-1000',
+    isActiveDevice ? 'bg-green-700' : 'transparent'
   ]}
 >
-  {#if Spotify.Player?.version}
-    <p class="">v{Spotify.Player.version}</p>
+  {#if sdkVersion}
+    <p class="">v{sdkVersion}</p>
   {/if}
-  <div class="relative">
-    {#if activeDevice}
-      <Icon class="inline" path={mdiVolumeHigh} size={15} />
-    {/if}
-    <button
-      onclick={() => (open = !open)}
-      class={['text-xs hover:underline cursor-pointer']}
-    >
-      {activeDevice?.name ?? 'Select Device'}
-    </button>
-    <div
-      class="{open
-        ? 'block'
-        : 'hidden'} absolute bottom-full p-1 bg-black rounded text-white shadow-md"
-    >
-      {#each otherDevices as device (device.id)}
-        <button
-          class="flex text-xs w-full justify-between items-center hover:bg-green-800 cursor-pointer"
-          onclick={() => onActivate(device.id)}
-        >
-          <p>{device.name}</p>
-        </button>
-      {/each}
-    </div>
-  </div>
+  <DropdownMenu.Root>
+    <DropdownMenu.Trigger class="hover:underline">
+      {#if activeDevice}
+        {@render device(activeDevice)}
+      {:else}
+        Select Device
+      {/if}
+    </DropdownMenu.Trigger>
+
+    <!-- Device Selection Dropdown -->
+    <DropdownMenu.Portal>
+      <DropdownMenu.Content
+        class="z-50 flex flex-col gap-1 p-2 bg-black/80 rounded text-white shadow-md"
+      >
+        <DropdownMenu.Arrow class="text-black/80" />
+        {#each otherDevices as device (device.id)}
+          <DropdownMenu.Item
+            onSelect={() => onActivate(device.id)}
+            closeOnSelect
+            class="text-xs cursor-pointer flex flex-row gap-1 p-1 rounded items-center focus:bg-green-800"
+          >
+            {@render icon(device.type)}
+            {device.name}
+          </DropdownMenu.Item>
+        {/each}
+      </DropdownMenu.Content>
+    </DropdownMenu.Portal>
+  </DropdownMenu.Root>
 </div>

@@ -1,12 +1,11 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import SpotifyPlayback from '@/components/musicplayer/Playback.svelte'
-  import { playbackState } from '@/fixtures/spotify/playback'
+  import { playbackState } from '@/fixtures/musicplayer/state'
   import { fn } from '@storybook/test'
 
-  // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'Spotify/Playback',
+    title: 'Music Player/Playback',
     component: SpotifyPlayback,
     args: {
       playbackState,
@@ -24,15 +23,10 @@
 
 <Story
   name="Paused"
-  args={{ playbackState: { ...playbackState, paused: true } }}
+  args={{ playbackState: { ...playbackState, isPlaying: false } }}
 />
 
 <Story
   name="Shuffling"
   args={{ playbackState: { ...playbackState, shuffle: true } }}
-/>
-
-<Story
-  name="Repeating"
-  args={{ playbackState: { ...playbackState, repeat_mode: 1 } }}
 />

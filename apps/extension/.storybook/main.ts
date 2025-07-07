@@ -3,7 +3,8 @@ import type { StorybookConfig } from '@storybook/svelte-vite'
 
 const config: StorybookConfig = {
   stories: [
-    '../stories/**/*.stories.@(js|ts|svelte)'
+    '../stories/**/*.stories.@(js|ts|svelte)',
+    '../stories/**/*.mdx'
   ],
   addons: [
     "@storybook/addon-essentials",
