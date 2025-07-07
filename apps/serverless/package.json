@@ -17,6 +17,6 @@
     "cloud"
   ],
   "dependencies": {
-    "deno": "^2.3.6"
+    "deno": "^2.4.0"
   }
 }
