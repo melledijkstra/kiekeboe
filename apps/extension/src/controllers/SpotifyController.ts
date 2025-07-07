@@ -26,10 +26,6 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
   private static cancelPlaybackLoop?: () => void;
 
-  constructor() {
-    SpotifyController.hasLock = acquireTabLock();
-  }
-
   async getPlaylists(): Promise<Playlist[]> {
     const cached = this.cache.get<Playlist[]>('playlists')
     if (cached) {
@@ -61,9 +57,12 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
       return;
     }
 
+    SpotifyController.hasLock = acquireTabLock();
+
     if (SpotifyController.hasLock) {
       await this.initializeSpotifyPlayer(this.authClient)
     }
+
     this.initialized = true;
   }
 
