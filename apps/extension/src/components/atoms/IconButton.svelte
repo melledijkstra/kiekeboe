@@ -32,6 +32,6 @@
     'block cursor-pointer transition-colors',
   ]}
 >
-  <Icon path={icon} size={!children ? 40 : 24} />
+  <Icon path={icon} size={!children ? 36 : 20} />
   {@render children?.()}
 </button>

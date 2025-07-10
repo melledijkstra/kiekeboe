@@ -15,7 +15,7 @@
       'block cursor-pointer transition-colors'
     ]}
   >
-    <Icon path={mdiSpotify} size={40} />
+    <Icon path={mdiSpotify} size={36} />
   </Popover.Trigger>
   <SpotifyPanel controller={controller} />
 </Popover.Root>

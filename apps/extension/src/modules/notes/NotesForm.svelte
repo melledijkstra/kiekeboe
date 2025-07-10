@@ -17,7 +17,7 @@ import Input from '@/components/atoms/Input.svelte'
   }
 </script>
 
-<h3 class="text-lg text-white">Create quick note</h3>
+<h3 class="text-lg text-white mb-2">Create quick note</h3>
 <Input
   type="text"
   placeholder="Note Title"

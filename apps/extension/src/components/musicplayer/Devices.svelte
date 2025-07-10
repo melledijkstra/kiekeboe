@@ -21,13 +21,13 @@
 
 {#snippet icon(type: Device['type'])}
   {#if type === 'smartphone'}
-    <Icon path={mdiCellphone} size={12} />
+    <Icon path={mdiCellphone} size={10} />
   {:else if type === 'computer'}
-    <Icon path={mdiMonitor} size={12} />
+    <Icon path={mdiMonitor} size={10} />
   {:else if type === 'speaker'}
-    <Icon path={mdiSpeaker} size={12} />
+    <Icon path={mdiSpeaker} size={10} />
   {:else}
-    <Icon path={mdiCellphone} size={12} />
+    <Icon path={mdiCellphone} size={10} />
   {/if}
 {/snippet}
 

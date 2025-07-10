@@ -30,7 +30,7 @@
 {#if !!accountInfo}
   <a href="https://myaccount.google.com/" target="_blank">
     <img
-      class="size-10 rounded-full border-2 border-white/80"
+      class="size-9 rounded-full border-2 border-white/80"
       src={accountInfo.picture ?? '/icons/default-account.jpg'}
       alt={accountInfo.name}
     />

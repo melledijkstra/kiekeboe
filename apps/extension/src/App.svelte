@@ -89,7 +89,7 @@
             'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
             'block cursor-pointer transition-colors',
           ]}>
-            <Icon path={mdiTuneVertical} size={40} />
+            <Icon path={mdiTuneVertical} size={36} />
           </Popover.Trigger>
           <Panel nopadding class='w-[550px] h-80'>
             <SettingsMenu />

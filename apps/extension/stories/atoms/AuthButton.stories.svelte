@@ -3,7 +3,6 @@
   import AuthButton from '@/components/AuthButton.svelte'
   import { fn } from '@storybook/test'
 
-  // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
     title: 'Atoms/Buttons/Auth',
     component: AuthButton,
@@ -26,9 +25,12 @@
   })
 </script>
 
-<!-- More on writing stories with args: https://storybook.js.org/docs/writing-stories/args -->
 <Story name="Google" args={{ provider: 'google' }} />
 
 <Story name="Fitbit" args={{ provider: 'fitbit' }} />
 
 <Story name="Spotify" args={{ provider: 'spotify' }} />
+
+<Story name="Google (disabled)" args={{ provider: 'google', disabled: true }} />
+<Story name="Fitbit (disabled)" args={{ provider: 'fitbit', disabled: true }} />
+<Story name="Spotify (disabled)" args={{ provider: 'spotify', disabled: true }} />

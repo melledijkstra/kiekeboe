@@ -1,6 +1,6 @@
 import type { Module } from '@/modules'
-import Tasks from './Tasks.svelte'
+import TasksMenuItem from './TasksMenuItem.svelte'
 
 export default {
-  component: Tasks
+  component: TasksMenuItem
 } satisfies Module

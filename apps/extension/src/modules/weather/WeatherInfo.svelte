@@ -33,7 +33,7 @@
 
 <div class="flex flex-col items-end text-black dark:text-white">
   <div class="flex flex-row items-center gap-1">
-    <Icon path={weatherToMdiIcon(iconId)} size={24} />
+    <Icon path={weatherToMdiIcon(iconId)} size={20} />
     <span class="text-lg">{temperature}<sup>{temperatureSymbol}</sup></span>
   </div>
   <span

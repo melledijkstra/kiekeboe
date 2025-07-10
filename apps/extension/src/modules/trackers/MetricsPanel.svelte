@@ -39,7 +39,7 @@
       'cursor-pointer transition-colors',
     ]}
   >
-    <Icon path={mdiPlus} size={24} />
+    <Icon path={mdiPlus} size={20} />
     <span>Add</span>
   </Popover.Trigger>
   <Panel>
@@ -72,7 +72,7 @@
         <div class="flex flex-row justify-between gap-2">
           <Countdown metric={countdown} />
           <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
-            <Icon path={mdiDelete} size={24} />
+            <Icon path={mdiDelete} size={20} />
           </button>
         </div>
       {/each}
@@ -80,10 +80,10 @@
         <div class="flex flex-row justify-between gap-2">
           <WorldClock metric={worldClock} />
           <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
-            <Icon path={mdiDelete} size={24} />
+            <Icon path={mdiDelete} size={20} />
           </button>
           <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
-            <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={24} />
+            <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={20} />
           </button>
         </div>
       {/each}

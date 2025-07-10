@@ -22,7 +22,7 @@
       ]}
       disabled={!tooltip}
       onclick={onclick}>
-      <Icon path={mdiIcon} size={40} />
+      <Icon path={mdiIcon} size={36} />
     </Tooltip.Trigger>
     <Tooltip.Content sideOffset={4}>
       <!-- putting "text-black" in order for arrow to pick it up the color and look the same as content -->

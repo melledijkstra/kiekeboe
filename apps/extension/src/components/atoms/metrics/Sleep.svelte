@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { HTMLAttributes } from "svelte/elements"
+  import IconFitbit from "@/icons/IconFitbit.svelte"
+import type { HTMLAttributes } from "svelte/elements"
   import { fade } from "svelte/transition"
 
   const { minutes, ...props }: { minutes: number } & HTMLAttributes<HTMLDivElement> = $props()
@@ -31,5 +32,5 @@
     props.class
   ]}>
   <p class="text-lg">{formatted}</p>
-  <p class="text-xs">Sleep</p>
+  <p class="text-xs flex justify-end gap-1 items-center"><IconFitbit /> Sleep</p>
 </div>
