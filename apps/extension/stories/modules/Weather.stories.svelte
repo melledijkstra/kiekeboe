@@ -24,6 +24,6 @@
 <Story name="Long city name" args={{
   iconId: '01d',
   location: 'Winchester-on-the-Severn, Maryland',
-  temperatureC: 26,
+  temperatureF: 79,
   displayUnit: 'F'
 }} />

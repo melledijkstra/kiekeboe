@@ -1,6 +1,6 @@
 import type { Module } from "..";
-import Notes from './Notes.svelte'
+import NotesMenuItem from "./NotesMenuItem.svelte";
 
 export default {
-  component: Notes
+  component: NotesMenuItem
 } satisfies Module

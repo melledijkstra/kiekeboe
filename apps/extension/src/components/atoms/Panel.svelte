@@ -4,9 +4,10 @@
   type PanelProps = {
     nopadding?: boolean
     nostyling?: boolean
+    size?: 'small' | 'medium' | 'large'
   } & Popover.ContentProps
 
-  const { children, nopadding, nostyling, ...props }: PanelProps = $props()
+  const { children, nopadding, nostyling, size = 'medium', ...props }: PanelProps = $props()
 
   if (!children) {
     throw new Error('Panel component requires children')
@@ -19,7 +20,11 @@
   {...props}
   class={[
     'rounded-xl shadow-md backdrop-blur-xs',
-    'max-h-[600px] max-w-[900px] z-40',
+    'z-40',
+    // size
+    size === 'small' && 'max-w-[300px] max-h-[300px]',
+    size === 'medium' && 'w-[500px] h-[400px]',
+    size === 'large' && 'w-[600px] h-[500px]',
     !nopadding && 'p-4',
     // dark theme
     !nostyling && 'dark:bg-black/60 dark:text-white',
