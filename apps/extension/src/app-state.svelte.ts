@@ -1,3 +1,4 @@
+import type { LocationInfo } from './api/geolocation'
 import type { WeatherInfo } from './api/weather'
 
 const STORAGE_KEY = 'appMode'
@@ -10,6 +11,7 @@ export type AppState = {
   mode: AppMode
   title: string
   weather?: WeatherInfo
+  geolocation?: LocationInfo
 }
 
 export const appState = $state<AppState>({

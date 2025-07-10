@@ -1,9 +1,10 @@
+import { appState } from '@/app-state.svelte'
 import { withCache } from '@/cache/memory'
 import { log } from '@/logger'
 
 type LocationResponse = {
   status: 'success' | 'fail'
-  message: 'private range' | 'reserved range' | 'invalid query'
+  message?: 'private range' | 'reserved range' | 'invalid query'
   country: string
   countryCode: string
   region: string
@@ -13,6 +14,8 @@ type LocationResponse = {
   lon: number
   timezone: string
 }
+
+export type LocationInfo = Omit<LocationResponse, 'status' | 'message'>
 
 const LOCATION_API_URL =
   'http://ip-api.com/json?fields=status,message,country,countryCode,region,regionName,city,lat,lon,timezone'
@@ -42,6 +45,12 @@ async function getGeolocationBrowser(): Promise<[number, number] | undefined> {
   })
 }
 
+/**
+ * Retrieves the current geolocation of the user.
+ * First attempts to get the position through the browser's geolocation API.
+ * If that fails, it falls back to an external API service.
+ * @returns the current position as [latitude, longitude] or undefined if it fails to retrieve the position
+ */
 export async function getCurrentPosition(): Promise<
   [number, number] | undefined
 > {
@@ -51,8 +60,10 @@ export async function getCurrentPosition(): Promise<
     log('Failed to retrieve geolocation through browser, trying API service...')
     // if we can't get geolocation through browser we try through API service
     const data = await cachedFetchGeolocation()
-    if (data) {
+    if (data?.status === 'success') {
       log('retrieved location from API', [data.lat, data.lon])
+      // TODO: we shouldn't be updating state from here!
+      appState.geolocation = data
       return [data.lat, data.lon]
     }
   }

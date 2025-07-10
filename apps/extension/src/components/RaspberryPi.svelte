@@ -2,17 +2,22 @@
   import { isRaspberryAlive } from '@/api/raspberry'
   import { log } from '@/logger'
   import { settingsStore } from '@/settings/index.svelte'
+  import Status from './atoms/Status.svelte'
 
   let raspberryStatus: boolean | null = $state(null)
+  let isFetching = $state(false)
 
   let settingsLoaded = $derived($settingsStore.loaded)
   let databaseUri = $derived($settingsStore.network.databaseUri)
 
   async function fetchDatabaseStatus(URI?: string) {
     try {
+      isFetching = true
       raspberryStatus = await isRaspberryAlive(URI ?? $settingsStore.network.databaseUri)
     } catch {
       raspberryStatus = false
+    } finally {
+      isFetching = false
     }
   }
 
@@ -28,9 +33,4 @@
   })
 </script>
 
-<div class={[
-  'transition-colors rounded-full',
-  'size-5 shadow-center',
-  raspberryStatus === null ? 'bg-gray-300 shadow-gray-400' : 
-  raspberryStatus ? 'bg-green-500 shadow-green-400' : 'bg-red-500 shadow-red-400'
-]}></div>
+<Status pinging={isFetching} status={raspberryStatus} />

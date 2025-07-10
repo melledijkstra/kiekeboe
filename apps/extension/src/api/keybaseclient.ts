@@ -1,7 +1,8 @@
 import { BaseClient } from "./baseclient"
 
 export class ApiKeyBaseClient extends BaseClient {
-  private apiKey: string
+  protected apiKey: string
+  protected urlQueryKeyName = 'key'
 
   constructor(
     baseUrl: string,
@@ -26,8 +27,8 @@ export class ApiKeyBaseClient extends BaseClient {
     endpoint: string,
     config?: RequestInit,
   ): Promise<T | undefined> {
-    const searchParams = new URLSearchParams()
-    searchParams.set('key', this.apiKey)
+    const searchParams = new URLSearchParams(endpoint.split('?')[1] || '');
+    searchParams.set(this.urlQueryKeyName, this.apiKey)
     return super.request(endpoint, config, searchParams);
   }
 

@@ -14,6 +14,9 @@ const config: StorybookConfig = {
   framework: {
     name: getAbsolutePath("@storybook/svelte-vite"),
     options: {}
+  },
+  features: {
+    backgroundsStoryGlobals: true
   }
 }
 export default config

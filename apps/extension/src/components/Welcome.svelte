@@ -31,7 +31,7 @@
 </script>
 
 <!-- make sure to render some space when loading in the welcome message to avoid flickering -->
-<h2 class="text-white text-5xl empty:min-h-12 drop-shadow-xl">
+<h2 class="text-white text-5xl antialiased empty:min-h-12 drop-shadow-xl">
   {#if name}
     {welcomeMessage}
   {:else if nameLoaded}

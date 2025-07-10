@@ -88,7 +88,6 @@ export class MemoryCache implements ILogger {
     if (Date.now() - cachedItem.timestamp > cachedItem.ttl) {
       delete this.cache[key]
     } else {
-      this.logger.log('Cache hit:', key)
       return cachedItem.data as T
     }
   }

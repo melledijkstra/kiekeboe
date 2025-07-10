@@ -1,6 +1,6 @@
 import lscache from 'lscache'
 import { Logger } from '@/logger'
-import { getCurrentPosition } from '@/modules/weather/geolocation'
+import { getCurrentPosition } from '@/api/geolocation'
 import type { WeatherResponse } from '@/api/definitions/openweathermap'
 import { ApiKeyBaseClient } from './keybaseclient'
 
@@ -10,19 +10,23 @@ export type WeatherInfo = {
   icon: string
 }
 
+export type GeoPosition = {
+  lat: number
+  lon: number
+}
+
 const logger = new Logger('weather')
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5'
 
 export class WeatherClient extends ApiKeyBaseClient {
+  protected urlQueryKeyName: string = 'appid'
+  
   constructor() {
     super(BASE_URL, import.meta.env.VITE_WEATHER_API_KEY)
   }
 
-  async getWeather(position?: {
-    lat: number
-    lon: number
-  }): Promise<WeatherInfo | undefined> {
+  async getWeather(position?: GeoPosition): Promise<WeatherInfo | undefined> {
     const data = lscache.get('weather')
     if (data) {
       logger.log('weather data from lscache')
