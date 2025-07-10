@@ -2,11 +2,13 @@
 declare module 'MusicPlayer' {
   type Artist = {
     id: string;
+    uri: string;
     name: string;
   }
 
   type Track = {
     id: string;
+    uri: string;
     title: string;
     artist: Artist;
     album: Album;
@@ -16,14 +18,16 @@ declare module 'MusicPlayer' {
 
   type Album = {
     id: string;
+    uri: string;
     title: string;
-    artist: Artist;
+    artist?: Artist;
     releaseDate?: string; // ISO date string
     coverArtUrl?: string; // optional
   }
 
   type Playlist = {
     id: string;
+    uri: string;
     title: string;
     description?: string; // optional
     tracks: Track[];
@@ -31,6 +35,8 @@ declare module 'MusicPlayer' {
   }
 
   interface MusicPlayerInterface {
+    getPlaylistItems(playlist: Playlist): Promise<Track[]>;
+    playItem(item: Track | Playlist | Album): void;
     getPlaylists(): Promise<Playlist[]>;
     play(mediaItem?: Track | Playlist | Album): void;
     pause(): void;

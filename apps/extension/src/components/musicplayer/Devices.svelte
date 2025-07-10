@@ -3,15 +3,17 @@
   import Icon from '@/components/atoms/Icon.svelte'
   import { mdiCellphone, mdiMonitor, mdiSpeaker } from '@mdi/js'
   import { DropdownMenu } from 'bits-ui'
+  import type { HTMLAttributes } from 'svelte/elements'
 
   type DevicesProps = {
     devices: Device[]
     onActivate: (deviceId: string) => void
     playerDeviceId?: string
     sdkVersion?: string
+    class?: HTMLAttributes<HTMLDivElement>['class']
   }
 
-  const { playerDeviceId, devices, onActivate, sdkVersion }: DevicesProps = $props()
+  const { playerDeviceId, devices, onActivate, sdkVersion, ...props }: DevicesProps = $props()
   const activeDevice = $derived(devices.find((device) => device.is_active))
   const otherDevices = $derived(devices.filter((device) => !device.is_active))
   const isActiveDevice = $derived(playerDeviceId === activeDevice?.id)
@@ -38,17 +40,18 @@
 
 <div
   class={[
-    'relative flex justify-between gap-1 py-1 px-2 w-full text-white rounded',
+    'relative flex justify-between gap-1 py-1 px-2 w-full text-white rounded-b',
     'text-xs',
     'transition-colors duration-1000',
-    isActiveDevice ? 'bg-green-700' : 'transparent'
+    isActiveDevice ? 'bg-green-700' : 'transparent',
+    props.class
   ]}
 >
   {#if sdkVersion}
     <p class="">v{sdkVersion}</p>
   {/if}
   <DropdownMenu.Root>
-    <DropdownMenu.Trigger class="hover:underline">
+    <DropdownMenu.Trigger class="hover:underline cursor-pointer">
       {#if activeDevice}
         {@render device(activeDevice)}
       {:else}

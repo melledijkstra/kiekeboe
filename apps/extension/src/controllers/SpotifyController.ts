@@ -9,8 +9,8 @@ import { playbackLoop } from "@/time/utils";
 import type { Album, MusicPlayerInterface, Playlist, State, Track } from "MusicPlayer";
 import type { ILogger } from "@/interfaces/logger.interface";
 import { MPState } from "@/components/musicplayer/state.svelte";
-import { MemoryCache, MIN_1 } from "@/cache/memory";
-import { convertApiPlayerState, convertPlayerState, convertSpotifyPlaylist } from "@/transforms/spotify";
+import { MemoryCache, MIN_5 } from "@/cache/memory";
+import { convertApiPlayerState, convertPlayerState, convertSpotifyPlaylist, convertSpotifyTrackToMPTrack } from "@/transforms/spotify";
 
 export class SpotifyController implements ILogger, MusicPlayerInterface {
   logger: Logger = new Logger('SpotifyController');
@@ -30,16 +30,26 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     SpotifyController.hasLock = acquireTabLock();
   }
 
+  async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
+    const tracks = await this.api.getPlaylistItems(playlist.id)
+    return tracks.map(convertSpotifyTrackToMPTrack)
+  }
+
   async getPlaylists(): Promise<Playlist[]> {
     const cached = this.cache.get<Playlist[]>('playlists')
     if (cached) {
       return cached
-    } else {
+    }
+    try {
       const playlists = await this.api.userPlaylists()
       const converted = playlists.map(convertSpotifyPlaylist)
-      this.cache.set('playlists', converted, MIN_1) // Cache for 5 minutes
+      this.cache.set('playlists', converted, MIN_5) // Cache for 5 minutes
       return converted
+    } catch(error) {
+      this.logger.error('Failed to retrieve playlists', error);
     }
+
+    return [];
   }
 
   async switchRepeatMode(repeatMode: string | number): Promise<void> {
@@ -181,7 +191,7 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
   async playItem(mediaItem: Playlist | Album | Track) {
     this.logger.log('Playing item:', mediaItem.title, mediaItem)
-    this.api.play(mediaItem.id)
+    this.api.play(mediaItem.uri);
   }
 
   async play() {

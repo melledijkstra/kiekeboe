@@ -3,6 +3,8 @@
   import Panel from '@/components/atoms/Panel.svelte'
   import { SpotifyController } from '@/controllers/SpotifyController'
   import MusicPlayer from '@/components/musicplayer/MusicPlayer.svelte'
+  import { MPState } from '@/components/musicplayer/state.svelte'
+  import { spotifyState } from './spotify.state.svelte'
 
   const { controller }: { controller: SpotifyController } = $props()
 
@@ -28,6 +30,11 @@
       If you want to use the player here, close the other tab or reload this one.
     </p>
   {:else}
-    <MusicPlayer controller={controller} />
+    <MusicPlayer
+      state={MPState.state}
+      controller={controller}
+      deviceId={spotifyState.deviceId}
+      devices={spotifyState.devices}
+    />
   {/if}
 </Panel>

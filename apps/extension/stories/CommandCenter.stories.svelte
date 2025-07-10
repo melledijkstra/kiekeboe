@@ -1,11 +1,11 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import CommandCenter from '@/modules/command-center/CommandCenter.svelte'
-  import { MockCommandService } from '@/mocks/mock-command-center'
+  import { MockCommandService } from '@/mocks/MockCommandService'
 
   // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
   const { Story } = defineMeta({
-    title: 'CommandCenter',
+    title: 'Molecules/CommandCenter',
     component: CommandCenter,
     args: {
       commandService: new MockCommandService()

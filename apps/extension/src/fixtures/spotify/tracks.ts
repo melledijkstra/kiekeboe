@@ -1,21 +1,21 @@
-export const singleTrack: Spotify.Track = {
+import type { Track } from 'SpotifyApi';
+
+export const singleTrack: Track = {
   id: '0iiB9CYptXO5Fz728LHHsQ',
   uri: 'spotify:track:0iiB9CYptXO5Fz728LHHsQ',
   type: 'track',
-  uid: '84757330f2fcd95a9f5f',
-  linked_from: {
-    uri: null,
-    id: null
-  },
-  media_type: 'audio',
-  track_type: 'audio',
   name: 'Mahal',
   duration_ms: 201386,
   artists: [
     {
       name: 'Glass Beams',
       uri: 'spotify:artist:1LTFJvVvRw7ghAyThxYmnF',
-      url: 'https://api.spotify.com/v1/artists/1LTFJvVvRw7ghAyThxYmnF'
+      type: 'artist',
+      external_urls: {
+        spotify: 'https://api.spotify.com/v1/artists/1LTFJvVvRw7ghAyThxYmnF'
+      },
+      href: 'https://api.spotify.com/v1/artists/1LTFJvVvRw7ghAyThxYmnF',
+      id: ''
     }
   ],
   album: {
@@ -26,105 +26,236 @@ export const singleTrack: Spotify.Track = {
         url: 'https://i.scdn.co/image/ab67616d0000b273b006f089af4d18d351f06c60',
         height: 640,
         width: 640,
-        size: 'UNKNOWN'
       },
       {
         url: 'https://i.scdn.co/image/ab67616d00004851b006f089af4d18d351f06c60',
         height: 64,
         width: 64,
-        size: 'UNKNOWN'
       },
       {
         url: 'https://i.scdn.co/image/ab67616d00001e02b006f089af4d18d351f06c60',
         height: 300,
         width: 300,
-        size: 'UNKNOWN'
       }
-    ]
+    ],
+    album_type: 'album',
+    total_tracks: 0,
+    available_markets: [],
+    external_urls: {
+      spotify: ''
+    },
+    href: '',
+    id: '',
+    release_date: '',
+    release_date_precision: '',
+    type: 'album',
+    artists: []
   },
-  is_playable: true
+  is_playable: true,
+  available_markets: [
+    'ES'
+  ],
+  disc_number: 0,
+  explicit: false,
+  external_ids: {
+    isrc: undefined,
+    ean: undefined,
+    upc: undefined
+  },
+  external_urls: {
+    spotify: ''
+  },
+  href: '',
+  popularity: 0,
+  preview_url: null,
+  track_number: 0,
+  is_local: false
 }
 
-export const tracks: Spotify.Track[] = [
-  {
-    name: 'Track 1',
-    artists: [
+export const track_ClocksColdPlay: Track = {
+  "album": {
+    "album_type": "album",
+    "artists": [
       {
-        name: 'Artist 1',
-        uri: '',
-        url: ''
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/4gzpq5DPGxSnKTe4SA8HAU"
+        },
+        "href": "https://api.spotify.com/v1/artists/4gzpq5DPGxSnKTe4SA8HAU",
+        "id": "4gzpq5DPGxSnKTe4SA8HAU",
+        "name": "Coldplay",
+        "type": "artist",
+        "uri": "spotify:artist:4gzpq5DPGxSnKTe4SA8HAU"
       }
     ],
-    album: {
-      name: 'Album 1',
-      uri: '',
-      images: []
+    "available_markets": [],
+    "external_urls": {
+      "spotify": "https://open.spotify.com/album/0RHX9XECH8IVI3LNgWDpmQ"
     },
-    duration_ms: 0,
-    id: null,
-    is_playable: false,
-    uid: '',
-    uri: '',
-    media_type: 'audio',
-    type: 'track',
-    track_type: 'audio',
-    linked_from: {
-      uri: null,
-      id: null
-    }
+    "href": "https://api.spotify.com/v1/albums/0RHX9XECH8IVI3LNgWDpmQ",
+    "id": "0RHX9XECH8IVI3LNgWDpmQ",
+    "images": [
+      {
+        "height": 640,
+        "width": 640,
+        "url": "https://i.scdn.co/image/ab67616d0000b273de09e02aa7febf30b7c02d82"
+      },
+      {
+        "height": 300,
+        "width": 300,
+        "url": "https://i.scdn.co/image/ab67616d00001e02de09e02aa7febf30b7c02d82"
+      },
+      {
+        "height": 64,
+        "width": 64,
+        "url": "https://i.scdn.co/image/ab67616d00004851de09e02aa7febf30b7c02d82"
+      }
+    ],
+    "is_playable": true,
+    "name": "A Rush of Blood to the Head",
+    "release_date": "2002-08-27",
+    "release_date_precision": "day",
+    "total_tracks": 11,
+    "type": "album",
+    "uri": "spotify:album:0RHX9XECH8IVI3LNgWDpmQ",
   },
-  {
-    name: 'Track 2',
-    artists: [
-      {
-        name: 'Artist 2',
-        uri: '',
-        url: ''
-      }
-    ],
-    album: {
-      name: 'Album 2',
-      uri: '',
-      images: []
-    },
-    duration_ms: 0,
-    id: null,
-    is_playable: false,
-    uid: '',
-    uri: '',
-    media_type: 'audio',
-    type: 'track',
-    track_type: 'audio',
-    linked_from: {
-      uri: null,
-      id: null
+  "artists": [
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/4gzpq5DPGxSnKTe4SA8HAU"
+      },
+      "href": "https://api.spotify.com/v1/artists/4gzpq5DPGxSnKTe4SA8HAU",
+      "id": "4gzpq5DPGxSnKTe4SA8HAU",
+      "name": "Coldplay",
+      "type": "artist",
+      "uri": "spotify:artist:4gzpq5DPGxSnKTe4SA8HAU"
     }
+  ],
+  "available_markets": ['ES'],
+  "disc_number": 1,
+  "duration_ms": 307879,
+  "explicit": false,
+  "external_ids": {
+    "isrc": "GBAYE0200771"
   },
-  {
-    name: 'Track 3',
-    artists: [
+  "external_urls": {
+    "spotify": "https://open.spotify.com/track/0BCPKOYdS2jbQ8iyB56Zns"
+  },
+  "href": "https://api.spotify.com/v1/tracks/0BCPKOYdS2jbQ8iyB56Zns",
+  "id": "0BCPKOYdS2jbQ8iyB56Zns",
+  "is_local": false,
+  "is_playable": true,
+  "name": "Clocks",
+  "popularity": 89,
+  "preview_url": null,
+  "track_number": 5,
+  "type": "track",
+  "uri": "spotify:track:0BCPKOYdS2jbQ8iyB56Zns"
+}
+
+export const track_NocturneChopin: Track = {
+  "album": {
+    "album_type": "album",
+    "artists": [
       {
-        name: 'Artist 3',
-        uri: '',
-        url: ''
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/7y97mc3bZRFXzT2szRM4L4"
+        },
+        "href": "https://api.spotify.com/v1/artists/7y97mc3bZRFXzT2szRM4L4",
+        "id": "7y97mc3bZRFXzT2szRM4L4",
+        "name": "Frédéric Chopin",
+        "type": "artist",
+        "uri": "spotify:artist:7y97mc3bZRFXzT2szRM4L4"
+      },
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/2YdRnOqBXCl9g8xCLcGh8C"
+        },
+        "href": "https://api.spotify.com/v1/artists/2YdRnOqBXCl9g8xCLcGh8C",
+        "id": "2YdRnOqBXCl9g8xCLcGh8C",
+        "name": "Mikhail Pletnev",
+        "type": "artist",
+        "uri": "spotify:artist:2YdRnOqBXCl9g8xCLcGh8C"
       }
     ],
-    album: {
-      name: 'Album 3',
-      uri: '',
-      images: []
+    "available_markets": [
+      "AR",
+    ],
+    "external_urls": {
+      "spotify": "https://open.spotify.com/album/3hW1TEeZRJ01XycQFABjj9"
     },
-    duration_ms: 0,
-    id: null,
-    is_playable: false,
-    uid: '',
-    uri: '',
-    media_type: 'audio',
-    type: 'track',
-    track_type: 'audio',
-    linked_from: {
-      uri: null,
-      id: null
+    "href": "https://api.spotify.com/v1/albums/3hW1TEeZRJ01XycQFABjj9",
+    "id": "3hW1TEeZRJ01XycQFABjj9",
+    "images": [
+      {
+        "url": "https://i.scdn.co/image/ab67616d0000b273ae4dfa09519c27b64cd5a958",
+        "width": 640,
+        "height": 640
+      },
+      {
+        "url": "https://i.scdn.co/image/ab67616d00001e02ae4dfa09519c27b64cd5a958",
+        "width": 300,
+        "height": 300
+      },
+      {
+        "url": "https://i.scdn.co/image/ab67616d00004851ae4dfa09519c27b64cd5a958",
+        "width": 64,
+        "height": 64
+      }
+    ],
+    "name": "Chopin: Piano Sonata No. 2, Nocturnes, Barcarolle & Scherzo",
+    "release_date": "2000-01-01",
+    "release_date_precision": "day",
+    "total_tracks": 10,
+    "type": "album",
+    "uri": "spotify:album:3hW1TEeZRJ01XycQFABjj9"
+  },
+  "artists": [
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/7y97mc3bZRFXzT2szRM4L4"
+      },
+      "href": "https://api.spotify.com/v1/artists/7y97mc3bZRFXzT2szRM4L4",
+      "id": "7y97mc3bZRFXzT2szRM4L4",
+      "name": "Frédéric Chopin",
+      "type": "artist",
+      "uri": "spotify:artist:7y97mc3bZRFXzT2szRM4L4"
+    },
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/2YdRnOqBXCl9g8xCLcGh8C"
+      },
+      "href": "https://api.spotify.com/v1/artists/2YdRnOqBXCl9g8xCLcGh8C",
+      "id": "2YdRnOqBXCl9g8xCLcGh8C",
+      "name": "Mikhail Pletnev",
+      "type": "artist",
+      "uri": "spotify:artist:2YdRnOqBXCl9g8xCLcGh8C"
     }
-  }
+  ],
+  "available_markets": [
+    "ES"
+  ],
+  "disc_number": 1,
+  "duration_ms": 266200,
+  "explicit": false,
+  "external_ids": {
+    "isrc": "GBAYC8800384"
+  },
+  "external_urls": {
+    "spotify": "https://open.spotify.com/track/2MSgFefjK0T7Iwjvr3OKqV"
+  },
+  "href": "https://api.spotify.com/v1/tracks/2MSgFefjK0T7Iwjvr3OKqV",
+  "id": "2MSgFefjK0T7Iwjvr3OKqV",
+  "is_local": false,
+  "name": "Chopin: Nocturne No. 20 in C-Sharp Minor, Op. Posth.",
+  "popularity": 69,
+  "preview_url": null,
+  "track_number": 8,
+  "type": "track",
+  "uri": "spotify:track:2MSgFefjK0T7Iwjvr3OKqV",
+}
+
+export const tracks: Track[] = [
+  singleTrack,
+  track_ClocksColdPlay,
+  track_NocturneChopin
 ]

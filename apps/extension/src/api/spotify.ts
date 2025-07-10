@@ -1,5 +1,5 @@
 import type { AuthClient } from '@/oauth2/auth'
-import type { Device, PlaybackState, Playlist } from 'SpotifyApi'
+import type { Device, PlaybackState, Playlist, Track } from 'SpotifyApi'
 import { TokenBaseClient } from './tokenbaseclient'
 import { Logger } from '@/logger'
 import type { ILogger } from '@/interfaces/logger.interface'
@@ -8,23 +8,41 @@ const BASE_URL = 'https://api.spotify.com/v1'
 
 export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   logger = new Logger('SpotifyClient')
-
+  
   constructor(private authClient: AuthClient) {
     super(BASE_URL, '')
   }
-
+  
   async retrieveAccessToken() {
     if (this.getAccessToken() !== '') {
       return
     }
-
+    
     const token = await this.authClient.getAuthToken()
-
+    
     if (token) {
       super.setAccessToken(token)
     }
   }
 
+  async getPlaylistItems(playlistId: string): Promise<Track[]> {
+    type Response = {
+      items: Array<{
+        track: Track
+      }>
+    }
+
+    await this.retrieveAccessToken()
+
+    const response = await this.request<Response>(`/playlists/${playlistId}/tracks`)
+
+    if (response) {
+      return response.items.map(item => item.track)
+    }
+
+    return []
+  }
+  
   async transferPlaybackDevice(deviceId: string) {
     await this.retrieveAccessToken()
     try {
@@ -131,8 +149,16 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
       method: 'PUT',
     }
 
-    if (context_uri) {
-      options.body = JSON.stringify({ context_uri });
+    const body: Record<string, unknown> = {}
+
+    if (context_uri?.startsWith('spotify:track')) {
+      body.uris = [context_uri];
+    } else {
+      body.context_uri = context_uri;
+    }
+
+    if (Object.keys(body).length > 0) {
+      options.body = JSON.stringify(body);
     }
 
     await this.request('/me/player/play', options)
