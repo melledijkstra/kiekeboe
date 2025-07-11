@@ -54,6 +54,11 @@ export const MODULE_CONFIG = [
     id: 'weather',
     title: 'Weather',
     import: () => import('./weather/index.ts')
+  },
+  {
+    id: 'time_tools',
+    title: 'Time Tools',
+    import: () => import('./time-tools/index.ts')
   }
 ] as const satisfies ReadonlyArray<ModuleConfigItem>
 
