@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 import browser from 'webextension-polyfill'
 import { FocusService } from '@/services/focus'
+import { TimeToolsService } from '@/services/time-tools'
 import { Logger } from '@/logger'
 import { commandCenterOpen } from '@/modules/command-center/messages'
 import { settings } from '@/settings/index.svelte'
@@ -95,6 +96,7 @@ self.addEventListener('activate', e => {
 
 logger.log('Service worker activated')
 services.push(new FocusService())
+services.push(new TimeToolsService())
 
 if (import.meta.env.DEV) {
   // add global r() function to make development easier reloading
