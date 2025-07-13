@@ -5,6 +5,7 @@
   import { playbackState } from '@/fixtures/musicplayer/state'
   import { devices } from '@/fixtures/spotify/devices'
   import type { State } from 'MusicPlayer'
+  import Panel from '@/components/atoms/Panel.svelte'
 
   const state: State = $state(playbackState)
 
@@ -24,8 +25,8 @@
 
 <Story name="Interactive">
   {#snippet template(args)}
-    <div class="bg-black/80 w-[600px] h-[500px] rounded-md">
+    <Panel nopadding size="large">
       <MusicPlayer {...args} />
-    </div>
+    </Panel>
   {/snippet}
 </Story>
