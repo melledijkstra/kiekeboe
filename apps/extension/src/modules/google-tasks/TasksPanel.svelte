@@ -1,6 +1,5 @@
 <script lang="ts">
   import { TasksClient } from '@/api/google/tasks'
-  import Panel from '@/components/atoms/Panel.svelte'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
   import { log } from '@/logger'

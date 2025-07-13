@@ -1,5 +1,11 @@
 import { addToast } from '@/stores/toasts.svelte';
-import { mdiBrain, mdiSearchWeb, mdiSticker, mdiBookmark } from '@mdi/js';
+import {
+  mdiBrain,
+  mdiSearchWeb,
+  mdiSticker,
+  mdiBookmark
+} from '@mdi/js';
+import { computeCommandScore } from 'bits-ui';
 import type { CommandServiceInterface } from './CommandServiceInterface';
 import type { CommandGroups, CommandItem } from './types';
 import type { ILogger } from '@/interfaces/logger.interface';
@@ -101,12 +107,19 @@ export class CommandService implements CommandServiceInterface, ILogger {
   }
 
   findCommand(input: string): CommandItem | undefined {
-    const actionCommands = this._commands.Actions;
-    for (const command of actionCommands) {
-      if (input.startsWith(`/${command.name.toLowerCase()}`)) {
-        return command;
+    let best: CommandItem | undefined
+    let bestScore = 0
+    const search = input.startsWith('/') ? input.slice(1) : input
+    for (const group of Object.values(this._commands)) {
+      for (const command of group) {
+        const score = computeCommandScore(command.name, search, command.keywords)
+        if (score > bestScore) {
+          best = command
+          bestScore = score
+        }
       }
     }
+    return best
   }
 
   findCommandByName(commandName: string): CommandItem | undefined {

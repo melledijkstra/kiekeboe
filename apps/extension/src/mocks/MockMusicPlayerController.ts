@@ -7,11 +7,11 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
 
   constructor(public state: State) {}
 
-  async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
+  async getPlaylistItems(): Promise<Track[]> {
     return tracks;
   }
 
-  activateDevice?(deviceId: string): void {
+  activateDevice?(): void {
     throw new Error('Method not implemented.');
   }
 

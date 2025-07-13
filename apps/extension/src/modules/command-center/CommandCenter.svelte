@@ -6,6 +6,7 @@
   import { type CommandGroups } from './types'
   import type { CommandServiceInterface } from './CommandServiceInterface'
   import { commandCenterState } from './state.svelte'
+  import { mdiYoutube } from '@mdi/js'
 
   export type CommandCenterProps = {
     commandService: CommandServiceInterface
@@ -131,6 +132,24 @@
                 </Command.GroupItems>
               </Command.Group>
             {/each}
+            <Command.Separator class="bg-white/5 h-px w-full" />
+            <Command.Group>
+                <Command.GroupHeading class="text-white px-3 pb-2 pt-4 text-xs">
+                  Direct Links
+                </Command.GroupHeading>
+                <Command.GroupItems>
+                    <Command.LinkItem
+                      value="youtube"
+                      class="rounded-button data-selected:bg-zinc-400 outline-hidden flex h-10 cursor-pointer select-none items-center gap-2 px-3 py-2.5 text-sm"
+                      keywords={['youtube', 'video', 'watch']}
+                      href="https://www.youtube.com"
+                      target="_blank"
+                    >
+                      <Icon path={mdiYoutube} class="size-4" />
+                      YouTube
+                    </Command.LinkItem>
+                </Command.GroupItems>
+              </Command.Group>
           </Command.Viewport>
         </Command.List>
       </Command.Root>
