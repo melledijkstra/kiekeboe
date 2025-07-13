@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
-  import Panel from '@/components/atoms/Panel.svelte'
   import { SpotifyController } from '@/controllers/SpotifyController'
   import MusicPlayer from '@/components/musicplayer/MusicPlayer.svelte'
   import { MPState } from '@/components/musicplayer/state.svelte'
   import { spotifyState } from './spotify.state.svelte'
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
 
   const { controller }: { controller: SpotifyController } = $props()
 
@@ -23,7 +23,7 @@
   onDestroy(cleanup)
 </script>
 
-<Panel class="flex flex-col" size="large" nopadding>
+<PopPanel class="flex flex-col" size="large" nopadding>
   {#if !SpotifyController?.hasLockAcquired()}
     <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
     <p class="text-center text-sm">
@@ -37,4 +37,4 @@
       devices={spotifyState.devices}
     />
   {/if}
-</Panel>
+</PopPanel>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Panel from '@/components/atoms/Panel.svelte'
   import Icon from '@/components/atoms/Icon.svelte'
   import { mdiArrowLeft, mdiDelete, mdiPin, mdiPinOff, mdiPlusCircle, mdiPlus } from '@mdi/js'
   import CountdownForm from './countdown/Form.svelte'
@@ -10,6 +9,7 @@
   import WorldClock from '@/components/atoms/metrics/WorldClock.svelte'
   import IconButton from '@/components/atoms/IconButton.svelte'
   import { Popover } from 'bits-ui'
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
 
   type FormType = 'countdown' | 'worldclock' | 'sleep' | 'counter';
 
@@ -42,7 +42,7 @@
     <Icon path={mdiPlus} size={20} />
     <span>Add</span>
   </Popover.Trigger>
-  <Panel>
+  <PopPanel>
     {#if currentForm}
       <IconButton class="float-left" icon={mdiArrowLeft} onclick={() => (currentForm = undefined)} />
     {/if}
@@ -100,5 +100,5 @@
     {:else if currentForm === 'sleep'}
       <Button onclick={addSleepTracker}>Add sleep tracker</Button>
     {/if}
-  </Panel>
+  </PopPanel>
 </Popover.Root>

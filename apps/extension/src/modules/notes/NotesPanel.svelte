@@ -1,12 +1,12 @@
 <script>
-  import Panel from '@/components/atoms/Panel.svelte'
   import { formatDate } from '@/date'
   import { notes } from '@/stores/notes.svelte'
   import NotesForm from './NotesForm.svelte'
   import { Separator } from 'bits-ui'
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
 </script>
 
-<Panel class="overflow-auto">
+<PopPanel class="overflow-auto">
   <NotesForm />
   <ul>
     {#each $notes as note, i (i)}
@@ -27,4 +27,4 @@
       </li>
     {/each}
   </ul>
-</Panel>
+</PopPanel>

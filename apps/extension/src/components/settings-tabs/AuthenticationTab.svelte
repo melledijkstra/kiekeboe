@@ -29,7 +29,9 @@
 </script>
 
 <h1 class="text-xl mb-3">Authentication</h1>
-{#await retrieveAuthState() then}
+{#await retrieveAuthState()}
+  <p class="text-base">Loading...</p>
+{:then}
   <div class="flex flex-col gap-3">
     <p class="text-sm">
       <strong>Google:</strong>

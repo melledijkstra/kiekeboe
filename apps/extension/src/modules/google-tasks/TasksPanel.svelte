@@ -1,6 +1,7 @@
 <script lang="ts">
   import { TasksClient } from '@/api/google/tasks'
   import Panel from '@/components/atoms/Panel.svelte'
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
   import { log } from '@/logger'
   import { AuthClient } from '@/oauth2/auth'
@@ -58,7 +59,7 @@
   })
 </script>
 
-<Panel size="small">
+<PopPanel size="small">
   {#if token}
     <h3 class="inline-flex items-center text-lg">
       <img
@@ -91,4 +92,4 @@
     <p class="mb-2">In order to see your tasks, you will need to sign in with Google</p>
     <AuthButton provider="google" onclick={triggerAuthFlow} />
   {/if}
-</Panel>
+</PopPanel>

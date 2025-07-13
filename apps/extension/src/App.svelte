@@ -6,17 +6,13 @@
   import { onMount } from 'svelte'
   import { settings, settingsStore } from '@/settings/index.svelte'
   import { appState } from '@/app-state.svelte.ts'
-  import { mdiTuneVertical } from '@mdi/js'
   import { loadModule } from '@/modules'
   import TopBar from '@/components/topbar/TopBar.svelte'
-  import SettingsMenu from '@/components/SettingsMenu.svelte'
   import { tasks } from '@/stores/tasks.svelte.ts'
   import Toasts from '@/components/Toasts.svelte'
-  import Panel from '@/components/atoms/Panel.svelte'
-  import Icon from '@/components/atoms/Icon.svelte'
   import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
-  import { Popover } from 'bits-ui'
   import { log } from './logger'
+  import SettingsMenuItem from './settings/SettingsMenuItem.svelte'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
@@ -84,17 +80,7 @@
     ]}>
       <!-- BOTTOM LEFT -->
       <div class="flex flex-row gap-3">
-        <Popover.Root>
-          <Popover.Trigger class={[
-            'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
-            'block cursor-pointer transition-colors',
-          ]}>
-            <Icon path={mdiTuneVertical} size={36} />
-          </Popover.Trigger>
-          <Panel nopadding class='w-[550px] h-80'>
-            <SettingsMenu />
-          </Panel>
-        </Popover.Root>
+        <SettingsMenuItem />
         <ImageRefreshButton />
       </div>
       <div class="flex flex-row gap-5">

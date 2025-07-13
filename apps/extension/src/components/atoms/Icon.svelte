@@ -20,7 +20,7 @@
   }: IconProps = $props();
 
 	const sizeValue = size ?? 20
-	const viewboxValue = viewbox ?? '2 2 20 20'
+	const viewboxValue = viewbox ?? '0 0 24 24'
 	const sx = ['both', 'horizontal'].includes(flip) ? '-1' : '1'
 	const sy = ['both', 'vertical'].includes(flip) ? '-1' : '1'
 	const r = isNaN(rotate) ? rotate : rotate + 'deg'

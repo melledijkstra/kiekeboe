@@ -1,10 +1,19 @@
 import { playlists } from '@/fixtures/musicplayer/playlists';
+import { tracks } from '@/fixtures/musicplayer/tracks';
 import type { Album, MusicPlayerInterface, Playlist, State, Track } from 'MusicPlayer';
 
 export class MockMusicPlayerController implements MusicPlayerInterface {
   private playbackLoop: NodeJS.Timeout | null = null;
 
   constructor(public state: State) {}
+
+  async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
+    return tracks;
+  }
+
+  activateDevice?(deviceId: string): void {
+    throw new Error('Method not implemented.');
+  }
 
   playItem(item: Track | Playlist | Album): void {
     console.log('Playing item:', item);
