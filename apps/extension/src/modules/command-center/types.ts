@@ -7,8 +7,7 @@ export type CommandItem = {
 
 export enum CommandGroup {
   Actions = 'Actions',
-  Bookmarks = 'Bookmarks',
-  Music = 'Music'
+  Bookmarks = 'Bookmarks'
 }
 
 export type CommandGroups = Record<keyof typeof CommandGroup, Array<CommandItem>>

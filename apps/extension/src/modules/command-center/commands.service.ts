@@ -3,34 +3,15 @@ import {
   mdiBrain,
   mdiSearchWeb,
   mdiSticker,
-  mdiBookmark,
-  mdiPlay,
-  mdiPause,
-  mdiSkipNext,
-  mdiSkipPrevious
+  mdiBookmark
 } from '@mdi/js';
 import { computeCommandScore } from 'bits-ui';
-import { SpotifyController } from '@/controllers/SpotifyController';
 import type { CommandServiceInterface } from './CommandServiceInterface';
 import type { CommandGroups, CommandItem } from './types';
 import type { ILogger } from '@/interfaces/logger.interface';
 import { Logger } from '@/logger';
 import { commandCenterOpen } from './messages';
 import { commandCenterState } from './state.svelte';
-
-const spotifyController = new SpotifyController();
-let spotifyInitialized = false;
-
-async function ensureSpotifyInitialized() {
-  if (!spotifyInitialized) {
-    try {
-      await spotifyController.initialize();
-      spotifyInitialized = true;
-    } catch (error) {
-      console.error('Failed to initialize Spotify controller', error);
-    }
-  }
-}
 
 const defaultCommands: CommandGroups = {
   Actions: [
@@ -79,45 +60,7 @@ const defaultCommands: CommandGroups = {
       const bookmarksUrl = 'chrome://bookmarks/'
       window.open(bookmarksUrl, '_blank')
     }
-  }],
-  Music: [
-    {
-      name: 'Play',
-      keywords: ['play', 'resume', 'music'],
-      icon: mdiPlay,
-      action: async () => {
-        await ensureSpotifyInitialized()
-        spotifyController.play()
-      }
-    },
-    {
-      name: 'Pause',
-      keywords: ['pause', 'stop', 'music'],
-      icon: mdiPause,
-      action: async () => {
-        await ensureSpotifyInitialized()
-        spotifyController.pause()
-      }
-    },
-    {
-      name: 'Next Track',
-      keywords: ['next', 'skip', 'music'],
-      icon: mdiSkipNext,
-      action: async () => {
-        await ensureSpotifyInitialized()
-        spotifyController.next()
-      }
-    },
-    {
-      name: 'Previous Track',
-      keywords: ['previous', 'back', 'music'],
-      icon: mdiSkipPrevious,
-      action: async () => {
-        await ensureSpotifyInitialized()
-        spotifyController.previous()
-      }
-    }
-  ]
+  }]
 }
 
 export class CommandService implements CommandServiceInterface, ILogger {
