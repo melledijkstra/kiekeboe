@@ -36,6 +36,7 @@ const defaultConfig = defineConfig(({ mode }) => ({
         home: './index.html',
         options: './options.html',
         background: './src/background.entry.ts',
+        popup: './popup.html',
       },
       output: {
         entryFileNames: '[name].js',

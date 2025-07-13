@@ -53,8 +53,8 @@
   })
   let mediaItem = $derived(state?.currentItem)
   let position_ms = $derived(state?.position_ms ?? 0)
-  let remaining = $derived(mediaItem ? mediaItem.duration_ms - position_ms : 0)
-  let timeLeft = $derived<string>(millisecondsToTime(remaining))
+  // let remaining = $derived(mediaItem ? mediaItem.duration_ms - position_ms : 0)
+  // let timeLeft = $derived<string>(millisecondsToTime(remaining))
   let duration = $derived(mediaItem?.duration_ms ? millisecondsToTime(mediaItem.duration_ms) : 0)
   let currentTime = $derived<string>(millisecondsToTime(position_ms))
 </script>
