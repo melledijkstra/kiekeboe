@@ -5,7 +5,6 @@ import {
   startTimer,
   stopTimer,
   getTimerState,
-  timerStateUpdate,
   startChronometer,
   stopChronometer,
   getChronometerState,
@@ -16,52 +15,50 @@ import {
   alarmTriggered,
   alarmStateUpdate
 } from '@/modules/time-tools/messages'
-import type { TimerState, ChronometerState, AlarmState } from '@/modules/time-tools/types'
+import type { ChronometerState, AlarmState } from '@/modules/time-tools/types'
 import { logger } from '@/background.entry'
+import { TimerToolService } from '@/modules/time-tools/tools/TimerToolService'
 
 export class TimeToolsService implements BackgroundService {
-  private timer = new Timer({ duration: 0 })
+  private timerTool = new TimerToolService()
+  // Keep chronometer and alarm logic as before for now
   private chronometer = new Timer({ duration: Infinity, interval: 1000 })
-  private timerState: TimerState = { isRunning: false, duration: 0, timeRemaining: 0 }
-  private chronometerState: ChronometerState = { isRunning: false, elapsed: 0 }
+  private chronometerState = { isRunning: false, elapsed: 0 }
   private alarmState: AlarmState = { alarmTime: null, triggered: false }
-  private alarmTimeout: number | null = null
+  private alarmTimeout: NodeJS.Timeout | null = null
 
   constructor() {
+    this.initialize()
+  }
+
+  async initialize(): Promise<void> {
     logger.log('TimeTools service initialized')
-    this.timer.on('tick', this.onTimerTick.bind(this))
-    this.timer.on('complete', this.onTimerComplete.bind(this))
+    // Timer events are now handled by TimerToolService
+    startTimer.on((duration) => this.timerTool.start(duration))
+    stopTimer.on(() => this.timerTool.stop())
+    getTimerState.on(() => this.timerTool.getState())
+    // TODO: Use a generic message/event handler for state updates
+
+    // Chronometer and alarm logic remains as before
     this.chronometer.on('tick', this.onChronometerTick.bind(this))
-
-    startTimer.on(this.startTimer.bind(this))
-    stopTimer.on(this.stopTimer.bind(this))
-    getTimerState.on(this.getTimerState.bind(this))
-
     startChronometer.on(this.startChronometer.bind(this))
     stopChronometer.on(this.stopChronometer.bind(this))
     getChronometerState.on(this.getChronometerState.bind(this))
-
     setAlarm.on(this.setAlarm.bind(this))
     clearAlarm.on(this.clearAlarm.bind(this))
     getAlarmState.on(this.getAlarmState.bind(this))
   }
 
-  private onTimerTick(remaining: number) {
-    this.timerState.timeRemaining = remaining
-    timerStateUpdate.send(this.timerState)
+  destroy(): void {
+    throw new Error('Method not implemented.')
   }
 
-  private onTimerComplete() {
-    this.timerState.isRunning = false
-    this.timerState.timeRemaining = 0
-    timerStateUpdate.send(this.timerState)
-    browser.notifications.create('timeToolsTimer', {
-      type: 'basic',
-      title: 'Timer done',
-      message: 'The timer has finished',
-      iconUrl: browser.runtime.getURL('icons/bell.png')
-    })
-  }
+  // --- Timer logic is now handled by timerTool ---
+  // private onTimerTick(remaining: number) { ... }
+  // private onTimerComplete() { ... }
+  // private startTimer(duration: number) { ... }
+  // private stopTimer() { ... }
+  // private getTimerState(): TimerState { ... }
 
   private onChronometerTick() {
     this.chronometerState.elapsed += 1000
@@ -100,20 +97,6 @@ export class TimeToolsService implements BackgroundService {
     })
   }
 
-  private startTimer(duration: number) {
-    this.timer.setDuration(duration)
-    this.timer.start()
-    this.timerState = { isRunning: true, duration, timeRemaining: duration }
-    timerStateUpdate.send(this.timerState)
-  }
-
-  private stopTimer() {
-    this.timer.stop()
-    this.timerState.isRunning = false
-    this.timerState.timeRemaining = this.timerState.duration
-    timerStateUpdate.send(this.timerState)
-  }
-
   private startChronometer() {
     this.chronometerState = { isRunning: true, elapsed: 0 }
     this.chronometer.start()
@@ -124,10 +107,6 @@ export class TimeToolsService implements BackgroundService {
     this.chronometer.stop()
     this.chronometerState.isRunning = false
     chronometerStateUpdate.send(this.chronometerState)
-  }
-
-  private getTimerState(): TimerState {
-    return this.timerState
   }
 
   private getChronometerState(): ChronometerState {

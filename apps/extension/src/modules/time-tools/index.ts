@@ -3,5 +3,5 @@ import TimeToolsMenuItem from './TimeToolsMenuItem.svelte'
 
 export default {
   component: TimeToolsMenuItem,
-  scene: TimeToolsMenuItem
+  trigger: TimeToolsMenuItem
 } satisfies Module

@@ -30,7 +30,8 @@ const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
   weather: false,
   google_tasks: false,
   notes: false,
-  spotify: false
+  spotify: false,
+  time_tools: false
 }
 
 export const DEFAULT_SETTINGS: SettingsState = {

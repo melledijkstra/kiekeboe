@@ -1,6 +1,6 @@
 <script lang="ts">
   import { loadModule, type ModuleID } from '@/modules'
-  import { mdiHomeOutline, mdiSpa, mdiSprout } from '@mdi/js'
+  import { mdiHomeOutline } from '@mdi/js'
   import { appState, switchAppMode } from '@/app-state.svelte'
   import { settingsStore } from '@/settings/index.svelte'
   import MetricsPanel from '@/modules/trackers/MetricsPanel.svelte'
@@ -13,7 +13,7 @@
 {#snippet module(moduleId: ModuleID)}
   {#if $settingsStore.modules?.[moduleId]}
     {#await loadModule(moduleId) then Module}
-      <Module.component />
+      <Module.trigger />
     {/await}
   {/if}
 {/snippet}
@@ -32,20 +32,9 @@
       tooltip="Home"
       mdiIcon={mdiHomeOutline}
     />
-    {#if $settingsStore.modules.focus}
-      <MenuButton
-        tooltip="Focus"
-        onclick={() => switchAppMode('focus')}
-        mdiIcon={mdiSprout}
-      />
-    {/if}
-    {#if $settingsStore.modules.well_being}
-      <MenuButton
-        tooltip="Breathing"
-        onclick={() => switchAppMode('breathing')}
-        mdiIcon={mdiSpa}
-      />
-    {/if}
+    {@render module('focus')}
+    {@render module('well_being')}
+    {@render module('time_tools')}
   </div>
   <div
     class={[

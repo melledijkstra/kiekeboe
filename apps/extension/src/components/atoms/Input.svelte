@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { HTMLLabelAttributes, HTMLInputAttributes } from 'svelte/elements';
 
-  let { value = $bindable<string>(), label = null, labelProps = {}, ...props }: {
-    value?: string;
+  let { value = $bindable<string | number>(), label = null, labelProps = {}, ...props }: {
+    value?: string | number;
     label?: string | null;
     labelProps?: HTMLLabelAttributes;
   } & HTMLInputAttributes = $props()

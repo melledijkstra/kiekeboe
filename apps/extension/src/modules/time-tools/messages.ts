@@ -3,6 +3,7 @@ import type { TimerState, ChronometerState, AlarmState } from './types'
 
 export const startTimer = createMessage<number, void>('timeToolsStartTimer')
 export const stopTimer = createMessage<void, void>('timeToolsStopTimer')
+
 export const getTimerState = createMessage<void, TimerState>('timeToolsGetTimerState')
 export const timerStateUpdate = createMessage<TimerState, void>('timeToolsTimerStateUpdate')
 

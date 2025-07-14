@@ -6,10 +6,10 @@ const logger = new Logger('modules')
 /**
  * MODULE INTERFACE
  */
-
 export interface Module {
   component: Component
   scene?: Component
+  trigger?: Component
   init?: () => void
 }
 
