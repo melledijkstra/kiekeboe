@@ -12,7 +12,6 @@
   } from './messages'
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
-  import Panel from '@/components/atoms/Panel.svelte'
   import { log } from '@/logger'
 
   const { onMinutePassed } = $props()
@@ -77,10 +76,8 @@
 </script>
 
 <div class="flex flex-col gap justify-center items-center">
-  <Panel class="text-2xl">
-    <span class="capitalize">{pState.mode}</span>
-    <span>{timeLeft}</span>
-  </Panel>
+  <span class="capitalize">{pState.mode}</span>
+  <span>{timeLeft}</span>
   <div class="flex flex-row gap-2 mt-2">
     <button
       onclick={pState.isRunning ? stop : start}
