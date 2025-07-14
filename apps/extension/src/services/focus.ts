@@ -28,16 +28,28 @@ export class FocusService implements BackgroundService {
   private timer: Timer
 
   constructor() {
-    logger.log('Pomodoro service initialized')
+    this.initialize()
     this.timer = new Timer({
       duration: this.state.duration,
       onTick: this.onTick.bind(this),
       onComplete: this.onComplete.bind(this)
     })
-    startPomodoro.on(this.startPomodoro.bind(this))
-    stopPomodoro.on(this.stopPomodoro.bind(this))
-    getPomodoroState.on(this.getPomodoroState.bind(this))
-    switchMode.on(this.switchMode.bind(this))
+  }
+
+  async initialize(): Promise<void> {
+    logger.log('Pomodoro service initialized')
+    this.wireEvents()
+  }
+
+  wireEvents(): void {
+    startPomodoro.on(() => this.startPomodoro())
+    stopPomodoro.on(() => this.stopPomodoro())
+    getPomodoroState.on(() => this.getPomodoroState())
+    switchMode.on((mode) => this.switchMode(mode))
+  }
+
+  destroy(): void {
+    this.timer.stop()
   }
 
   onTick(remainingTime: number) {

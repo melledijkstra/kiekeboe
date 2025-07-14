@@ -26,14 +26,10 @@ export function createMessage<Request = void, Response = void>(identifier: strin
     },
     on(callback: Handler<Request, Response>) {
       browser.runtime.onMessage.addListener(
-        (message, _sender, sendResponse) => {
+        async (message: unknown): Promise<Response | undefined> => {
           if (isMessage(message) && message.identifier === identifier) {
-            const promise = callback(message?.data as Request)
-            Promise.resolve(promise).then((r) => {
-              sendResponse(r)
-            })
+            return await callback(message?.data as Request)
           }
-          return true
         }
       )
     }
