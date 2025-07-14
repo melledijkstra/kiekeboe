@@ -1,18 +1,18 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte'
   import { Popover } from 'bits-ui'
-  import Panel from './Panel.svelte'
+  import Panel, { type PanelProps } from './Panel.svelte'
 
-  type PanelProps = {
-    nopadding?: boolean
-    nostyling?: boolean
-    size?: 'small' | 'medium' | 'large'
+  export type PopPanelProps = {
+    children: Snippet
+    panelProps?: Omit<PanelProps, 'children'>
   } & Popover.ContentProps
 
-  const { children, ...props }: PanelProps = $props()
-
-  if (!children) {
-    throw new Error('Panel component requires children')
-  }
+  const {
+    children,
+    panelProps,
+    ...props
+  }: PopPanelProps = $props()
 </script>
 
 <Popover.Content
@@ -27,7 +27,7 @@
           // align with panel background
           "dark:text-black/40 text-white/40"
         ]} />
-        <Panel {...props}>
+        <Panel {...panelProps} {...props}>
           {@render children()}
         </Panel>
       </div>

@@ -20,16 +20,16 @@
     onclick={() => onPlaylistPlay(playlist)}
   >
     <img
-      class="size-10"
+      class="size-10 aspect-square"
       src={playlist.coverArtUrl ?? '/icons/album-cover-placeholder.png'}
       alt="Playlist cover"
     />
   </button>
-  <div class="flex flex-col ml-2 overflow-hidden">
+  <div class="flex flex-col ml-2 overflow-hidden text-sm">
     <button
       class="truncate hover:underline cursor-pointer"
       onclick={() => onPlaylistSelected(playlist)}>{playlist.title}</button
     >
-    <p>{playlist.tracks.length} songs</p>
+    <p class="text-xs italic">X songs</p>
   </div>
 </div>

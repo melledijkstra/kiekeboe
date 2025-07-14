@@ -14,9 +14,13 @@ export const defaultTrack: Track = {
   album: {
     id: "default-album-id",
     title: "Default Album Name",
-    artist: defaultArtist
+    artist: defaultArtist,
+    uri: "",
+    type: "album"
   },
-  duration_ms: 180000, // 3 minutes
+  duration_ms: 180000,
+  uri: "",
+  type: "track"
 }
 
 export const track_ClocksColdPlay: Track = convertSpotifyTrackToMPTrack(spotify_clocks);

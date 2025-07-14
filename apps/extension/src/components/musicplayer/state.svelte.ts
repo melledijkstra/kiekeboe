@@ -1,13 +1,13 @@
-import type { State, Playlist } from "MusicPlayer"
+import type { Playlist, PlaybackState } from "MusicPlayer"
 
-type MusicPlayerState = {
-  state: State,
+export type MusicPlayerState = {
+  playback: PlaybackState,
   selectedPlaylist?: Playlist,
   playlists: Playlist[]
 }
 
 export const MPState = $state<MusicPlayerState>({
-  state: {
+  playback: {
     isPlaying: false,
     shuffle: false,
     position_ms: 0,

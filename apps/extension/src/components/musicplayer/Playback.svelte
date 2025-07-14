@@ -7,22 +7,24 @@
     mdiRepeatOnce,
     mdiShuffleVariant,
     mdiSkipNext,
-    mdiSkipPrevious
+    mdiSkipPrevious,
+    mdiVolumeMedium
   } from '@mdi/js'
   import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
-  import type { State } from 'MusicPlayer'
+  import type { PlaybackState } from 'MusicPlayer'
   import type { HTMLAttributes } from 'svelte/elements'
   import { Slider } from 'bits-ui'
   
   type PlaybackProps = {
-    playbackState?: State
+    playbackState?: PlaybackState
     onToggleShuffle?: (shuffle: boolean) => void
     onPreviousTrack?: () => void
     onPlayPause?: () => void
     onNextTrack?: () => void
     onSwitchRepeatMode?: (mode: number) => void
     onSeek?: (position_ms: number) => void
+    onVolumeChange?: (volume: number) => void
     class?: HTMLAttributes<HTMLDivElement>['class']
   }
 
@@ -32,8 +34,9 @@
     onPreviousTrack,
     onPlayPause,
     onNextTrack,
-    // onSwitchRepeatMode,
+    onSwitchRepeatMode,
     onSeek,
+    onVolumeChange,
     ...props
   }: PlaybackProps = $props()
 
@@ -58,7 +61,6 @@
   let duration = $derived(mediaItem?.duration_ms ? millisecondsToTime(mediaItem.duration_ms) : 0)
   let currentTime = $derived<string>(millisecondsToTime(position_ms))
 </script>
-
 
 <div class={["text-white", props.class]}>
   <!-- Seeker -->
@@ -86,25 +88,25 @@
       ]}
     />
   </Slider.Root>
-  <div class="flex flex-row items-center py-1 px-3">
+  <div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-2 items-center max-w-full p-2">
     <!-- Track Info -->
-    <div class="flex flex-row gap-4 mr-5">
+    <div class="flex flex-row">
       <img
         draggable="false"
-        class="size-15 rounded-sm"
+        class="size-15 aspect-square rounded-sm"
         src={mediaItem?.album?.coverArtUrl ?? '/icons/album-cover-placeholder.png'}
         alt={mediaItem?.title ?? 'Track cover'}
       />
-      <div class="flex flex-col justify-center overflow-hidden">
-        <strong class="truncate text-base">{mediaItem?.title ?? 'No item playing'}</strong>
-        <p class="truncate text-sm">
+      <div class="flex flex-col ml-2 justify-center overflow-hidden">
+        <strong class="truncate text-sm max-w-2xs">{mediaItem?.title ?? 'No item playing'}</strong>
+        <p class="truncate text-xs">
           {mediaItem?.artist.name ?? '-'}
         </p>
       </div>
     </div>
     <!-- Controls -->
     <div class="flex flex-col gap-3">
-      <div class="flex flex-row">
+      <div class="flex flex-row gap-3 items-center">
         <button
           class="cursor-pointer"
           onclick={() => {
@@ -128,12 +130,43 @@
         <button
           class="cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed"
           disabled={true}
+          onclick={() => onSwitchRepeatMode?.(repeatMode === 2 ? 0 : repeatMode + 1)}
         >
           <Icon class="size-6" path={repeatModeIcon} />
         </button>
       </div>
-      <div class="mt-2 flex flex-row gap-2 items-center justify-between text-sm">
-        <span>{currentTime} / {duration}</span>
+    </div>
+    <div class="flex flex-row gap-3 justify-evenly">
+      <!-- Time Indication -->
+      <span class="justify-self-end text-sm text-nowrap">{currentTime} / {duration}</span>
+      <!-- Volume Control -->
+      <div class="flex flex-row items-center gap-2 w-[100px]">
+        <Icon path={mdiVolumeMedium} size={20} />
+        <Slider.Root
+          type="single"
+          orientation="horizontal"
+          value={state?.volume}
+          onValueCommit={(value) => onVolumeChange?.(value)}
+          max={100}
+          class="relative flex w-full touch-none select-none items-center cursor-pointer group/volume"
+        >
+          <span
+            class="bg-white/50 relative w-full h-1 grow overflow-hidden rounded"
+          >
+            <Slider.Range class="bg-white absolute h-full" />
+          </span>
+          <Slider.Thumb
+            index={0}
+            class={[
+              "block size-2 bg-background shadow-sm cursor-pointer rounded-full",
+              "dark:bg-white dark:shadow-black/30",
+              "border border-white/70 hover:border-white",
+              "scale-0 group-hover/volume:scale-100 data-active:scale-120 transition-transform",
+              "disabled:pointer-events-none disabled:opacity-50",
+              "focus-visible:outline-hidden",
+            ]}
+          />
+        </Slider.Root>
       </div>
     </div>
   </div>

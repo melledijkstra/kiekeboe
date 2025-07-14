@@ -6,7 +6,9 @@
   import { spotifyState } from './spotify.state.svelte'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
 
-  const { controller }: { controller: SpotifyController } = $props()
+  const { controller }: {
+    controller: SpotifyController
+  } = $props()
 
   function cleanup() {
     controller?.destroy()
@@ -23,15 +25,18 @@
   onDestroy(cleanup)
 </script>
 
-<PopPanel class="flex flex-col" size="large" nopadding>
-  {#if !SpotifyController?.hasLockAcquired()}
+<PopPanel panelProps={{
+  size: 'large',
+  nopadding: true
+}} class="flex flex-col">
+  {#if !controller.hasLockAcquired()}
     <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
     <p class="text-center text-sm">
       If you want to use the player here, close the other tab or reload this one.
     </p>
   {:else}
     <MusicPlayer
-      state={MPState.state}
+      state={MPState.playback}
       controller={controller}
       deviceId={spotifyState.deviceId}
       devices={spotifyState.devices}

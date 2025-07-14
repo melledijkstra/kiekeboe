@@ -58,7 +58,7 @@
   })
 </script>
 
-<PopPanel size="small">
+<PopPanel panelProps={{ size: 'small' }}>
   {#if token}
     <h3 class="inline-flex items-center text-lg">
       <img

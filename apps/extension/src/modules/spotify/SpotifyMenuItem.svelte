@@ -4,8 +4,9 @@
   import Icon from '@/components/atoms/Icon.svelte'
   import SpotifyPanel from './SpotifyPanel.svelte'
   import { SpotifyController } from '@/controllers/SpotifyController'
-  
-  let controller = $state<SpotifyController>(new SpotifyController())
+  import { MPState } from '@/components/musicplayer/state.svelte'
+
+  let controller = $state<SpotifyController>(new SpotifyController(MPState))
 </script>
 
 <Popover.Root>

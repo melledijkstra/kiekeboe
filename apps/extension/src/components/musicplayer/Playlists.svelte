@@ -10,7 +10,7 @@
 </script>
 
 {#if playlists.length}
-  <ul class="p-2">
+  <ul>
     {#each playlists as playlist (playlist.id)}
       <li>
         <PlaylistItem
@@ -22,5 +22,5 @@
     {/each}
   </ul>
 {:else}
-  <p class="text-sm text-center text-white">No playlists found.</p>
+  <p class="text-sm text-center text-white">No playlists found</p>
 {/if}

@@ -1,7 +1,7 @@
-import type { State } from "MusicPlayer";
+import type { PlaybackState } from "MusicPlayer";
 import { defaultTrack } from "./tracks";
 
-export const playbackState: State = {
+export const playbackState: PlaybackState = {
   currentItem: defaultTrack,
   isPlaying: false,
   volume: 50, // 0-100

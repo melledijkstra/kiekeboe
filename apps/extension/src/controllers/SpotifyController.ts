@@ -5,26 +5,23 @@ import { initializeSpotifyPlayer } from "@/modules/spotify/spotify-sdk";
 import { spotifyState } from "@/modules/spotify/spotify.state.svelte";
 import { AuthClient } from "@/oauth2/auth";
 import { SpotifyAuthProvider } from "@/oauth2/providers";
-import { playbackLoop } from "@/time/utils";
-import type { Album, MusicPlayerInterface, Playlist, State, Track } from "MusicPlayer";
+import type { Album, PlaybackState, Playlist, Track } from "MusicPlayer";
 import type { ILogger } from "@/interfaces/logger.interface";
-import { MPState } from "@/components/musicplayer/state.svelte";
 import { MemoryCache, MIN_5 } from "@/cache/memory";
 import { convertApiPlayerState, convertPlayerState, convertSpotifyPlaylist, convertSpotifyTrackToMPTrack } from "@/transforms/spotify";
+import { BaseMusicController } from "./BaseMusicController";
 
-export class SpotifyController implements ILogger, MusicPlayerInterface {
+export class SpotifyController extends BaseMusicController implements ILogger {
   logger: Logger = new Logger('SpotifyController');
 
-  private authClient: AuthClient = new AuthClient(new SpotifyAuthProvider());
-  public api: SpotifyApiClient = new SpotifyApiClient(this.authClient);
-  public player?: Spotify.Player;
+  protected authClient: AuthClient = new AuthClient(new SpotifyAuthProvider());
+  protected api: SpotifyApiClient = new SpotifyApiClient(this.authClient);
+  protected player?: Spotify.Player;
   private cache = new MemoryCache();
 
   private initialized: boolean = false;
   public isPlayerActive: boolean = false;
-  static hasLock: boolean = false;
-
-  private static cancelPlaybackLoop?: () => void;
+  protected hasLock: boolean = false;
 
   async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
     const tracks = await this.api.getPlaylistItems(playlist.id)
@@ -67,9 +64,9 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
       return;
     }
 
-    SpotifyController.hasLock = acquireTabLock();
+    this.hasLock = acquireTabLock();
 
-    if (SpotifyController.hasLock) {
+    if (this.hasLock) {
       await this.initializeSpotifyPlayer(this.authClient)
     }
 
@@ -77,9 +74,8 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
   }
 
   destroy() {
+    super.destroy()
     releaseTabLock()
-
-    SpotifyController.cancelPlaybackLoop?.()
 
     if (this.player) {
       this.player.disconnect()
@@ -87,12 +83,8 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     }
   }
 
-  static lockExists(): boolean {
-    return lockExists();
-  }
-
-  static hasLockAcquired(): boolean {
-    return SpotifyController.hasLock;
+  hasLockAcquired(): boolean {
+    return lockExists() && this.initialized && this.hasLock;
   }
 
   private async retrieveDevices(): Promise<void> {
@@ -141,33 +133,13 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
     this.logger.log('playerStateChanged: Playback state changed', state);
 
-    MPState.state = convertPlayerState(state);
+    this.state.playback = convertPlayerState(state);
 
     if (!state.paused) {
-      if (SpotifyController.cancelPlaybackLoop) {
-        SpotifyController?.cancelPlaybackLoop();
-      }
-      SpotifyController.cancelPlaybackLoop = playbackLoop(
-        (pos) => this.updatePosition(pos),
-        1000, // Update every second
-        state.position
-      )
+      this.setupPlaybackLoop(state.position);
     } else {
-      SpotifyController.cancelPlaybackLoop?.()
+      this.cancelPlaybackLoop?.()
     }
-  }
-
-  async setupPlaybackLoop(state: State) {
-    if (SpotifyController.cancelPlaybackLoop) {
-      this.logger.log('Playback loop already set up, cancelling previous loop');
-      SpotifyController.cancelPlaybackLoop();
-    }
-
-    SpotifyController.cancelPlaybackLoop = playbackLoop(
-      (pos) => this.updatePosition(pos),
-      1000, // Update every second
-      state.position_ms
-    )
   }
 
   async activateDevice(deviceIdToActivate: string) {
@@ -184,10 +156,6 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
     }
   }
 
-  private updatePosition(position: number) {
-    MPState.state.position_ms = position
-  }
-
   async playItem(mediaItem: Playlist | Album | Track) {
     this.logger.log('Playing item:', mediaItem.title, mediaItem)
     this.api.play(mediaItem.uri);
@@ -199,8 +167,8 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
       await this.player?.resume()
     } else {
       await this.api.play()
-      MPState.state.isPlaying = true
     }
+    super.play()
   }
 
   async pause() {
@@ -209,9 +177,8 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
       await this.player?.pause()
     } else {
       await this.api?.pause()
-      // manually update state since we won't get a state change event
-      MPState.state.isPlaying = false
     }
+    super.pause()
   }
 
   async next() {
@@ -237,18 +204,23 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
   }
 
   async seek(position: number) {
-    console.log('Seeking to position:', position, this.isPlayerActive);
+    console.log('Seeking to position:', position, this.isPlayerActive)
     if (this.isPlayerActive) {
       await this.player?.seek(position)
     } else {
       await this.api.seek(position)
       // manually update state since we won't get a state change event
-      MPState.state.position_ms = position;
-      this.setupPlaybackLoop(MPState.state);
+      this.state.playback.position_ms = position
+      this.setupPlaybackLoop()
     }
+    super.seek(position)
   }
 
-  async getState(): Promise<State> {
+  trackEnded(): void {
+    this.getPlaybackState()
+  }
+
+  async getPlaybackState(): Promise<PlaybackState> {
     this.logger.log('Retrieving Spotify playback state', {
       isPlayerActive: this.isPlayerActive,
     });
@@ -278,16 +250,21 @@ export class SpotifyController implements ILogger, MusicPlayerInterface {
 
   async syncState() {
     this.logger.log('Syncing Spotify state');
-    const state = await this.getState();
-    MPState.state = state;
-    if (state.isPlaying) {
-      this.setupPlaybackLoop(state);
+    const playbackState = await this.getPlaybackState();
+    this.state.playback = playbackState;
+    if (playbackState.isPlaying) {
+      this.setupPlaybackLoop();
     } else {
-      SpotifyController.cancelPlaybackLoop?.();
+      this.cancelPlaybackLoop?.();
     }
   }
 
-  async toggleShuffle(shuffle: boolean): Promise<void> {
-    await this.api?.toggleShuffle(shuffle)
+  async toggleShuffle(forceState?: boolean): Promise<void> {
+    const newState = typeof forceState === 'boolean'
+    ? forceState
+    : !this.state.playback.shuffle;
+    this.logger.log('Toggling shuffle mode', { newState });
+    await this.api?.toggleShuffle(newState);
+    this.getPlaybackState()
   }
 }

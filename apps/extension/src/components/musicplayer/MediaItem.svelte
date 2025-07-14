@@ -8,7 +8,7 @@
   class="flex flex-row items-center py-1 px-2 hover:bg-zinc-800 cursor-pointer"
 >
   <img
-    class="size-10"
+    class="size-10 aspect-square"
     src={track.coverArtUrl ?? '/icons/album-cover-placeholder.png'}
     alt="Track cover"
   />

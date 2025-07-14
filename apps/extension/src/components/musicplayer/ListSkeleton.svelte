@@ -5,7 +5,7 @@
 
 <div
   role="status"
-  class="max-w-md p-2"
+  class="max-w-md"
 >
   <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
   {#each items as _, i (i)}

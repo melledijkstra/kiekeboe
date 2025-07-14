@@ -2,17 +2,13 @@
   import type { Snippet } from 'svelte'
   import type { HTMLAttributes } from 'svelte/elements'
 
-  type PanelProps = {
-    children?: Snippet
+  export type PanelProps = {
+    children: Snippet
     nopadding?: boolean
     size?: 'small' | 'medium' | 'large'
   } & HTMLAttributes<HTMLDivElement>
 
   const { children, nopadding, size = 'medium', ...props }: PanelProps = $props()
-
-  if (!children) {
-    throw new Error('Panel component requires children')
-  }
 </script>
 
 <div
@@ -23,7 +19,7 @@
     // size
     size === 'small' && 'max-w-[300px] max-h-[300px]',
     size === 'medium' && 'w-[500px] h-[400px]',
-    size === 'large' && 'w-[600px] h-[500px]',
+    size === 'large' && 'w-[650px] h-[500px]',
     !nopadding && 'p-4',
     // light theme
     'bg-white/40 text-black',

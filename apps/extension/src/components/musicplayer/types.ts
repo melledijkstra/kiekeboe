@@ -4,6 +4,7 @@ declare module 'MusicPlayer' {
     id: string;
     uri: string;
     name: string;
+    type: 'artist';
   }
 
   type Track = {
@@ -14,6 +15,7 @@ declare module 'MusicPlayer' {
     album: Album;
     duration_ms: number; // in milliseconds
     coverArtUrl?: string; // optional
+    type: 'track'
   }
 
   type Album = {
@@ -23,6 +25,7 @@ declare module 'MusicPlayer' {
     artist?: Artist;
     releaseDate?: string; // ISO date string
     coverArtUrl?: string; // optional
+    type: 'album'
   }
 
   type Playlist = {
@@ -30,11 +33,15 @@ declare module 'MusicPlayer' {
     uri: string;
     title: string;
     description?: string; // optional
-    tracks: Track[];
     coverArtUrl?: string; // optional
+    type: 'playlist'
   }
 
   interface MusicPlayerInterface {
+    state: {
+      playback: PlaybackState
+    };
+    hasLockAcquired(): boolean;
     getPlaylistItems(playlist: Playlist): Promise<Track[]>;
     playItem(item: Track | Playlist | Album): void;
     getPlaylists(): Promise<Playlist[]>;
@@ -44,12 +51,13 @@ declare module 'MusicPlayer' {
     previous(): void;
     seek(position_ms: number): Promise<void>;
     initialize?(): Promise<void>;
+    destroy?(): void;
     setVolume(volume: number): void;
-    getState(): Promise<State>;
+    getPlaybackState(): Promise<PlaybackState>;
     activateDevice?(deviceId: string): void;
   }
 
-  type State = {
+  type PlaybackState = {
     currentItem?: Track;
     isPlaying: boolean;
     volume: number; // 0-100

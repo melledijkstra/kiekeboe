@@ -25,7 +25,8 @@
   orientation: "vertical" | "horizontal";
 })}
   <ScrollArea.Scrollbar {orientation} class={[
-    "bg-gray-100 hover:bg-gray-200 data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex w-2 touch-none select-none rounded-full transition-all duration-200 hover:w-3",
+    "bg-gray-100 data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in flex w-1 touch-none select-none rounded-full transition-all duration-200",
+    "hover:bg-gray-200 hover:w-2",
     scrollbarClasses
   ]}>
     <ScrollArea.Thumb class={[
@@ -35,7 +36,10 @@
   </ScrollArea.Scrollbar>
 {/snippet}
  
-<ScrollArea.Root bind:ref scrollHideDelay={10} {...restProps} class="relative overflow-hidden">
+<ScrollArea.Root bind:ref scrollHideDelay={10} {...restProps} class={[
+  "relative overflow-hidden",
+  restProps.class
+]}>
   <ScrollArea.Viewport class={[
     "h-full w-full",
     viewportClasses

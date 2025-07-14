@@ -1,24 +1,41 @@
+import type { MusicPlayerState } from '@/components/musicplayer/state.svelte';
+import { BaseMusicController } from '@/controllers/BaseMusicController';
 import { playlists } from '@/fixtures/musicplayer/playlists';
 import { tracks } from '@/fixtures/musicplayer/tracks';
-import type { Album, MusicPlayerInterface, Playlist, State, Track } from 'MusicPlayer';
+import type { Album, PlaybackState, Playlist, Track } from 'MusicPlayer';
 
-export class MockMusicPlayerController implements MusicPlayerInterface {
-  private playbackLoop: NodeJS.Timeout | null = null;
+export class MockMusicPlayerController extends BaseMusicController {
+  constructor(public state: MusicPlayerState) {
+    super(state)
+  }
+  
+  hasLockAcquired(): boolean {
+    return true;
+  }
 
-  constructor(public state: State) {}
+  async initialize(): Promise<void> {
+    console.log('MockMusicPlayerController initialized');
+  }
 
   async getPlaylistItems(): Promise<Track[]> {
-    return tracks;
+    await this.delay(500)
+    return tracks
   }
 
   activateDevice?(): void {
     throw new Error('Method not implemented.');
   }
 
-  playItem(item: Track | Playlist | Album): void {
-    console.log('Playing item:', item);
-    if (!this.state.isPlaying) {
-      this.state.isPlaying = true;
+  async playItem(item: Track | Playlist | Album): Promise<void> {
+    if (item.type === 'track') {
+      this.state.playback.currentItem = item as Track;
+    }
+
+    this.state.playback.position_ms = 0;
+
+    if (!this.state.playback.isPlaying) {
+      this.state.playback.isPlaying = true;
+      this.setupPlaybackLoop();
     }
   }
 
@@ -43,64 +60,16 @@ export class MockMusicPlayerController implements MusicPlayerInterface {
     throw new Error('Method not implemented.');
   }
 
-  async getState(): Promise<State> {
-    return this.state
-  }
-  
-  async play() {
-    this.state.isPlaying = true
-    this.startPlaybackLoop();
+  async getPlaybackState(): Promise<PlaybackState> {
+    return this.state.playback
   }
 
-  stop() {
-    this.stopPlaybackLoop();
-    this.state.isPlaying = false; // Stop playback if the track ends
-    this.state.position_ms = 0; // Reset position 
-  }
-
-  startPlaybackLoop() {
-    if (this.playbackLoop) return; // Prevent multiple loops
-    this.playbackLoop = setInterval(() => {
-      const newPos = this.state.position_ms + 1000; // Increment position by 1 second
-      if (this.state.currentItem) {
-        if (newPos >= this.state?.currentItem?.duration_ms) {
-          console.log('Track ended, resetting position.');
-          this.stop();
-        }
-      } else {
-        this.stopPlaybackLoop();
-      }
-      if (this.state.isPlaying) {
-        this.state.position_ms += 1000; // Increment position by 1 second
-      }
-    }, 1000);
-  }
-
-  stopPlaybackLoop() {
-    if (this.playbackLoop) {
-      clearInterval(this.playbackLoop);
-      this.playbackLoop = null;
-    }
-  }
-  
-  async pause() {
-    this.state.isPlaying = false
-    this.stopPlaybackLoop()
-  }
   
   async setVolume(volume: number): Promise<void> {
-    this.state.volume = Math.max(0, Math.min(100, volume)); // Ensure volume is between 0 and 100
+    this.state.playback.volume = Math.max(0, Math.min(100, volume)); // Ensure volume is between 0 and 100
   }
-  
-  async seek(position: number): Promise<void> {
-    if(position < 0) {
-      this.state.position_ms = 0;
-    }
 
-    if (this.state.currentItem && position > this.state.currentItem.duration_ms) {
-      this.state.position_ms = this.state.currentItem.duration_ms;
-    }
-
-    this.state.position_ms = position;
+  async toggleShuffle(enabled?: boolean): Promise<void> {
+    this.state.playback.shuffle = enabled ?? !this.state.playback.shuffle;
   }
 }

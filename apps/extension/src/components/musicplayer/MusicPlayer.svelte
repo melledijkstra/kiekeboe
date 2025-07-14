@@ -2,9 +2,9 @@
   import Devices from './Devices.svelte'
   import TrackFeedback from './Playback.svelte'
   import Playlists from './Playlists.svelte'
-  import type { MusicPlayerInterface, Playlist, State, Track } from 'MusicPlayer'
+  import type { MusicPlayerInterface, Playlist, PlaybackState, Track } from 'MusicPlayer'
   import type { Device } from 'SpotifyApi'
-  import PlaylistSkeleton from './PlaylistSkeleton.svelte'
+  import ListSkeleton from './ListSkeleton.svelte'
   import ScrollArea from '../atoms/ScrollArea.svelte'
   import TrackList from './TrackList.svelte'
 
@@ -14,13 +14,13 @@
     devices,
     deviceId
   }: {
-    state: State
+    state: PlaybackState
     controller: MusicPlayerInterface
     devices: Device[]
     deviceId?: string
   } = $props()
 
-  let trackList: Track[] | null = $state([])
+  let fetchItems = $state<Promise<Track[]>>()
 
   function playPause() {
     // Use play or pause based on current playback state
@@ -32,21 +32,14 @@
   }
 
   async function selectPlaylist(playlist: Playlist) {
-    const tracks = await controller.getPlaylistItems(playlist)
-
-    if (!tracks) {
-      console.error('No tracks found for the selected playlist')
-      return
-    }
-
-    trackList = tracks
+    fetchItems = controller.getPlaylistItems(playlist)
   }
 </script>
 
 <div class="grid grid-cols-2 grid-rows-3 music-player w-full h-full overflow-hidden">
   <ScrollArea scrollbarClasses="bg-transparent" orientation="vertical">
     {#await controller.getPlaylists()}
-      <PlaylistSkeleton amount={20} />
+      <ListSkeleton amount={20} />
     {:then playlists}
       <Playlists
         playlists={playlists}
@@ -58,14 +51,14 @@
     {/await}
   </ScrollArea>
   <ScrollArea scrollbarClasses="bg-transparent" orientation="vertical">
-    {#if !trackList}
-      <PlaylistSkeleton amount={20} />
-    {:else}
+    {#await fetchItems}
+      <ListSkeleton amount={20} />
+    {:then trackList}
       <TrackList
-        tracks={trackList}
+        tracks={trackList ?? []}
         onTrackSelected={(track) => controller.playItem(track)}
       />
-    {/if}
+    {/await}
   </ScrollArea>
   <TrackFeedback
     class="col-span-2"
