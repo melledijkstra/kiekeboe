@@ -24,6 +24,7 @@ Kiekeboe is a personal homepage extension that enhances your new tab page with a
 - Spotify: Offers in-page Spotify playback controls.
 - World Clocks: Displays local times from multiple time zones.
 - Fitbit: Retrieves your daily sleep statistics.
+- Time Tools: Provides alarms, a timer and a chronometer.
 
 ## Installation
 
