@@ -19,7 +19,8 @@
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
     "server": "turbo run --filter=@odysea/server",
-    "serverless": "turbo run --filter=@odysea/serverless"
+    "serverless": "turbo run --filter=@odysea/serverless",
+    "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && npm cache clean --force"
   },
   "engines": {
     "node": ">=20"
