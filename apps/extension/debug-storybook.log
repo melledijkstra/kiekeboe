@@ -1,0 +1,26 @@
+[10:48:39.199] [INFO] Checking the health of your Storybook..
+[10:48:39.199] [DEBUG] Getting Storybook info...
+[10:48:39.200] [DEBUG] Loading main config...
+[10:48:39.689] [DEBUG] Getting stories paths...
+[10:48:39.701] [DEBUG] Getting package manager...
+[10:48:39.857] [DEBUG] Getting Storybook version...
+[10:48:40.435] [WARN] .storybook: 1 issue found
+[10:48:40.436] [INFO] You are currently using Storybook 9.0.15 but you have packages which are incompatible with it:
+
+- @storybook/addon-essentials@8.6.14 which depends on 8.6.14
+ Repo: https://github.com/storybookjs/storybook/tree/next/code/addons/essentials
+- @storybook/addon-interactions@8.6.14 which depends on 8.6.14
+ Repo: https://github.com/storybookjs/storybook/tree/next/code/addons/interactions
+- @storybook/addon-svelte-csf@5.0.6 which depends on ^0.1.13
+- @storybook/blocks@8.6.14 which depends on ^8.6.14
+ Repo: https://github.com/storybookjs/storybook/tree/next/code/lib/blocks
+- @storybook/test@8.6.14 which depends on 8.6.14
+ Repo: https://github.com/storybookjs/storybook/tree/next/code/lib/test
+
+Please consider updating your packages or contacting the maintainers for compatibility details.
+
+For more on Storybook 9 compatibility, see the linked GitHub issue:
+https://github.com/storybookjs/storybook/issues/30944
+[10:48:40.440] [INFO] Storybook doctor is complete!
+[10:48:40.440] [INFO] You can always recheck the health of your project(s) by running:
+npx storybook doctor

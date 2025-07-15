@@ -1,4 +1,4 @@
-import { addToast } from '@/stores/toasts.svelte';
+import { addNotification } from '@/stores/notifications.svelte';
 import {
   mdiBrain,
   mdiSearchWeb,
@@ -38,17 +38,17 @@ const defaultCommands: CommandGroups = {
           const searchUrl = `https://www.google.com/search?q=${encodedQuery}`
           window.open(searchUrl, '_blank')
         } else {
-          addToast('Please enter a search query.')
+          addNotification('Please enter a search query.')
         }
       }
     },
     {
-      name: 'Toast',
-      keywords: ['toast', 'notification'],
+      name: 'Notification',
+      keywords: ['notification'],
       icon: mdiSticker,
       action: (input?: string) => {
-        const message = input?.slice(6).trim() || 'Default toast message'
-        addToast(message)
+        const message = input?.slice(6).trim() || 'Default notification message'
+        addNotification(message, 'Notification', mdiSticker)
       }
     }
   ],
@@ -97,7 +97,7 @@ export class CommandService implements CommandServiceInterface, ILogger {
     const commandItem = this.findCommand(input)
 
     if (!commandItem) {
-      addToast('Command not recognized. Please try again.')
+      addNotification('Command not recognized. Please try again.')
       return
     }
 

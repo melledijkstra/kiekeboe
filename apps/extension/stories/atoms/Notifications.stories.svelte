@@ -1,0 +1,44 @@
+<script module lang="ts">
+  import { defineMeta } from '@storybook/addon-svelte-csf'
+  import Notification from "@/components/atoms/Notification.svelte"
+  import type { Notification as NotificationType } from "@/stores/notifications.svelte"
+  import { fn } from '@storybook/test'
+  import { mdiWifiOff } from '@mdi/js'
+
+  const notification: NotificationType = {
+    id: '1',
+    message: 'This is a notification',
+    type: 'info',
+  }
+  
+  const { Story } = defineMeta({
+    title: 'Atoms/Notifications',
+    component: Notification,
+    args: {
+      ...notification,
+      onDismiss: fn()
+    }
+  })
+</script>
+
+<Story name="Default" args={{...notification}} />
+
+<Story name="Success" args={{ message: 'Succesfully added a new task', type: 'success' }} />
+
+<Story name="Error" args={{ message: 'An error occurred while adding a new task', type: 'error' }} />
+
+<Story name="Title" args={{ title: 'Notification Title 🎉' }} />
+
+<Story name="Without Message" args={{ title: 'This is a notification', type: 'info', message: undefined }} />
+
+<Story name="Custom Icon" args={{
+  title: 'You are offline',
+  message: 'Please check your internet connection and try again.',
+  type: 'error',
+  icon: mdiWifiOff
+}} />
+
+<Story name="Long Title and Message" args={{
+  title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+}} /> 

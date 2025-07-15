@@ -6,4 +6,6 @@ dist/
 # dependencies
 node_modules/
 
-*storybook.log
+# storybook
+storybook-static/
+storybook.log

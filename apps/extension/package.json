@@ -11,7 +11,8 @@
     "test:watch": "vitest watch",
     "lint": "eslint .",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook:build": "storybook build",
+    "storybook:start": "storybook start"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^8.6.12",
