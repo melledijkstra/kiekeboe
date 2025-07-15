@@ -35,7 +35,7 @@
   <!-- Grid playground: https://play.tailwindcss.com/1AWUsAQwTi -->
   <div
     class={[
-      appState.mode === 'focus' && 'bg-zinc-700/40',
+      appState.mode === 'focus' && 'bg-black/70',
       'grid grid-rows-[minmax(0,1fr)_auto_minmax(0,1fr)] h-screen animate-fade-in transition-colors'
     ]}
   >
@@ -44,7 +44,8 @@
     <!-- MIDDLE --->
     {#key appState.mode}
       <main
-        transition:fade={{ duration: 200 }}
+        transition:fade={{ duration: 100 }}
+        style="grid-area: 2 / 1"
         class="text-center place-self-center"
       >
         {#if appState.mode === 'default'}

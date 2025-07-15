@@ -13,7 +13,9 @@
 {#snippet module(moduleId: ModuleID)}
   {#if $settingsStore.modules?.[moduleId]}
     {#await loadModule(moduleId) then Module}
-      <Module.trigger />
+      {#if Module.trigger}
+        <Module.trigger />
+      {/if}
     {/await}
   {/if}
 {/snippet}
