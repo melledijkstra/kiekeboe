@@ -23,7 +23,7 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
   abstract toggleShuffle(enabled?: boolean): Promise<void>
   
   protected trackEnded() {
-    this.stop()
+    this.stopPlaybackLoop()
   }
 
   play() {
@@ -76,6 +76,7 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
     if (this.state.playback.currentItem) {
       if (newPos >= this.state.playback?.currentItem.duration_ms) {
         this.logger.log('Track ended, resetting position.')
+        this.stopPlaybackLoop()
         this.trackEnded()
         return
       }

@@ -19,12 +19,11 @@
   onDestroy(() => {
     cancelUpdater?.()
   })
-
 </script>
 
-<div transition:fade class="text-white px-2 rounded-lg text-right">
+<div transition:fade class="text-white rounded-lg text-right">
   {#key updateKey}
-    <p class="text-lg">{renderTimezone(metric.timeZone)}</p>
+    <p class="text-base">{renderTimezone(metric.timeZone)}</p>
   {/key}
   <p class="text-xs">{metric.name}</p>
 </div>

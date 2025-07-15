@@ -90,15 +90,15 @@
 </script>
 
 {#if !!metrics.length}
-  <div class="flex flex-row gap-2">
+  <div class="flex flex-row gap-5">
     {#each metrics as metric, i (i)}
       {#if isClock(metric)}
         <Clock metric={metric} />
       {:else if isCounter(metric)}
         <Countdown metric={metric} />
       {:else}
-        <div class="text-white px-2 rounded-lg text-right">
-          <p class="text-lg">{metric.value}</p>
+        <div class="text-white rounded-lg text-right">
+          <p class="text-base">{metric.value}</p>
           <p class="text-xs">{metric.name}</p>
         </div>
       {/if}

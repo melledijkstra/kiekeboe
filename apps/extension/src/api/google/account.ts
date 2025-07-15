@@ -9,9 +9,13 @@ export type Account = {
 
 const client = new AuthClient(new GoogleAuthProvider())
 
-export async function fetchAccountInfo() {
+export async function fetchAccountInfo(): Promise<Account | undefined> {
   try {
-    const token = client.getAuthToken()
+    const token = await client.getAuthToken()
+    if (!token) {
+      return
+    }
+
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       {

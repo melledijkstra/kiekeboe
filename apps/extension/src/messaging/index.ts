@@ -1,5 +1,7 @@
-import { log } from '@/logger'
+import { Logger } from '@/logger'
 import browser from 'webextension-polyfill'
+
+const logger = new Logger('messaging')
 
 type Message = {
   identifier: string
@@ -17,19 +19,27 @@ const isMessage = (msg: unknown): msg is Message => {
 export function createMessage<Request = void, Response = void>(identifier: string) {
   return {
     async send(data: Request): Promise<Response> {
-      log('Sending message:', identifier)
+      logger.log(identifier, 'sender data:', data)
       const response = await browser.runtime.sendMessage<Message, Response>({
         identifier,
         data
       })
+      logger.log(identifier, 'sender response:', response)
       return response
     },
     on(callback: Handler<Request, Response>) {
       browser.runtime.onMessage.addListener(
-        async (message: unknown): Promise<Response | undefined> => {
+        (message, sender, sendResponse) => {
           if (isMessage(message) && message.identifier === identifier) {
-            return await callback(message?.data as Request)
+            logger.log(identifier, 'listener message received', { message, sender })
+            const promise = callback(message?.data as Request)
+            Promise.resolve(promise).then((response) => {
+              logger.log(identifier, 'listener response:', response)
+              sendResponse(response)
+            })
+            return true
           }
+          return true
         }
       )
     }

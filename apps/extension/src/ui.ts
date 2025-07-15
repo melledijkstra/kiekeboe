@@ -16,9 +16,13 @@ export async function storeUsername(name: string): Promise<void> {
   await browser.storage.sync.set({ [NAME_STORAGE_KEY]: name })
 }
 
-export function getWelcomeMessage(name: string): string {
+export async function clearUsername(): Promise<void> {
+  await browser.storage.sync.remove(NAME_STORAGE_KEY)
+}
+
+export function getMomentOfDay(): 'morning' | 'afternoon' | 'evening' {
   const hours = new Date().getHours()
-  let momentOfDay: string
+  let momentOfDay: 'morning' | 'afternoon' | 'evening'
 
   if (hours < 12) {
     momentOfDay = 'morning'
@@ -28,7 +32,7 @@ export function getWelcomeMessage(name: string): string {
     momentOfDay = 'evening'
   }
 
-  return `Good ${momentOfDay}, ${name}`
+  return momentOfDay
 }
 
 async function fetchImage(src: string): Promise<string> {

@@ -24,10 +24,12 @@
 
   const {
     provider,
+    authenticated = false,
     children,
     ...props
   }: {
-    provider: OauthProvider
+    provider: OauthProvider,
+    authenticated?: boolean
   } & HTMLButtonAttributes = $props()
 </script>
 
@@ -46,6 +48,6 @@
   {#if children}
     {@render children()}
   {:else}
-    {`Sign in with ${capitalize(provider)}`}
+    {authenticated ? `Sign out` : `Sign in with ${capitalize(provider)}`}
   {/if}
 </Button>

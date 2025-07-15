@@ -81,6 +81,36 @@ export class AuthClient {
     }
   }
 
+  async deauthenticateChrome(): Promise<boolean> {
+    const token = await this.getAuthTokenChrome(false)
+    try {
+      const response = await fetch(`https://oauth2.googleapis.com/revoke?token=${token}`, {
+        method: 'POST'
+      })
+      if (response.ok) {
+        this.logger.log('revoked token')
+      } else {
+        this.logger.error('failed to revoke token', response)
+      }
+    } catch (error) {
+      this.logger.error('failed to revoke token', error)
+    } finally {
+      await chrome.identity.clearAllCachedAuthTokens()
+      await this.removeAuthTokenFromStorage()
+    }
+    return true
+  }
+
+  async deauthenticate(): Promise<boolean> {
+    this.logger.log('deauthenticating')
+    if (this.provider.name === 'google' && typeof chrome !== 'undefined') {
+      return await this.deauthenticateChrome()
+    }
+
+    await this.removeAuthTokenFromStorage()
+    return true
+  }
+
   async getAuthTokenFromStorage(): Promise<TokenStore | undefined> {
     const { [this.storageKey]: storeToken } = (await browser.storage.local.get(
       this.storageKey
@@ -88,6 +118,10 @@ export class AuthClient {
       [key: string]: TokenStore | undefined
     }
     return storeToken
+  }
+
+  async removeAuthTokenFromStorage() {
+    await browser.storage.local.remove(this.storageKey)
   }
 
   async refreshAccessToken(

@@ -21,15 +21,16 @@
 </script>
 
 <style lang="postcss">
+  @reference '../app.css';
+  
   :root {
     --background-image: url();
   }
 
   :global {
     #curtain-image {
-      @apply h-screen w-screen overflow-x-hidden;
+      @apply bg-black h-screen w-screen overflow-x-hidden;
 
-      background-color: #000;
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;

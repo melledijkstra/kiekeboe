@@ -1,51 +1,71 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte"
-  import { getWelcomeMessage, retrieveUsername, storeUsername } from "@/ui"
+  import { getMomentOfDay, retrieveUsername, storeUsername, clearUsername } from "@/ui"
   import { repeatEvery } from "@/time/utils"
+  import { onMount } from "svelte"
 
   const MINUTE = 60 * 1000
 
-  let nameLoaded = $state(false)
   let nameInput = $state('')
-  let name = $state<string>()
-  let welcomeMessage = $state<string>()
-
+  let username = $state<string>()
+  let dayPart = $state(getMomentOfDay())
   let cancelTimer = $state<() => void>()
+  let retrieveUsernamePromise = retrieveUsername
 
-  onMount(async () => {
-    const username = await retrieveUsername()
-    if (username) {
-      name = username
-      nameLoaded = true
-      welcomeMessage = getWelcomeMessage(username)
-    }
-
+  $effect(() => {
     cancelTimer = repeatEvery(() => {
-      if (name) {
-        welcomeMessage = getWelcomeMessage(name)
+      if (username) {
+        dayPart = getMomentOfDay()
       }
     }, MINUTE)
+
+    return () => cancelTimer?.()
   })
 
-  onDestroy(() => cancelTimer?.())
+  onMount(async () => {
+    username = await retrieveUsernamePromise()
+  })
+
+  function forgetUsername() {
+    clearUsername()
+    username = undefined
+  }
 </script>
 
+{#snippet prompt()}
+  <span class="inline-block">What is your name?&nbsp;</span>
+  <span class="inline p-2 -m-2 relative">
+    <input
+      class="username-input block border-white border-b-2 absolute p-2 top-0 left-0 right-0 bottom-0"
+      name="username"
+      type="text"
+      spellcheck="false"
+      autocomplete="username"
+      bind:value={nameInput}
+      onkeypress={(event) => {
+        if (event.key === 'Enter' && nameInput) {
+          storeUsername(nameInput)
+          username = nameInput
+        }
+      }} />
+      <span class="username-input inline-block invisible min-h-[1em]">{nameInput.replace(/ /g, '\u00A0')}</span>
+  </span>
+{/snippet}
+
 <!-- make sure to render some space when loading in the welcome message to avoid flickering -->
-<h2 class="text-white text-5xl antialiased empty:min-h-12 drop-shadow-xl">
-  {#if name}
-    {welcomeMessage}
-  {:else if nameLoaded}
-      What is your name?
-      <input
-        class="outline-hidden min-w-5 max-w-max p-1 border-b-2 border-white bg-transparent"
-        name="username"
-        type="text"
-        bind:value={nameInput}
-        onkeypress={(event) => {
-          if (event.key === 'Enter' && nameInput) {
-            storeUsername(nameInput)
-            name = nameInput
-          }
-        }} />
-  {/if}
+<h2 class="text-white text-5xl antialiased empty:min-h-18 drop-shadow-xl leading-normal">
+  {#await retrieveUsernamePromise() then}
+    {#if username}
+      <span>Good {dayPart}, <button class="cursor-pointer hover:line-through" onclick={forgetUsername}>{username}</button></span>
+    {:else if !username}
+      {@render prompt()}
+    {/if}
+  {/await}
 </h2>
+
+<style lang="postcss">
+  @reference '../app.css';
+
+  .username-input {
+    @apply min-w-[10rem] max-w-[min(100%,12em)] whitespace-nowrap align-baseline outline-none leading-normal;
+  }
+</style>

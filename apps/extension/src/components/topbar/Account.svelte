@@ -1,24 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { ACCOUNT_CACHE_KEY } from '../../constants'
-  import browser from 'webextension-polyfill'
   import { fetchAccountInfo, type Account } from '@/api/google/account'
 
   let accountInfo = $state<Account>()
 
   async function getAccountInfo() {
-    const { [ACCOUNT_CACHE_KEY]: cachedAccountInfo } =
-      await browser.storage.local.get([ACCOUNT_CACHE_KEY])
+    const cachedAccountInfo = localStorage.getItem(ACCOUNT_CACHE_KEY)
 
     if (cachedAccountInfo) {
-      accountInfo = cachedAccountInfo as Account
+      accountInfo = JSON.parse(cachedAccountInfo) as Account
       return
     }
 
     const fetchedAccountInfo = await fetchAccountInfo()
+
     if (fetchedAccountInfo) {
       accountInfo = fetchedAccountInfo
-      browser.storage.local.set({ [ACCOUNT_CACHE_KEY]: fetchedAccountInfo })
+      localStorage.setItem(ACCOUNT_CACHE_KEY, JSON.stringify(fetchedAccountInfo))
     }
   }
 
@@ -27,12 +26,10 @@
   })
 </script>
 
-{#if !!accountInfo}
-  <a href="https://myaccount.google.com/" target="_blank">
-    <img
-      class="size-9 aspect-square rounded-full border-2 border-white/80"
-      src={accountInfo.picture ?? '/icons/default-account.jpg'}
-      alt={accountInfo.name}
-    />
-  </a>
-{/if}
+<a href="https://myaccount.google.com/" target="_blank">
+  <img
+    class="size-9 aspect-square rounded-full border-2 border-white/80"
+    src={accountInfo?.picture ?? '/icons/default-account.jpg'}
+    alt={accountInfo?.name ?? 'Account picture'}
+  />
+</a>

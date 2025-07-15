@@ -3,8 +3,6 @@
   import CountUp from './CountUp.svelte'
   import Input from '@/components/atoms/Input.svelte'
   import Button from '@/components/atoms/Button.svelte'
-  import { onDestroy } from 'svelte'
-  import { storeFocusSession } from '@/db/focus'
 
   type TimerMode = 'count-up' | 'pomodoro'
 
@@ -15,17 +13,6 @@
   function onMinutePassed() {
     minutesCompleted++
   }
-
-  onDestroy(() => {
-    if (minutesCompleted > 0) {
-      storeFocusSession({
-        topic: focusItem,
-        startDateTime: new Date(),
-        endDateTime: new Date(),
-        totalDuration: minutesCompleted
-      })
-    }
-  })
 </script>
 
 <div class="flex flex-col items-center space-y-4 text-white">

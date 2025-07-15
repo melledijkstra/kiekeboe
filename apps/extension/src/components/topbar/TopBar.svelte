@@ -33,6 +33,7 @@
       mdiIcon={mdiHomeOutline}
     />
     {@render module('focus')}
+    {@render module('spotify')}
     {@render module('well_being')}
     {@render module('time_tools')}
   </div>
@@ -44,7 +45,6 @@
   >
     <MetricsPanel />
     <Metrics />
-    {@render module('spotify')}
     {@render module('weather')}
     <Account />
   </div>

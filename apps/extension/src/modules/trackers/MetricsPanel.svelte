@@ -7,7 +7,6 @@
   import Countdown from '@/components/atoms/metrics/Countdown.svelte'
   import { setIsSleepMetricEnabled, trackers } from './state.svelte'
   import WorldClock from '@/components/atoms/metrics/WorldClock.svelte'
-  import IconButton from '@/components/atoms/IconButton.svelte'
   import { Popover } from 'bits-ui'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
 
@@ -34,17 +33,19 @@
   <Popover.Trigger
     class={[
       isOpen ? 'opacity-100' : 'opacity-0',
-      'group-hover:opacity-100 focus:opacity-100 transition-opacity duration-300 p-1 flex-col cursor-pointer',
-      'dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
+      'group-hover:opacity-100 focus:opacity-100 transition-opacity duration-300 flex flex-col cursor-pointer',
+      'text-center dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
       'cursor-pointer transition-colors',
     ]}
   >
-    <Icon path={mdiPlus} size={20} />
-    <span>Add</span>
+    <Icon path={mdiPlus} size={24} class="mx-auto" />
+    <span class="text-xs">Add</span>
   </Popover.Trigger>
   <PopPanel>
     {#if currentForm}
-      <IconButton class="float-left" icon={mdiArrowLeft} onclick={() => (currentForm = undefined)} />
+      <button class="float-left" onclick={() => (currentForm = undefined)}>
+        <Icon path={mdiArrowLeft} size={20} />
+      </button>
     {/if}
     {#if !currentForm}
       <p class="text-lg text-center mb-4 font-bold">Add Metric</p>

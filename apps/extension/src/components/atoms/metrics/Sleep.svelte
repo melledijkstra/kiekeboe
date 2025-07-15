@@ -28,9 +28,9 @@ import type { HTMLAttributes } from "svelte/elements"
   transition:fade
   {...props}
   class={[
-    "text-white px-2 rounded-lg text-right",
+    "text-white rounded-lg text-right",
     props.class
   ]}>
-  <p class="text-lg">{formatted}</p>
+  <p class="text-base">{formatted}</p>
   <p class="text-xs flex justify-end gap-1 items-center"><IconFitbit /> Sleep</p>
 </div>

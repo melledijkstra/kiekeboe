@@ -5,7 +5,8 @@
   import {
     GoogleAuthProvider,
     SpotifyAuthProvider,
-    FitbitAuthProvider
+    FitbitAuthProvider,
+    type OauthProvider
   } from '@/oauth2/providers'
 
   const clients = {
@@ -26,6 +27,16 @@
     authState.spotify = await clients.spotify.isAuthenticated()
     authState.fitbit = await clients.fitbit.isAuthenticated()
   }
+
+  async function authenticate(provider: OauthProvider) {
+    const token = await clients[provider].getAuthToken(true)
+    authState[provider] = !!token
+  }
+
+  async function deauthenticate(provider: OauthProvider) {
+    await clients[provider].deauthenticate()
+    authState[provider] = false
+  }
 </script>
 
 <h1 class="text-xl mb-3">Authentication</h1>
@@ -38,12 +49,9 @@
       <span class="text-gray-400">{authState.google}</span>
         <AuthButton
           class="mt-2"
-          disabled={authState.google}
+          authenticated={authState.google}
           provider="google"
-          onclick={async () => {
-            const token = await clients.google.getAuthToken(true)
-            authState.google = !!token
-          }}
+          onclick={() => authState.google ? deauthenticate('google') : authenticate('google')}
         />
     </p>
     <p class="text-sm">
@@ -51,12 +59,9 @@
       <span class="text-gray-400">{authState.spotify}</span>
       <AuthButton
         class="mt-2"
-        disabled={authState.spotify}
+        authenticated={authState.spotify}
         provider="spotify"
-        onclick={async () => {
-          const token = await clients.spotify.getAuthToken(true)
-          authState.spotify = !!token
-        }}
+        onclick={() => authState.spotify ? deauthenticate('spotify') : authenticate('spotify')}
       />
     </p>
     <p class="text-sm">
@@ -64,12 +69,9 @@
       <span class="text-gray-400">{authState.fitbit}</span>
       <AuthButton
         class="mt-2"
-        disabled={authState.fitbit}
+        authenticated={authState.fitbit}
         provider="fitbit"
-        onclick={async () => {
-          const token = await clients.fitbit.getAuthToken(true)
-          authState.fitbit = !!token
-        }}
+        onclick={() => authState.fitbit ? deauthenticate('fitbit') : authenticate('fitbit')}
       />
     </p>
   </div>
