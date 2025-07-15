@@ -2,6 +2,7 @@ name: CI
 
 env:
   CI: true
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 on:
   push:
@@ -25,3 +26,7 @@ jobs:
         run: npm run lint
       - name: Test Packages
         run: npm run test
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
