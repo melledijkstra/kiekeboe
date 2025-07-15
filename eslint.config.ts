@@ -16,7 +16,8 @@ export default ts.config([
     "**/.dist/",
     "**/coverage/",
     "apps/mobile/",
-    "apps/extension/public"
+    "apps/extension/public",
+    "**/storybook-static"
   ]),
   {
     languageOptions: {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { retrieveUsername, storeUsername, getWelcomeMessage, setBackgroundImage } from './ui'
+import { retrieveUsername, storeUsername, getMomentOfDay, setBackgroundImage } from './ui'
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants';
 
@@ -28,23 +28,23 @@ describe('ui.ts', () => {
     })
   })
 
-  describe('getWelcomeMessage', () => {
+  describe('getMomentOfDay', () => {
     it('should return a morning message if the time is before 12 PM', () => {
       vi.setSystemTime(new Date('2023-01-01T08:00:00Z'))
-      const result = getWelcomeMessage('John')
-      expect(result).toBe('Good morning, John')
+      const result = getMomentOfDay()
+      expect(result).toBe('morning')
     })
 
     it('should return an afternoon message if the time is between 12 PM and 6 PM', () => {
       vi.setSystemTime(new Date('2023-01-01T14:00:00Z'))
-      const result = getWelcomeMessage('John')
-      expect(result).toBe('Good afternoon, John')
+      const result = getMomentOfDay()
+      expect(result).toBe('afternoon')
     })
 
     it('should return an evening message if the time is after 6 PM', () => {
       vi.setSystemTime(new Date('2023-01-01T19:00:00Z'))
-      const result = getWelcomeMessage('John')
-      expect(result).toBe('Good evening, John')
+      const result = getMomentOfDay()
+      expect(result).toBe('evening')
     })
   })
 
