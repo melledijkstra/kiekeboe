@@ -48,7 +48,7 @@ const defaultCommands: CommandGroups = {
       icon: mdiSticker,
       action: (input?: string) => {
         const message = input?.slice(6).trim() || 'Default notification message'
-        addNotification(message, 'Notification', mdiSticker)
+        addNotification(message, 'Notification', mdiSticker, 'success', 5000)
       }
     }
   ],

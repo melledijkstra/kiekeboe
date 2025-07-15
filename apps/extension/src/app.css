@@ -30,6 +30,16 @@
       opacity: 1;
     }
   }
+
+  --animate-progress: progress var(--progress-duration, 3000ms) linear forwards;
+  @keyframes progress {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
 }
 
 body {

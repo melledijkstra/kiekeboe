@@ -28,7 +28,7 @@ export default ts.config([
   // Extension Configuration
   {
     files: [
-      "apps/extension/**/*.{js,ts,svelte,svelte.js,svelte.ts}",
+      "apps/extension/**/*.{ts,svelte,svelte.js,svelte.ts}",
     ],
     languageOptions: {
       globals: {

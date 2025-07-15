@@ -13,7 +13,7 @@
     onDismiss?: () => void
   }
 
-  const { message, type, title, icon, onDismiss }: NotiticationProps = $props()
+  const { message, type, title, icon, onDismiss, duration }: NotiticationProps = $props()
 
   const finalIcon = $derived.by(() => {
     if (icon) return icon
@@ -26,7 +26,7 @@
 <div
   transition:fade
   role="alert"
-  class="rounded-md border border-gray-300 bg-white p-4 shadow-sm max-w-md dark:border-gray-600 dark:bg-gray-800"
+  class="relative rounded-md border border-gray-300 bg-white p-4 shadow-sm max-w-md dark:border-gray-600 dark:bg-gray-800"
 >
   <div class="flex items-start gap-4">
     <Icon
@@ -57,5 +57,20 @@
       <span class="sr-only">Dismiss popup</span>
       <Icon path={mdiClose} size={24} />
     </button>
+
+    {#if duration}
+      <hr class={[
+        "h-1 duration-indicator border-none p-0 m-0 outline-none",
+        "absolute bottom-0 left-0",
+        type === 'success' ? 'bg-green-600' :
+        type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+      ]} style="--progress-duration: {duration}ms" />
+    {/if}
   </div>
 </div>
+
+<style>
+  .duration-indicator {
+    animation: progress var(--progress-duration, 3000ms) linear forwards;
+  }
+</style>
