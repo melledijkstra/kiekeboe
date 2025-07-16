@@ -12,7 +12,7 @@ export const MPState = $state<MusicPlayerState>({
     shuffle: false,
     position_ms: 0,
     currentItem: undefined,
-    volume: 0
+    volume: 50 // 0-100
   },
   playlists: []
 })

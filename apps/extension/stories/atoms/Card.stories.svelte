@@ -18,7 +18,7 @@
     title: 'Atoms/Card',
     component: Card,
     args: {
-      variant: 'simple'
+      variant: 'square'
     }
   })
 </script>

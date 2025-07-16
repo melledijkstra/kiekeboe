@@ -10,6 +10,12 @@ function error(...data: unknown[]) {
   }
 }
 
+function warn(...data: unknown[]) {
+  if (import.meta.env.MODE === 'development') {
+    console.warn(...data)
+  }
+}
+
 export class Logger {
   public name: string
   public disabled = false
@@ -35,6 +41,10 @@ export class Logger {
 
   error(...data: unknown[]) {
     error(`[${this.name}]`, ...data)
+  }
+
+  warn(...data: unknown[]) {
+    warn(`[${this.name}]`, ...data)
   }
 
   private generateLabel(label?: string): string {

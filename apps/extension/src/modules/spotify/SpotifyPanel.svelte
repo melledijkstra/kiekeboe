@@ -2,11 +2,12 @@
   import { onMount, onDestroy } from 'svelte'
   import { SpotifyController } from '@/controllers/SpotifyController'
   import MusicPlayer from '@/components/musicplayer/MusicPlayer.svelte'
-  import { MPState } from '@/components/musicplayer/state.svelte'
   import { spotifyState } from './spotify.state.svelte'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
+  import type { PlaybackState } from 'MusicPlayer'
 
-  const { controller }: {
+  const { playbackState, controller }: {
+    playbackState: PlaybackState
     controller: SpotifyController
   } = $props()
 
@@ -36,7 +37,7 @@
     </p>
   {:else}
     <MusicPlayer
-      state={MPState.playback}
+      state={playbackState}
       controller={controller}
       deviceId={spotifyState.deviceId}
       devices={spotifyState.devices}

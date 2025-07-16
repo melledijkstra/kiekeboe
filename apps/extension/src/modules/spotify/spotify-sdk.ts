@@ -64,7 +64,7 @@ export async function initializeSpotifyPlayer(
       }
       
       window.onSpotifyWebPlaybackSDKReady = () => {
-        logger.log('Spotify Web Playback SDK is ready, setting up player')
+        logger.log('Spotify Web Playback SDK is ready, setting up player', { initialVolume })
         const player = createPlayer(authClient, initialVolume)
         resolve(player)
       }

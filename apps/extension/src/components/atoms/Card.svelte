@@ -5,10 +5,10 @@
   type CardProps = {
     children: Snippet
     nopadding?: boolean
-    variant?: 'simple' | 'rectangular' | 'auto'
+    variant?: 'square' | 'rectangular' | 'auto'
   } & HTMLAttributes<HTMLElement>
 
-  const { children, nopadding, variant = 'simple', ...props }: CardProps = $props()
+  const { children, nopadding, variant = 'square', class: className, ...props }: CardProps = $props()
 </script>
 
 <div
@@ -17,15 +17,12 @@
     // text
     'text-black dark:text-white',
     // sizing
-    variant === 'simple' && 'aspect-square',
+    variant === 'square' && 'aspect-square',
     variant === 'rectangular' && 'aspect-2/1',
     variant === 'auto' && 'aspect-auto',
-    variant === 'simple' && 'max-w-2xs',
-    variant === 'rectangular' && 'max-w-lg',
-    variant === 'auto' && 'max-w-full',
     // spacing
     !nopadding && 'p-6',
-    props.class
+    className
   ]}
   {...props}
 >

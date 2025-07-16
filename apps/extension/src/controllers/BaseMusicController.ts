@@ -17,7 +17,6 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
   abstract next(): void
   abstract previous(): void
   abstract initialize?(): Promise<void>
-  abstract setVolume(volume: number): void
   abstract activateDevice?(deviceId: string): void
   abstract getPlaybackState(): Promise<PlaybackState>
   abstract toggleShuffle(enabled?: boolean): Promise<void>
@@ -98,5 +97,9 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
     }
 
     this.state.playback.position_ms = position
+  }
+
+  async setVolume(volume: number): Promise<void> {
+    this.state.playback.volume = volume
   }
 }

@@ -8,7 +8,7 @@ import { SpotifyAuthProvider } from "@/oauth2/providers";
 import type { Album, PlaybackState, Playlist, Track } from "MusicPlayer";
 import type { ILogger } from "@/interfaces/logger.interface";
 import { MemoryCache, MIN_5 } from "@/cache/memory";
-import { convertApiPlayerState, convertPlayerState, convertSpotifyPlaylist, convertSpotifyTrackToMPTrack } from "@/transforms/spotify";
+import { convertApiPlaybackState, convertPlayerState, convertSpotifyPlaylist, convertSpotifyTrackToMPTrack } from "@/transforms/spotify";
 import { BaseMusicController } from "./BaseMusicController";
 
 export class SpotifyController extends BaseMusicController implements ILogger {
@@ -21,7 +21,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
 
   private initialized: boolean = false;
   public isPlayerActive: boolean = false;
-  protected hasLock: boolean = false;
+  static hasLock: boolean = false;
 
   async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
     const tracks = await this.api.getPlaylistItems(playlist.id)
@@ -64,9 +64,8 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       return;
     }
 
-    this.hasLock = acquireTabLock();
-
-    if (this.hasLock) {
+    if (acquireTabLock()) {
+      SpotifyController.hasLock = true;
       await this.initializeSpotifyPlayer(this.authClient)
     }
 
@@ -84,7 +83,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
   }
 
   hasLockAcquired(): boolean {
-    return lockExists() && this.initialized && this.hasLock;
+    return lockExists() && SpotifyController.hasLock;
   }
 
   private async retrieveDevices(): Promise<void> {
@@ -94,8 +93,9 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     }
   }
 
-  private async initializeSpotifyPlayer(authClient: AuthClient) {
-    this.player = await initializeSpotifyPlayer(authClient)
+private async initializeSpotifyPlayer(authClient: AuthClient) {
+    const initVolume = this.state.playback.volume / 100; // Spotify SDK expects a value between 0 and 1
+    this.player = await initializeSpotifyPlayer(authClient, initVolume)
 
     this.player.addListener('ready', async ({ device_id }) => {
       this.logger.log(`Ready with Device ID: %c${device_id}`, 'font-style: italic; color: lightgreen;')
@@ -133,7 +133,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
 
     this.logger.log('playerStateChanged: Playback state changed', state);
 
-    this.state.playback = convertPlayerState(state);
+    this.state.playback = convertPlayerState(state, this.state.playback);
 
     if (!state.paused) {
       this.setupPlaybackLoop(state.position);
@@ -148,6 +148,9 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       this.logger.log(`Playback device transferred to ${deviceIdToActivate}`);
       if (spotifyState.deviceId === deviceIdToActivate) {
         this.isPlayerActive = true;
+      } else {
+        this.isPlayerActive = false;
+        this.syncState()
       }
       spotifyState.devices = spotifyState.devices.map(device => ({
         ...device,
@@ -158,7 +161,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
 
   async playItem(mediaItem: Playlist | Album | Track) {
     this.logger.log('Playing item:', mediaItem.title, mediaItem)
-    this.api.play(mediaItem.uri);
+    this.api.play(mediaItem.uri)
   }
 
   async play() {
@@ -200,7 +203,13 @@ export class SpotifyController extends BaseMusicController implements ILogger {
   }
 
   async setVolume(volume: number) {
-    await this.player?.setVolume(volume)
+    this.logger.log('Setting volume', volume)
+    if (this.isPlayerActive) {
+      await this.player?.setVolume(volume / 100)
+    } else {
+      await this.api.setVolume(volume)
+    }
+    super.setVolume(volume)
   }
 
   async seek(position: number) {
@@ -227,7 +236,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     if (this.isPlayerActive && this.player) {
       const playbackState = await this.player.getCurrentState()
       if (playbackState) {
-        return convertPlayerState(playbackState)
+        return convertPlayerState(playbackState, this.state.playback)
       }
     }
 
@@ -235,27 +244,24 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     const playbackState = await this.api?.getPlaybackState()
     if (playbackState) {
       this.logger.log('Playback state retrieved from Web API', playbackState);
-      return convertApiPlayerState(playbackState)
+      return convertApiPlaybackState(playbackState)
     } else {
-      this.logger.log('No playback state available from Web API');
-      return {
-        isPlaying: false,
-        volume: 0,
-        position_ms: 0,
-        shuffle: false,
-        currentItem: undefined
-      }
+      throw new Error('No playback state available from Web API');
     }
   }
 
   async syncState() {
     this.logger.log('Syncing Spotify state');
-    const playbackState = await this.getPlaybackState();
-    this.state.playback = playbackState;
-    if (playbackState.isPlaying) {
-      this.setupPlaybackLoop();
-    } else {
-      this.cancelPlaybackLoop?.();
+    try {
+      const playbackState = await this.getPlaybackState();
+      this.state.playback = playbackState;
+      if (playbackState.isPlaying) {
+        this.setupPlaybackLoop();
+      } else {
+        this.cancelPlaybackLoop?.();
+      }
+    } catch(error) {
+      this.logger.warn('Failed to sync Spotify state', error);
     }
   }
 

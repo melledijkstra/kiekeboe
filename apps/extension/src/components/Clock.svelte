@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import { repeatEvery, getTime, getTimePercentage } from '@/time/utils'
-  import { exampleAttachment } from '@/attachments/example'
 
   const ONE_MINUTE = 60 * 1000 // in ms
 
@@ -53,6 +52,5 @@
 <button
   onclick={toggleMode}
   class="empty:min-h-32 time text-white text-10xl antialiased drop-shadow-xl cursor-pointer"
-  {@attach exampleAttachment}
   >{time}</button
 >

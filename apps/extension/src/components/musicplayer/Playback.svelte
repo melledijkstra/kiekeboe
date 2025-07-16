@@ -147,6 +147,8 @@
           orientation="horizontal"
           value={state?.volume}
           onValueCommit={(value) => onVolumeChange?.(value)}
+          min={0}
+          step={1}
           max={100}
           class="relative flex w-full touch-none select-none items-center cursor-pointer group/volume"
         >

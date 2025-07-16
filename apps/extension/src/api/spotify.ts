@@ -191,4 +191,11 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
       method: 'PUT'
     })
   }
+
+  async setVolume(volume: number) {
+    await this.retrieveAccessToken()
+    await this.request(`/me/player/volume?volume_percent=${volume}`, {
+      method: 'PUT'
+    })
+  }
 }

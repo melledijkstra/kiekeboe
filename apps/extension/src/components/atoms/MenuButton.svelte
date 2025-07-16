@@ -1,28 +1,32 @@
 <script lang="ts">
   import { Tooltip } from "bits-ui";
   import Icon from "./Icon.svelte"
+  import type { HTMLButtonAttributes } from "svelte/elements"
 
   type MenuButtonProps = {
     mdiIcon: string;
     tooltip?: string;
-    onclick?: () => void;
-    class?: string | string[];
-  };
+    tooltipClass?: string | string[];
+  } & HTMLButtonAttributes;
 
-  const { mdiIcon, tooltip, onclick, ...props }: MenuButtonProps = $props();
+  const { mdiIcon, tooltip, ...props }: MenuButtonProps = $props();
 </script>
  
 <Tooltip.Provider>
   <Tooltip.Root delayDuration={0}>
     <Tooltip.Trigger
       class={[
-        props.class,
         'text-white/70 hover:text-white',
         'block cursor-pointer transition-colors',
+        props.class,
       ]}
       disabled={!tooltip}
-      onclick={onclick}>
-      <Icon path={mdiIcon} size={36} />
+    >
+      {#snippet child({ props: childProps })}
+        <button {...props} {...childProps}>
+          <Icon path={mdiIcon} size={36} />
+        </button>
+      {/snippet}
     </Tooltip.Trigger>
     <Tooltip.Content sideOffset={4}>
       <!-- putting "text-black" in order for arrow to pick it up the color and look the same as content -->

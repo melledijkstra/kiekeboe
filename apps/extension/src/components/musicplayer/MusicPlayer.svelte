@@ -67,6 +67,7 @@
     onPlayPause={playPause}
     onNextTrack={() => controller.next()}
     onSeek={(pos) => controller.seek(pos)}
+    onVolumeChange={(volume) => controller.setVolume(volume)}
   />
   <Devices
     class="col-span-2"

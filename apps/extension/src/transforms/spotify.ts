@@ -47,12 +47,11 @@ export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => (
   uri: playlist.uri,
   title: playlist.name,
   description: playlist.description || '',
-  tracks: [],
   coverArtUrl: playlist.images[0]?.url || '',
   type: 'playlist'
 })
 
-export const convertApiPlayerState = (state: ApiPlaybackState): PlaybackState => {
+export const convertApiPlaybackState = (state: ApiPlaybackState): PlaybackState => {
   const track = state.item
   const device = state.device
   return {
@@ -64,16 +63,16 @@ export const convertApiPlayerState = (state: ApiPlaybackState): PlaybackState =>
   }
 }
 
-export const convertPlayerState = (state: Spotify.PlaybackState): PlaybackState => {
+export const convertPlayerState = (state: Spotify.PlaybackState, currentState?: PlaybackState): PlaybackState => {
   const currentTrack = state.track_window.current_track;
   const album = currentTrack.album;
   const artists = currentTrack.artists;
   const mainArtist = artists[0];
   return {
     isPlaying: !state.paused,
-    volume: 0,
     position_ms: state.position,
-    shuffle: false,
+    volume: currentState?.volume ?? 0,
+    shuffle: currentState?.shuffle ?? false,
     currentItem: {
       id: currentTrack.uri,
       uri: currentTrack.uri,

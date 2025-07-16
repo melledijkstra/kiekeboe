@@ -1,18 +1,20 @@
 const LOCK_KEY = 'spotify-tab-lock';
 
+const storage = localStorage;
+
 export function acquireTabLock(): boolean {
-  const existing = localStorage.getItem(LOCK_KEY)
+  const existing = storage.getItem(LOCK_KEY)
   if (!existing) {
-    localStorage.setItem(LOCK_KEY, Date.now().toString());
+    storage.setItem(LOCK_KEY, Date.now().toString());
     return true;
   }
   return false;
 }
 
 export function lockExists(): boolean {
-  return localStorage.getItem(LOCK_KEY) !== null;
+  return storage.getItem(LOCK_KEY) !== null;
 }
 
 export function releaseTabLock(): void {
-  localStorage.removeItem(LOCK_KEY);
+  storage.removeItem(LOCK_KEY);
 }
