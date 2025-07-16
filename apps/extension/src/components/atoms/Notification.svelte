@@ -69,7 +69,9 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
+  @reference '../../app.css';
+
   .duration-indicator {
     animation: progress var(--progress-duration, 3000ms) linear forwards;
   }
