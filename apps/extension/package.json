@@ -22,7 +22,7 @@
     "@storybook/svelte": "^8.6.12",
     "@storybook/svelte-vite": "^8.6.12",
     "@storybook/test": "^8.6.12",
-    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "@sveltejs/vite-plugin-svelte": "^6.1.0",
     "@tailwindcss/vite": "^4.1.11",
     "@tsconfig/svelte": "^5.0.4",
     "@types/chrome": "^0.1.0",
