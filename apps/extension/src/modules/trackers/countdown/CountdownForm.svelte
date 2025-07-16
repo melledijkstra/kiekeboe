@@ -2,7 +2,6 @@
   import {
     mdiCalendarOutline
   } from '@mdi/js'
-  import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/atoms/IconButton.svelte'
   import Form from './Form.svelte'
 
@@ -15,9 +14,8 @@
   }
 </script>
 
-<div class="relative {props.class}" use:clickOutside={() => (open = false)}>
+<div class="relative {props.class}">
   <IconButton
-    tooltip={!open ? 'Countdown' : ''}
     onclick={toggleDisplay}
     icon={mdiCalendarOutline}
   />

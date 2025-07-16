@@ -1,6 +1,5 @@
 <script lang="ts">
   import { mdiWebClock } from '@mdi/js'
-  import { clickOutside } from '@/actions/click-outside'
   import IconButton from '@/components/atoms/IconButton.svelte'
   import Form from './Form.svelte'
 
@@ -15,9 +14,8 @@
   }
 </script>
 
-<div class="relative" use:clickOutside={() => (open = false)}>
+<div class="relative">
   <IconButton
-    tooltip={!open ? 'Clocks' : ''}
     onclick={toggleDisplay}
     icon={mdiWebClock}
   />
