@@ -51,6 +51,6 @@
 
 <button
   onclick={toggleMode}
-  class="empty:min-h-32 time text-white text-10xl antialiased drop-shadow-xl cursor-pointer"
+  class="empty:min-h-32 time text-white text-10xl antialiased text-shadow-lg/30 cursor-pointer"
   >{time}</button
 >

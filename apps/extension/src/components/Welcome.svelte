@@ -52,10 +52,10 @@
 {/snippet}
 
 <!-- make sure to render some space when loading in the welcome message to avoid flickering -->
-<h2 class="text-white text-5xl antialiased empty:min-h-18 drop-shadow-xl leading-normal">
+<h2 class="text-white text-5xl antialiased empty:min-h-18 text-shadow-lg/30 leading-normal">
   {#await retrieveUsernamePromise() then}
     {#if username}
-      <span>Good {dayPart}, <button class="cursor-pointer hover:line-through" onclick={forgetUsername}>{username}</button></span>
+      <span>Good {dayPart}, <button class="cursor-pointer hover:line-through text-shadow-lg/30" onclick={forgetUsername}>{username}</button></span>
     {:else if !username}
       {@render prompt()}
     {/if}
@@ -66,6 +66,6 @@
   @reference '../app.css';
 
   .username-input {
-    @apply min-w-[10rem] max-w-[min(100%,12em)] whitespace-nowrap align-baseline outline-none leading-normal;
+    @apply min-w-[10rem] max-w-[min(100%,12em)] text-shadow-lg/30 whitespace-nowrap align-baseline outline-none leading-normal;
   }
 </style>

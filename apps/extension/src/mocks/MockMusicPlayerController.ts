@@ -9,7 +9,7 @@ export class MockMusicPlayerController extends BaseMusicController {
     super(state)
   }
   
-  hasLockAcquired(): boolean {
+  hasTabLockAcquired(): boolean {
     return true;
   }
 

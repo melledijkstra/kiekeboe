@@ -1,6 +1,6 @@
 <script lang="ts">
   import Devices from './Devices.svelte'
-  import TrackFeedback from './Playback.svelte'
+  import Playback from './Playback.svelte'
   import Playlists from './Playlists.svelte'
   import type { MusicPlayerInterface, Playlist, PlaybackState, Track } from 'MusicPlayer'
   import type { Device } from 'SpotifyApi'
@@ -60,7 +60,7 @@
       />
     {/await}
   </ScrollArea>
-  <TrackFeedback
+  <Playback
     class="col-span-2"
     playbackState={MPState}
     onPreviousTrack={() => controller.previous()}

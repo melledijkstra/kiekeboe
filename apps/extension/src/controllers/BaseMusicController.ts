@@ -11,7 +11,6 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
   protected cancelPlaybackLoop?: () => void
   
   abstract playItem(item: Track | Playlist | Album): Promise<void>;
-  abstract hasLockAcquired(): boolean
   abstract getPlaylistItems(playlist: Playlist): Promise<Track[]>
   abstract getPlaylists(): Promise<Playlist[]>
   abstract next(): void

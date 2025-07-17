@@ -5,11 +5,16 @@
   import { spotifyState } from './spotify.state.svelte'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
   import type { PlaybackState } from 'MusicPlayer'
+  import AuthButton from '@/components/AuthButton.svelte'
+  import { hasTabLockAcquired } from '@/lock'
 
   const { playbackState, controller }: {
     playbackState: PlaybackState
     controller: SpotifyController
   } = $props()
+
+  let isAuthenticated = $state(false)
+  let hasTabLock = $state(false)
 
   function cleanup() {
     controller?.destroy()
@@ -20,8 +25,18 @@
     window.addEventListener('beforeunload', cleanup)
 
     await controller.initialize()
+    hasTabLock = await hasTabLockAcquired()
+    isAuthenticated = await controller.auth.isAuthenticated()
     controller.syncState()
   })
+
+  async function authenticate() {
+    const token = await controller.auth.getAuthToken(true)
+    isAuthenticated = !!token
+    if (isAuthenticated) {
+      controller.syncState()
+    }
+  }
 
   onDestroy(cleanup)
 </script>
@@ -30,17 +45,26 @@
   size: 'large',
   nopadding: true
 }} class="flex flex-col">
-  {#if !controller.hasLockAcquired()}
-    <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
-    <p class="text-center text-sm">
-      If you want to use the player here, close the other tab or reload this one.
-    </p>
+  {#if !hasTabLock}
+    <div class="flex flex-col gap-4 items-center justify-center h-full">
+      <p class="text-center text-lg">The Spotify Music Player is already initialized in another tab</p>
+      <p class="text-center text-sm">
+        If you want to use the player here, close the other tab or reload this one.
+      </p>
+    </div>
   {:else}
-    <MusicPlayer
-      state={playbackState}
-      controller={controller}
-      deviceId={spotifyState.deviceId}
-      devices={spotifyState.devices}
-    />
+    {#if !isAuthenticated}
+      <div class="flex flex-col gap-4 items-center justify-center h-full">
+        <p class="text-center text-lg">You are not authenticated with Spotify</p>
+        <AuthButton provider="spotify" onclick={authenticate} />
+      </div>
+    {:else}
+      <MusicPlayer
+        state={playbackState}
+        controller={controller}
+        deviceId={spotifyState.deviceId}
+        devices={spotifyState.devices}
+      />
+    {/if}
   {/if}
 </PopPanel>

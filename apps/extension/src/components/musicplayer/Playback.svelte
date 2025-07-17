@@ -8,7 +8,12 @@
     mdiShuffleVariant,
     mdiSkipNext,
     mdiSkipPrevious,
-    mdiVolumeMedium
+    mdiVolumeHigh,
+    mdiVolumeLow,
+    mdiVolumeMedium,
+
+    mdiVolumeOff
+
   } from '@mdi/js'
   import Icon from '../atoms/Icon.svelte'
   import { millisecondsToTime } from '@/time/utils'
@@ -17,7 +22,7 @@
   import { Slider } from 'bits-ui'
   
   type PlaybackProps = {
-    playbackState?: PlaybackState
+    playbackState: PlaybackState
     onToggleShuffle?: (shuffle: boolean) => void
     onPreviousTrack?: () => void
     onPlayPause?: () => void
@@ -60,6 +65,20 @@
   // let timeLeft = $derived<string>(millisecondsToTime(remaining))
   let duration = $derived(mediaItem?.duration_ms ? millisecondsToTime(mediaItem.duration_ms) : 0)
   let currentTime = $derived<string>(millisecondsToTime(position_ms))
+
+  let volumeIcon = $derived.by(() => {
+    if (state.volume === 0) {
+      return mdiVolumeOff
+    } else if (state.volume < 15) {
+      return mdiVolumeLow
+    } else if (state.volume < 55) {
+      return mdiVolumeMedium
+    } else {
+      return mdiVolumeHigh
+    }
+  })
+
+  $inspect(state.volume)
 </script>
 
 <div class={["text-white", props.class]}>
@@ -98,7 +117,7 @@
         alt={mediaItem?.title ?? 'Track cover'}
       />
       <div class="flex flex-col ml-2 justify-center overflow-hidden">
-        <strong class="truncate text-sm max-w-2xs">{mediaItem?.title ?? 'No item playing'}</strong>
+        <strong class="truncate text-sm">{mediaItem?.title ?? 'No item playing'}</strong>
         <p class="truncate text-xs">
           {mediaItem?.artist.name ?? '-'}
         </p>
@@ -136,16 +155,16 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-row gap-3 justify-evenly">
-      <!-- Time Indication -->
-      <span class="justify-self-end text-sm text-nowrap">{currentTime} / {duration}</span>
+    <div class="flex flex-row justify-evenly">
+      <!-- Time Indication (set specific width to avoid layout shift) -->
+      <span class="w-[5em] text-sm text-nowrap">{currentTime} / {duration}</span>
       <!-- Volume Control -->
-      <div class="flex flex-row items-center gap-2 w-[100px]">
-        <Icon path={mdiVolumeMedium} size={20} />
+      <div class="flex flex-row items-center gap-2 w-[110px]">
+        <Icon path={volumeIcon} size={20} />
         <Slider.Root
           type="single"
           orientation="horizontal"
-          value={state?.volume}
+          bind:value={state.volume}
           onValueCommit={(value) => onVolumeChange?.(value)}
           min={0}
           step={1}
@@ -153,9 +172,11 @@
           class="relative flex w-full touch-none select-none items-center cursor-pointer group/volume"
         >
           <span
-            class="bg-white/50 relative w-full h-1 grow overflow-hidden rounded"
+            class="relative w-full h-1 grow overflow-hidden rounded antialiased"
           >
-            <Slider.Range class="bg-white absolute h-full" />
+            <span class="absolute h-full w-full bg-white rounded"></span>
+            <span class="absolute h-full bg-gray-500 rounded" style="left: 0%; right: {100 - state.volume}%;"></span>
+            <Slider.Range />
           </span>
           <Slider.Thumb
             index={0}

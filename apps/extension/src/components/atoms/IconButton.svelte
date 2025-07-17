@@ -1,14 +1,13 @@
 <script lang="ts">
   import type { ClassValue, HTMLButtonAttributes } from 'svelte/elements'
   import Icon from './Icon.svelte'
-  import type { Snippet } from 'svelte'
 
   type IconButtonProps = {
     icon: string;
-    children?: Snippet;
+    size?: number;
   } & HTMLButtonAttributes;
 
-  const { icon, children, ...props }: IconButtonProps = $props()
+  const { icon, size = 36, ...props }: IconButtonProps = $props()
 
   function hasColorClass(classProp: ClassValue | null | undefined): boolean {
     if (typeof classProp === 'string') {
@@ -32,6 +31,5 @@
     'block cursor-pointer transition-colors',
   ]}
 >
-  <Icon path={icon} size={!children ? 36 : 20} />
-  {@render children?.()}
+  <Icon path={icon} size={size} />
 </button>

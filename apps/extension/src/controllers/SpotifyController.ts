@@ -1,5 +1,5 @@
 import { SpotifyApiClient } from "@/api/spotify";
-import { acquireTabLock, lockExists, releaseTabLock } from "@/lock";
+import { acquireTabLock, releaseTabLock } from "@/lock";
 import { Logger } from "@/logger";
 import { initializeSpotifyPlayer } from "@/modules/spotify/spotify-sdk";
 import { spotifyState } from "@/modules/spotify/spotify.state.svelte";
@@ -21,7 +21,10 @@ export class SpotifyController extends BaseMusicController implements ILogger {
 
   private initialized: boolean = false;
   public isPlayerActive: boolean = false;
-  static hasLock: boolean = false;
+
+  get auth(): AuthClient {
+    return this.authClient
+  }
 
   async getPlaylistItems(playlist: Playlist): Promise<Track[]> {
     const tracks = await this.api.getPlaylistItems(playlist.id)
@@ -64,26 +67,22 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       return;
     }
 
-    if (acquireTabLock()) {
-      SpotifyController.hasLock = true;
+    if (await acquireTabLock()) {
+      this.logger.log('Acquired tab lock');
       await this.initializeSpotifyPlayer(this.authClient)
     }
 
     this.initialized = true;
   }
 
-  destroy() {
+  async destroy() {
     super.destroy()
-    releaseTabLock()
+    await releaseTabLock()
 
     if (this.player) {
       this.player.disconnect()
       delete this.player
     }
-  }
-
-  hasLockAcquired(): boolean {
-    return lockExists() && SpotifyController.hasLock;
   }
 
   private async retrieveDevices(): Promise<void> {

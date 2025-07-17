@@ -41,7 +41,6 @@ declare module 'MusicPlayer' {
     state: {
       playback: PlaybackState
     };
-    hasLockAcquired(): boolean;
     getPlaylistItems(playlist: Playlist): Promise<Track[]>;
     playItem(item: Track | Playlist | Album): void;
     getPlaylists(): Promise<Playlist[]>;

@@ -49,6 +49,7 @@
 </script>
 
 <IconButton
+  size={25}
   disabled={!$settingsStore.loaded}
   onclick={refreshBackround}
   icon={mdiCameraRetakeOutline}
