@@ -1,8 +1,5 @@
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants'
-import { Logger } from '@/logger'
-
-const logger = new Logger('ui')
 
 export async function retrieveUsername(): Promise<string | undefined> {
   const { [NAME_STORAGE_KEY]: name } = (await browser.storage.sync.get(
@@ -35,32 +32,3 @@ export function getMomentOfDay(): 'morning' | 'afternoon' | 'evening' {
   return momentOfDay
 }
 
-async function fetchImage(src: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const image = new Image()
-    image.onload = () => {
-      resolve(image.src)
-    }
-    image.onerror = (err) => {
-      logger.error('Failed to load image', err)
-      reject(err)
-    }
-    image.src = src
-  });
-}
-
-function setSrc(src: string) {
-  const elem = document.querySelector(':root') as HTMLElement
-
-  if (!elem) {
-    logger.error('Root element not found for setting background image')
-    return
-  }
-
-  elem.style.setProperty('--background-image', `url(${src})`)
-}
-
-export async function setBackgroundImage(url: string) {
-  const src = await fetchImage(url)
-  setSrc(src)
-}

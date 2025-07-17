@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UnsplashClient } from '@/api/unsplash'
-  import { setBackgroundImage } from '@/ui'
+  import { setBackgroundImage } from '@/stores/background.svelte'
   import IconButton from './atoms/IconButton.svelte'
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { settingsStore } from '@/settings/index.svelte'

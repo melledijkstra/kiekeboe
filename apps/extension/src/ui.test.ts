@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { retrieveUsername, storeUsername, getMomentOfDay, setBackgroundImage } from './ui'
+import { retrieveUsername, storeUsername, getMomentOfDay } from './ui'
+import { setBackgroundImage, backgroundImage } from './stores/background.svelte'
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants';
 
@@ -72,22 +73,19 @@ describe('ui.ts', () => {
 
     afterEach(() => {
       globalThis.Image = originalImage;
-      document.documentElement.style.removeProperty('--background-image');
       vi.unstubAllGlobals();
     })
 
     it('should set the background image', async () => {
       // setup
       const mockUrl = 'https://example.com/image.jpg'
-      const mockRootElement = document.createElement('div')
-      mockRootElement.style.setProperty = vi.fn()
-      document.querySelector = vi.fn().mockReturnValue(mockRootElement)
+      let result: string | undefined
+      const unsub = backgroundImage.subscribe((v) => (result = v))
 
-      // act
       await setBackgroundImage(mockUrl)
 
-      // assert
-      expect(mockRootElement.style.setProperty).toHaveBeenCalledWith('--background-image', `url(${mockUrl})`)
+      expect(result).toBe(mockUrl)
+      unsub()
     })
   })
 })
