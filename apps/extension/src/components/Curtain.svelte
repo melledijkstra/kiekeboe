@@ -16,10 +16,6 @@
   })
 </script>
 
-<style lang="postcss">
-  @reference '../app.css';
-</style>
-
 <div
   class="fixed h-screen w-screen bg-black transition-opacity duration-300 top-0 left-0 -z-10 {loaded
     ? 'opacity-20'

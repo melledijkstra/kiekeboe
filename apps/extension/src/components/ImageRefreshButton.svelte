@@ -5,6 +5,7 @@
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { settingsStore } from '@/settings/index.svelte'
   import { log } from '@/logger'
+  import { onMount } from 'svelte'
 
   let unsplashClient = $state<UnsplashClient>(
     new UnsplashClient(
@@ -24,27 +25,35 @@
   }
 
   $effect(() => {
-    log('ImageRefreshButton effect triggered', {
-      serverlessHost,
-      unsplashHost: unsplashClient?.host
-    })
-
     if (!!serverlessHost && serverlessHost !== unsplashClient?.host) {
       unsplashClient.setHost(serverlessHost)
     }
   })
 
-  $effect(() => {
-    log('query changed', {
-      dailyImageQuery,
-      unsplashQuery: unsplashClient.query
+  onMount(() => {
+    settingsStore.subscribe((settings) => {
+      log('settings changed', {
+        serverlessHost: settings.network.serverlessHost,
+        unsplashHost: unsplashClient?.host,
+        dailyImageQuery: settings.ui.dailyImageQuery,
+        unsplashQuery: unsplashClient.query
+      })
+      if (!!serverlessHost && serverlessHost !== unsplashClient?.host) {
+        log('serverlessHost changed', {
+          serverlessHost,
+          unsplashHost: unsplashClient?.host
+        })
+        unsplashClient.setHost(settings.network.serverlessHost)
+      }
+      if (dailyImageQuery !== unsplashClient.query) {
+        log('query changed', {
+          dailyImageQuery,
+          unsplashQuery: unsplashClient.query
+        })
+        unsplashClient.query = settings.ui.dailyImageQuery
+        unsplashClient.clearNextImage()
+      }
     })
-
-    if (dailyImageQuery !== unsplashClient.query) {
-      unsplashClient.query = dailyImageQuery
-      // if query changes we need to clean cached images
-      unsplashClient.clearNextImage()
-    }
   })
 </script>
 
