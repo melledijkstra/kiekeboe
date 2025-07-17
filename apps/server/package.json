@@ -3,26 +3,28 @@
   "version": "0.0.1",
   "description": "Server for the Odysea ecosystem",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "src/main.ts",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/main.ts",
+    "dev": "tsx watch src/main.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "migrate": "tsx scripts/migrate --knexfile ./knexfile.ts migrate:latest"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "dotenv": "^17.0.1",
-    "express": "^5.1.0",
     "knex": "^3.1.0",
     "sqlite3": "^5.1.7",
     "tsx": "^4.19.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "@nestjs/common": "^10.3.12",
+    "@nestjs/core": "^10.3.12",
+    "@nestjs/platform-express": "^10.3.12",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1"
+    "@nestjs/testing": "^10.3.12"
   }
 }
