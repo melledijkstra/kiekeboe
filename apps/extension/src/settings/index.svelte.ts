@@ -42,7 +42,8 @@ export const DEFAULT_SETTINGS: SettingsState = {
   },
   modules: DEFAULT_MODULE_SETTINGS,
   ui: {
-    showCurrentTask: false
+    showCurrentTask: false,
+    dailyImageQuery: 'landscape'
   }
 }
 
