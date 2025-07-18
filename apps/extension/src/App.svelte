@@ -14,6 +14,7 @@
   import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
   import { log } from './logger'
   import SettingsMenuItem from './settings/SettingsMenuItem.svelte'
+  import { clearUsername, retrieveUsername, storeUsername } from './browser'
 
   let currentTask = $derived(
     $tasks.find((task) => task.status === 'needsAction')
@@ -21,7 +22,25 @@
 
   onMount(async () => {
     log('App mounted')
+    const username = await retrieveUsername()
+    if (username) {
+      appState.user = {
+        name: username
+      }
+    }
   })
+
+  function onUsernameChange(name: string) {
+    storeUsername(name)
+    appState.user = {
+      name
+    }
+  }
+
+  function onClearUsername() {
+    clearUsername()
+    appState.user = undefined
+  }
 </script>
 
 <svelte:head>
@@ -53,7 +72,12 @@
         >
           {#if appState.mode === 'default'}
             <Clock />
-            <Welcome />
+            {#if appState.user?.name}
+              <Welcome
+                user={appState.user}
+                onUsernameChange={onUsernameChange}
+                onClearUsername={onClearUsername} />
+            {/if}
             <div class="mt-4 text-lg empty:h-7">
               {#if $settingsStore.ui.showCurrentTask && currentTask}
                 <input type="checkbox" class="scale-150 text-white mr-1" disabled />

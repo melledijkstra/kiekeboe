@@ -1,34 +1,29 @@
 <script lang="ts">
-  import { getMomentOfDay, retrieveUsername, storeUsername, clearUsername } from "@/ui"
+  import { getMomentOfDay } from "@/ui"
   import { repeatEvery } from "@/time/utils"
-  import { onMount } from "svelte"
+  import { type User } from "@/app-state.svelte"
+
+  type WelcomeProps = {
+    user: User
+    onUsernameChange: (name: string) => void
+    onClearUsername: () => void
+  }
+
+  const { user, onUsernameChange, onClearUsername }: WelcomeProps = $props()
 
   const MINUTE = 60 * 1000
 
   let nameInput = $state('')
-  let username = $state<string>()
   let dayPart = $state(getMomentOfDay())
   let cancelTimer = $state<() => void>()
-  let retrieveUsernamePromise = retrieveUsername
 
   $effect(() => {
     cancelTimer = repeatEvery(() => {
-      if (username) {
-        dayPart = getMomentOfDay()
-      }
+      dayPart = getMomentOfDay()
     }, MINUTE)
 
     return () => cancelTimer?.()
   })
-
-  onMount(async () => {
-    username = await retrieveUsernamePromise()
-  })
-
-  function forgetUsername() {
-    clearUsername()
-    username = undefined
-  }
 </script>
 
 {#snippet prompt()}
@@ -43,8 +38,7 @@
       bind:value={nameInput}
       onkeypress={(event) => {
         if (event.key === 'Enter' && nameInput) {
-          storeUsername(nameInput)
-          username = nameInput
+          onUsernameChange(nameInput)
         }
       }} />
       <span class="username-input inline-block invisible min-h-[1em]">{nameInput.replace(/ /g, '\u00A0')}</span>
@@ -52,14 +46,16 @@
 {/snippet}
 
 <!-- make sure to render some space when loading in the welcome message to avoid flickering -->
-<h2 class="text-white text-5xl antialiased empty:min-h-18 text-shadow-lg/30 leading-normal">
-  {#await retrieveUsernamePromise() then}
-    {#if username}
-      <span>Good {dayPart}, <button class="cursor-pointer hover:line-through text-shadow-lg/30" onclick={forgetUsername}>{username}</button></span>
-    {:else if !username}
-      {@render prompt()}
-    {/if}
-  {/await}
+<h2 class={[
+  "text-white text-5xl antialiased empty:min-h-18 text-shadow-lg/30 leading-normal",
+  // creates a shadow behind the text
+  'relative before:absolute before:inset-[-0.05em] before:bg-black/10 before:blur-xl before:rounded-lg before:z-[-1]'
+]}>
+  {#if user?.name}
+    <span>Good {dayPart}, <button class="cursor-pointer hover:line-through text-shadow-lg/30" onclick={onClearUsername}>{user.name}</button></span>
+  {:else}
+    {@render prompt()}
+  {/if}
 </h2>
 
 <style lang="postcss">

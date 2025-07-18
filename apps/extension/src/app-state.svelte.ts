@@ -7,8 +7,13 @@ export const appModes = ['default', 'breathing', 'focus'] as const
 
 export type AppMode = (typeof appModes)[number]
 
+export type User = {
+  name: string
+}
+
 export type AppState = {
   mode: AppMode
+  user?: User
   title: string
   weather?: WeatherInfo
   geolocation?: LocationInfo
@@ -16,7 +21,7 @@ export type AppState = {
 
 export const appState = $state<AppState>({
   mode: (localStorage.getItem(STORAGE_KEY) as AppMode) ?? 'default',
-  title: 'New Tab'
+  title: 'New Tab',
 })
 
 export function switchAppMode(mode: AppMode) {

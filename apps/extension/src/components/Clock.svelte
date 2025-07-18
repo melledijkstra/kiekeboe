@@ -51,6 +51,10 @@
 
 <button
   onclick={toggleMode}
-  class="empty:min-h-32 time text-white text-10xl antialiased text-shadow-lg/30 cursor-pointer"
+  class={[
+    "clock empty:min-h-32 time text-white text-10xl antialiased drop-shadow-lg text-shadow-lg/30 cursor-pointer",
+    // creates a shadow behind the text
+    'relative before:absolute before:inset-[-0.05em] before:bg-black/10 before:blur-xl before:rounded-lg before:z-[-1]'
+  ]}
   >{time}</button
 >
