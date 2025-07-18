@@ -31,8 +31,10 @@ export async function dailyImageHandler(c: Context): Promise<Response> {
   unsplashUrl.searchParams.set("client_id", UNSPLASH_API_KEY);
 
   try {
+    console.log("Fetching image from:", unsplashUrl);
     return await fetch(unsplashUrl);
   } catch (err) {
+    console.error("Error fetching image:", err, unsplashUrl);
     return c.json(
       { message: "Bad Gateway", error: String(err) },
       { status: 502, headers: responseHeaders }
