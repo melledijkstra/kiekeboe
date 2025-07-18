@@ -18,23 +18,17 @@ export async function dailyImageHandler(c: Context): Promise<Response> {
     }, 403);
   }
 
-  const url = new URL(c.req.url);
-  const orientation = url.searchParams.get("orientation") ?? "landscape";
-  const query = url.searchParams.get("query") ?? "landscape";
-
-  console.log("Orientation:", orientation);
-  console.log("Query:", query);
-
   if (!UNSPLASH_API_KEY) {
     return c.json({
       message: "Bad Request: API key not set, check your environment variables",
     }, 400);
   }
 
+  const url = new URL(c.req.url);
   const unsplashUrl = new URL(UNSPLASH_URL);
+  unsplashUrl.search = url.search;
+  unsplashUrl.searchParams.set("orientation", "landscape");
   unsplashUrl.searchParams.set("client_id", UNSPLASH_API_KEY);
-  unsplashUrl.searchParams.set("orientation", orientation);
-  unsplashUrl.searchParams.set("query", query);
 
   try {
     return await fetch(unsplashUrl);
