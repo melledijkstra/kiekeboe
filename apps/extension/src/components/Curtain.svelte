@@ -1,16 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { UnsplashClient } from '@/api/unsplash'
-  import { setBackgroundImage } from '@/ui'
+  import { setBackgroundImage } from '@/stores/background.svelte'
 
   let client = $state<UnsplashClient>(new UnsplashClient())
   let loaded = $state(false)
 
   onMount(async () => {
-    if (document.body.id !== 'curtain-image') {
-      document.body.id = 'curtain-image'
-    }
-
     const url = await client?.getDailyImage()
 
     if (url) {
@@ -19,26 +15,6 @@
     }
   })
 </script>
-
-<style lang="postcss">
-  @reference '../app.css';
-  
-  :root {
-    --background-image: url();
-  }
-
-  :global {
-    #curtain-image {
-      @apply bg-black h-screen w-screen overflow-x-hidden;
-
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-attachment: fixed;
-      background-image: var(--background-image);
-    }
-  }
-</style>
 
 <div
   class="fixed h-screen w-screen bg-black transition-opacity duration-300 top-0 left-0 -z-10 {loaded

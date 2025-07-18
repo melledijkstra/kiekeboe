@@ -2,6 +2,7 @@
   import { fade } from 'svelte/transition'
   import Clock from '@/components/Clock.svelte'
   import Curtain from '@/components/Curtain.svelte'
+  import Background from '@/components/Background.svelte'
   import Welcome from '@/components/Welcome.svelte'
   import { onMount } from 'svelte'
   import { settings, settingsStore } from '@/settings/index.svelte'
@@ -28,6 +29,7 @@
 </svelte:head>
 
 {#await settings.initialize() then}
+  <Background />
   <Curtain />
 
   <NotificationCenter position="bottom-right" />
