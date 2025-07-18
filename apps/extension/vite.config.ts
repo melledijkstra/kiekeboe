@@ -6,6 +6,8 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import packageJson from './package.json'
 import path from 'node:path'
 
+const ENABLE_DEBUG = process.env.NODE_ENV === 'development'
+
 function manifestTransformer(content: string, mode: string) {
   const envVars = loadEnv(mode, process.cwd())
   content = content.replace(
@@ -37,6 +39,9 @@ const defaultConfig = defineConfig(({ mode }) => ({
         options: './options.html',
         background: './src/background.entry.ts',
         popup: './popup.html',
+        ...(ENABLE_DEBUG ? {
+          'debug': './debug.html'
+        } : {})
       },
       output: {
         entryFileNames: '[name].js',
