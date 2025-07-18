@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { retrieveUsername, storeUsername, getMomentOfDay } from './ui'
+import { getMomentOfDay } from './ui'
+import { retrieveUsername, storeUsername } from './browser'
 import { setBackgroundImage, backgroundImage } from './stores/background.svelte'
 import browser from 'webextension-polyfill'
 import { NAME_STORAGE_KEY } from './constants';
