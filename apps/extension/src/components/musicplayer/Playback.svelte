@@ -77,8 +77,6 @@
       return mdiVolumeHigh
     }
   })
-
-  $inspect(state.volume)
 </script>
 
 <div class={["text-white", props.class]}>
