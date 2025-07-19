@@ -20,6 +20,8 @@
     "extension": "turbo run --filter=@odysea/extension",
     "server": "turbo run --filter=@odysea/server",
     "serverless": "turbo run --filter=@odysea/serverless",
+    "storybook": "turbo run storybook",
+    "storybook:build": "turbo run storybook:build",
     "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && npm cache clean --force"
   },
   "engines": {
