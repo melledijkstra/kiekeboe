@@ -14,7 +14,7 @@
 - @storybook/addon-svelte-csf@5.0.6 which depends on ^0.1.13
 - @storybook/blocks@8.6.14 which depends on ^8.6.14
  Repo: https://github.com/storybookjs/storybook/tree/next/code/lib/blocks
-- @storybook/test@8.6.14 which depends on 8.6.14
+- storybook/action@8.6.14 which depends on 8.6.14
  Repo: https://github.com/storybookjs/storybook/tree/next/code/lib/test
 
 Please consider updating your packages or contacting the maintainers for compatibility details.

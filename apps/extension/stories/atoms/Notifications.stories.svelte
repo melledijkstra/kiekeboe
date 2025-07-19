@@ -2,7 +2,6 @@
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import Notification from "@/components/atoms/Notification.svelte"
   import type { Notification as NotificationType } from "@/stores/notifications.svelte"
-  import { fn } from '@storybook/test'
   import { mdiWifiOff } from '@mdi/js'
 
   const notification: NotificationType = {
@@ -15,8 +14,7 @@
     title: 'Atoms/Notifications',
     component: Notification,
     args: {
-      ...notification,
-      onDismiss: fn()
+      ...notification
     }
   })
 </script>
