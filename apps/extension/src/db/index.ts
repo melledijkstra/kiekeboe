@@ -48,14 +48,35 @@ export const dbPromise = openDB<PersonalExtensionDB>('PersonalExtensionDB', 7, {
   }
 })
 
+export async function getAllItems<DBName extends StoreNames<PersonalExtensionDB>>(
+  dbName: DBName
+): Promise<StoreValue<PersonalExtensionDB, DBName>[]> {
+  const db = await dbPromise
+  return await db.getAll(dbName)
+}
+
 export async function storeInDB<DBName extends StoreNames<PersonalExtensionDB>>(
   dbName: DBName,
   value: StoreValue<PersonalExtensionDB, DBName>
 ) {
   const db = await dbPromise
-  const tx = db.transaction(dbName, 'readwrite')
+  await db.add(dbName, value)
+}
 
-  await tx.store.add(value)
+export async function updateInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+  dbName: DBName,
+  value: StoreValue<PersonalExtensionDB, DBName>,
+  key?: string
+) {
+  console.log('updateInDB', dbName, value, key)
+  const db = await dbPromise
+  await db.put(dbName, value, key)
+}
 
-  await tx.done
+export async function deleteInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+  dbName: DBName,
+  id: string
+) {
+  const db = await dbPromise
+  await db.delete(dbName, id)
 }

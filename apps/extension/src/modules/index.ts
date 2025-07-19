@@ -59,6 +59,11 @@ export const MODULE_CONFIG = [
     id: 'time_tools',
     title: 'Time Tools',
     import: () => import('./time-tools/index.ts')
+  },
+  {
+    id: 'habits',
+    title: 'Habits',
+    import: () => import('./habits/index.ts')
   }
 ] as const satisfies ReadonlyArray<ModuleConfigItem>
 
@@ -89,6 +94,11 @@ export async function loadModule(id: ModuleID): Promise<Module> {
     throw new Error(
       `Loaded module "${id}" does not conform to the Module interface`
     )
+  }
+
+  if (loadedModule.default.init) {
+    // allow the module to bootstrap itself
+    loadedModule.default.init()
   }
 
   loadedModules.set(id, loadedModule.default)

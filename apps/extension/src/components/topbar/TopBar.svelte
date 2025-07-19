@@ -38,6 +38,7 @@
     {@render module('spotify')}
     {@render module('well_being')}
     {@render module('time_tools')}
+    {@render module('habits')}
   </div>
   <div
     class={[

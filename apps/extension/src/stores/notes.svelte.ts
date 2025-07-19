@@ -1,4 +1,4 @@
 import { addNote, getAllNotes, type Note } from '@/db/notes'
-import { createDbStore } from './createDbStore'
+import { DbStore } from './createDbStore'
 
-export const notes = createDbStore<Note>(getAllNotes, addNote)
+export const notes = new DbStore<Note>(getAllNotes, addNote, async (item) => {}, async (id) => {})

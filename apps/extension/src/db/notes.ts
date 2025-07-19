@@ -1,4 +1,4 @@
-import { addItem, getAllItems } from '@/db/simple'
+import { storeInDB, getAllItems } from '@/db'
 
 export const DB_NAME = 'notes' as const
 
@@ -9,7 +9,7 @@ export type Note = {
 }
 
 export async function addNote(note: Note) {
-  await addItem(DB_NAME, note)
+  await storeInDB(DB_NAME, note)
 }
 
 export async function getAllNotes(): Promise<Note[]> {

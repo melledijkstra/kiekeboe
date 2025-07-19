@@ -1,52 +1,53 @@
 <script lang="ts">
-  import Panel from '@/components/atoms/Panel.svelte'
   import IconButton from '@/components/atoms/IconButton.svelte'
   import { habits } from '@/stores/habits.svelte'
-  import { mdiInfinity } from '@mdi/js'
-  import { onMount } from 'svelte'
+  import { mdiProgressCheck } from '@mdi/js'
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
+  import { Popover } from 'bits-ui'
+  import Input from '@/components/atoms/Input.svelte'
+  import Button from '@/components/atoms/Button.svelte'
 
   let newHabit = $state('')
-  let open = $state(false)
-
-  onMount(() => {
-    habits.initialize()
-  })
 
   async function handleAddHabit() {
     if (newHabit.trim()) {
       await habits.add({
         name: newHabit,
         color: '#eee',
-        dateCreated: new Date()
+        goal: 0,
+        step: 1,
+        unit: 'count'
       })
       newHabit = ''
     }
   }
 </script>
 
-<div class="relative">
-  <IconButton
-    onclick={() => (open = !open)}
-    icon={mdiInfinity}
-  />
-  <Panel class={[open ? 'block' : 'hidden', 'absolute right-0 p-4 min-w-80']}>
+<Popover.Root>
+  <Popover.Trigger>
+    <IconButton
+      icon={mdiProgressCheck}
+    />
+  </Popover.Trigger>
+  <PopPanel>
     <h1 class="text-xl font-bold">Habit Tracker</h1>
     <div class="mt-4">
-      <input
+      <Input
         type="text"
         bind:value={newHabit}
         placeholder="Enter new habit"
-        class="border text-black p-2 rounded-sm w-full"
       />
-      <button
+      <Button
         onclick={handleAddHabit}
-        class="mt-2 bg-blue-500 text-white p-2 rounded-sm">Add Habit</button
+        class="mt-2"
       >
+        Add Habit
+      </Button>
     </div>
     <ul class="mt-4">
       {#each $habits as habit, i (i)}
         <li style:color={habit.color} class="p-2 border-b">{habit.name}</li>
       {/each}
     </ul>
-  </Panel>
-</div>
+  </PopPanel>
+</Popover.Root>
