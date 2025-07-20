@@ -1,105 +1,42 @@
 <script lang="ts">
-  import { TasksClient } from '@/api/google/tasks'
-  import PopPanel from '@/components/atoms/PopPanel.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
-  import type { TaskList, Task } from '@/api/definitions/google'
-  import { log } from '@/logger'
-  import { AuthClient } from '@/oauth2/auth'
-  import { GoogleAuthProvider } from '@/oauth2/providers'
-  import { tasks } from '@/stores/tasks.svelte'
+  import { GoogleTasksController } from '@/controllers/GoogleTasksController'
+  import { state as tasksState } from '@/modules/google-tasks/state.svelte'
   import { onMount } from 'svelte'
-  
-  const authClient = new AuthClient(new GoogleAuthProvider())
+  import PopPanel from '@/components/atoms/PopPanel.svelte'
+  import TaskList from '@/components/atoms/tasks/TaskList.svelte'
 
-  let token = $state<string>()
-  let taskClient = $state<TasksClient | null>(null)
-  let inputTask = $state('')
-  let taskLists = $state<TaskList[]>([])
+  let tasksController = $state(new GoogleTasksController(tasksState))
   let selectedTaskList = $state<string>('')
-  let editingTask = $state<string | null>(null)
-  let editingTitle = $state('')
+  let isAuthenticated = $state(false)
 
   async function loadTaskLists() {
-    const data = await taskClient?.getTaskLists()
-    if (data) {
-      taskLists = data
-      if (!selectedTaskList && data.length > 0) {
-        selectedTaskList = data[0].id
-        await loadTasks()
+    const lists = await tasksController.getTaskLists()
+    if (lists) {
+      if (!selectedTaskList && lists.length > 0) {
+        selectedTaskList = lists[0].id
+        await tasksController.getTasks(selectedTaskList)
       }
-    }
-  }
-
-  async function loadTasks() {
-    const data = await taskClient?.fetchTasks(selectedTaskList)
-    log('tasks loaded', $tasks)
-    if (data) {
-      $tasks = data
-    }
-  }
-
-  async function createTask(e: KeyboardEvent) {
-    if (e.key === 'Enter' && inputTask) {
-      const newTask = await taskClient?.createTask(inputTask, selectedTaskList)
-      if (newTask) {
-        $tasks = [newTask, ...$tasks]
-      }
-      inputTask = ''
-    }
-  }
-
-  const toggleTask = async (event: Event, taskId: string) => {
-    const status = (event.target as HTMLInputElement).checked
-      ? 'completed'
-      : 'needsAction'
-    const updatedTask = await taskClient?.setTaskStatus(taskId, status, selectedTaskList)
-    if (updatedTask) {
-      $tasks = $tasks.map((task) => (task.id === taskId ? updatedTask : task))
-    }
-  }
-
-  async function saveEdit(task: Task) {
-    if (!editingTitle) return
-    const updated = await taskClient?.updateTask(
-      { ...task, title: editingTitle },
-      selectedTaskList
-    )
-    if (updated) {
-      $tasks = $tasks.map((t) => (t.id === updated.id ? updated : t))
-    }
-    editingTask = null
-    editingTitle = ''
-  }
-
-  async function removeTask(taskId: string) {
-    const success = await taskClient?.deleteTask(taskId, selectedTaskList)
-    if (success) {
-      $tasks = $tasks.filter((t) => t.id !== taskId)
     }
   }
 
   async function triggerAuthFlow() {
-    token = await authClient.getAuthToken(true)
-    if (token) {
-      taskClient = new TasksClient(token)
+    const success = await tasksController.auth.authenticate()
+    if (success) {
       await loadTaskLists()
-      loadTasks()
     }
   }
 
   onMount(async () => {
-    token = await authClient.getAuthToken()
-    if (token) {
-      taskClient = new TasksClient(token)
-      await loadTaskLists()
-      loadTasks()
-    }
+    await tasksController.initialize()
+    isAuthenticated = await tasksController.auth.isAuthenticated()
+    loadTaskLists()
   })
 </script>
 
 <PopPanel panelProps={{ size: 'small' }}>
-  {#if token}
-    <h3 class="inline-flex items-center text-lg text-white">
+  {#if isAuthenticated}
+    <h3 class="flex items-center text-lg text-black dark:text-white">
       <img
         class="mr-2 h-4 w-auto"
         src="icons/google-tasks.svg"
@@ -107,42 +44,18 @@
       />
       Tasks
     </h3>
-    <select class="mb-2 text-black" bind:value={selectedTaskList} onchange={loadTasks}>
-      {#each taskLists as list (list.id)}
+    <select class="mt-2 w-full text-black dark:text-white" bind:value={selectedTaskList} onchange={() => tasksController.getTasks(selectedTaskList)}>
+      {#each tasksState.taskLists as list (list.id)}
         <option value={list.id}>{list.title}</option>
       {/each}
     </select>
-    <ul class="task-list">
-      {#each $tasks as task (task.id)}
-        <li class="flex items-center gap-1 my-1 text-sm text-white">
-          <input
-            type="checkbox"
-            onchange={(event) => toggleTask(event, task.id)}
-            checked={task.status === 'completed'}
-          />
-          {#if editingTask === task.id}
-            <input
-              class="flex-1 bg-transparent border-b text-white"
-              bind:value={editingTitle}
-              onkeypress={(e) => e.key === 'Enter' && saveEdit(task)}
-            />
-            <button class="text-xs" onclick={() => saveEdit(task)}>Save</button>
-          {:else}
-            <button class="flex-1" ondblclick={() => { editingTask = task.id; editingTitle = task.title }}>
-              {task.title}
-            </button>
-          {/if}
-          <button class="text-red-500 text-xs" onclick={() => removeTask(task.id)}>x</button>
-        </li>
-      {/each}
-      <input
-        bind:value={inputTask}
-        onkeypress={createTask}
-        class="mt-1 border-none outline-hidden text-sm bg-transparent text-white"
-        type="text"
-        placeholder="New task"
-      />
-    </ul>
+    <TaskList
+      tasks={tasksState.tasks}
+      onToggleTask={(taskId, status) => tasksController.setTaskStatus(taskId, status, selectedTaskList)}
+      onSaveEdit={(task) => tasksController.updateTask(task, selectedTaskList)}
+      onRemoveTask={(taskId) => tasksController.deleteTask(taskId, selectedTaskList)}
+      onCreateTask={(taskTitle) => tasksController.createTask(taskTitle, selectedTaskList)}
+    />
   {:else}
     <p class="mb-2">In order to see your tasks, you will need to sign in with Google</p>
     <AuthButton provider="google" onclick={triggerAuthFlow} />

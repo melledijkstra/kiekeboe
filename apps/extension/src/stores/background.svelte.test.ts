@@ -10,7 +10,7 @@ function getStoreValue(store: Readable<string | undefined>): string | undefined 
   return value
 }
 
-describe('background.svelte store', () => {
+describe('background store', () => {
   let originalImage: typeof globalThis.Image
 
   beforeEach(() => {

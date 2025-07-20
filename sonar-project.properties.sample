@@ -7,13 +7,16 @@ sonar.organization=melledijkstra
 
 # Path is relative to the sonar-project.properties file. Replace "\" by "/" on Windows.
 # Sources
-sonar.sources=./apps/extension/src/
-sonar.exclusions=**/*.test.ts,**/*.spec.ts
+sonar.sources=apps/extension/src/
+sonar.typescript.tsconfigPath=apps/extension/tsconfig.json
 
 # Tests
-sonar.tests=./apps/extension/src/
-sonar.test.inclusions=**/*.test.ts,**/*.spec.ts
+sonar.tests=apps/extension/src/
+sonar.test.inclusions=**/*.{test,spec}.{ts}
 # sonar.typescript.lcov.reportPaths=./apps/extension/coverage/lcov.info
+
+# Exclude artifacts and third party code
+# sonar.exclusions=**/node_modules/**,**/dist/**
 
 # Encoding of the source code. Default is default system encoding
 #sonar.sourceEncoding=UTF-8

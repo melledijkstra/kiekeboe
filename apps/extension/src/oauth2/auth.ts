@@ -89,6 +89,11 @@ export class AuthClient {
     return true
   }
 
+  async authenticate(): Promise<boolean> {
+    const token = await this.getAuthToken(true)
+    return !!token
+  }
+
   async deauthenticate(): Promise<boolean> {
     this.logger.log('deauthenticating')
     if (this.provider.name === 'google' && typeof chrome !== 'undefined') {

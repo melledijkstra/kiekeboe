@@ -1,25 +1,46 @@
 import type { TaskList, Task } from '@/api/definitions/google'
 import { TokenBaseClient } from '../tokenbaseclient'
+import type { AuthClient } from '@/oauth2/auth'
 
 const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
-export class TasksClient extends TokenBaseClient {
+export class GoogleTasksApiClient extends TokenBaseClient {
+  private auth: AuthClient
   public taskLists: TaskList[] = []
   public tasks: Task[] = []
 
-  constructor(token: string) {
-    super(BASE_URL, token)
+  constructor(auth: AuthClient) {
+    super(BASE_URL, '')
+    this.auth = auth
   }
 
-  async fetchTasks(taskListId?: string): Promise<Task[] | undefined> {
+  async request<T>(endpoint: string, config?: RequestInit, queryParams?: URLSearchParams): Promise<T | undefined> {
+    if (!this.token) {
+      const token = await this.auth.getAuthToken()
+      this.token = token ?? ''
+    }    
+
+    return super.request<T>(endpoint, config, queryParams)
+  }
+
+  async fetchTasks(taskListId?: string, completed?: boolean): Promise<Task[]> {
     try {
+      const queryParams = new URLSearchParams()
+
+      if (!completed) {
+        queryParams.set('showCompleted', 'false')
+      }
+
       const response = await this.request<{ items: Task[] }>(
-        `/lists/${taskListId ?? '@default'}/tasks`
+        `/lists/${taskListId ?? '@default'}/tasks`,
+        {},
+        queryParams
       )
 
       return response?.items ?? []
     } catch (error) {
       console.error('Error fetching tasks:', error)
+      return []
     }
   }
 
@@ -46,7 +67,7 @@ export class TasksClient extends TokenBaseClient {
     }
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks/${id}?alt=json`,
+        `/lists/${taskListId ?? '@default'}/tasks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json'
@@ -67,7 +88,7 @@ export class TasksClient extends TokenBaseClient {
   async updateTask(task: Task, taskListId?: string): Promise<Task | undefined> {
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks/${task.id}?alt=json`,
+        `/lists/${taskListId ?? '@default'}/tasks/${task.id}`,
         {
           method: 'PATCH',
           headers: {

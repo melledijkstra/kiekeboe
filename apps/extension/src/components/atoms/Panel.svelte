@@ -14,10 +14,10 @@
 <div
   {...props}
   class={[
-    'rounded-xl shadow-md backdrop-blur-xs overflow-hidden',
+    'rounded-xl shadow-md backdrop-blur-xs overflow-auto',
     'z-40',
     // size
-    size === 'small' && 'max-w-[300px] max-h-[300px]',
+    size === 'small' && 'w-[300px] h-[300px]',
     size === 'medium' && 'w-[500px] h-[400px]',
     size === 'large' && 'w-[650px] h-[500px]',
     !nopadding && 'p-4',

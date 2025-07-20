@@ -1,7 +1,7 @@
 import { BaseClient } from "./baseclient"
 
 export class TokenBaseClient extends BaseClient {
-  private token: string
+  protected token: string
 
   constructor(
     baseUrl: string,
