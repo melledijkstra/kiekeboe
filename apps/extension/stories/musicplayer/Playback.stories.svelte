@@ -2,7 +2,6 @@
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import SpotifyPlayback from '@/components/musicplayer/Playback.svelte'
   import { playbackState } from '@/fixtures/musicplayer/state'
-  import { fn } from '@storybook/test'
   import { track_ClocksColdPlay, track_NocturneChopin } from '@/fixtures/musicplayer/tracks'
 
   const { Story } = defineMeta({
@@ -10,12 +9,6 @@
     component: SpotifyPlayback,
     args: {
       playbackState,
-      onToggleShuffle: fn(),
-      onPreviousTrack: fn(),
-      onPlayPause: fn(),
-      onNextTrack: fn(),
-      onSwitchRepeatMode: fn(),
-      onSeek: fn()
     }
   })
 </script>

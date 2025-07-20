@@ -1,7 +1,6 @@
 import type { CommandServiceInterface } from "@/modules/command-center/CommandServiceInterface"
 import type { CommandGroups } from "@/modules/command-center/types"
 import { mdiTestTube } from "@mdi/js"
-import { fn } from "@storybook/test"
 
 export class MockCommandService implements CommandServiceInterface {
     destroy(): void {
@@ -28,6 +27,5 @@ export class MockCommandService implements CommandServiceInterface {
 
     execute(input: string) {
       console.log(`Executing command for input: ${input}`)
-      fn()
     }
   }

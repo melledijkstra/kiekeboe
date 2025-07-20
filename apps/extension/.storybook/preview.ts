@@ -15,6 +15,9 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i
       }
+    },
+    actions: {
+      argTypesRegex: '^on.*'
     }
   },
   initialGlobals: {

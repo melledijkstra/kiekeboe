@@ -7,16 +7,11 @@ const config: StorybookConfig = {
     '../stories/**/*.mdx'
   ],
   addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
     "@storybook/addon-svelte-csf",
   ],
   framework: {
     name: getAbsolutePath("@storybook/svelte-vite"),
     options: {}
-  },
-  features: {
-    backgroundsStoryGlobals: true
   }
 }
 export default config
