@@ -1,5 +1,4 @@
 import { SpotifyApiClient } from "@/api/spotify";
-import { acquireTabLock, releaseTabLock } from "@/lock";
 import { Logger } from "@/logger";
 import { initializeSpotifyPlayer } from "@/modules/spotify/spotify-sdk";
 import { spotifyState } from "@/modules/spotify/spotify.state.svelte";
@@ -67,17 +66,13 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       return;
     }
 
-    if (await acquireTabLock()) {
-      this.logger.log('Acquired tab lock');
-      await this.initializeSpotifyPlayer(this.authClient)
-    }
+    await this.initializeSpotifyPlayer(this.authClient)
 
     this.initialized = true;
   }
 
   async destroy() {
     super.destroy()
-    await releaseTabLock()
 
     if (this.player) {
       this.player.disconnect()

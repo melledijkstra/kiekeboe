@@ -6,7 +6,6 @@
   import PopPanel from '@/components/atoms/PopPanel.svelte'
   import type { PlaybackState } from 'MusicPlayer'
   import AuthButton from '@/components/AuthButton.svelte'
-  import { hasTabLockAcquired } from '@/lock'
 
   const { playbackState, controller }: {
     playbackState: PlaybackState
@@ -25,7 +24,7 @@
     window.addEventListener('beforeunload', cleanup)
 
     await controller.initialize()
-    hasTabLock = await hasTabLockAcquired()
+    hasTabLock = true
     isAuthenticated = await controller.auth.isAuthenticated()
     controller.syncState()
   })
