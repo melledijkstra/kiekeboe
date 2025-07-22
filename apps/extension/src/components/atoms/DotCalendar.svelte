@@ -1,33 +1,42 @@
 <script lang="ts">
-  const daysInMonth = 31
-  const today = new Date().getDate()
+  const WEEKS = 53; // ~1 year
+  const DAYS = 7;
 
-  // Example: add dots on these days
-  const dots = new Set([2, 5, 8, 14, 20, 25])
+  // Generate fake data: 0 (no activity) to 4 (high activity)
+  const activityData = Array.from({ length: WEEKS * DAYS }, () =>
+    (() => {
+      // 0: 60% chance, 1: 20%, 2: 10%, 3: 6%, 4: 4%
+      const r = Math.random();
+      if (r < 0.6) return 0;
+      if (r < 0.8) return 1;
+      if (r < 0.9) return 2;
+      if (r < 0.96) return 3;
+      return 4;
+    })()
+  );
 
-  function isToday(day: number) {
-    return day === today
-  }
-
-  function hasDot(day: number) {
-    return dots.has(day)
-  }
+  // Tailwind color scale classes (adjust to your palette)
+  const colorClasses = [
+    'bg-gray-200', // 0 activity
+    'bg-green-100',
+    'bg-green-300',
+    'bg-green-500',
+    'bg-green-700'  // max activity
+  ];
 </script>
 
-<div class="grid grid-cols-7 gap-2 p-4">
-  {#each Array.from({ length: daysInMonth }, (_, i) => i + 1) as day (day)}
-    <div class="flex flex-col items-center text-sm">
-      <div
-        class="w-8 h-8 flex items-center justify-center rounded-full
-                {isToday(day)
-          ? 'bg-blue-500 text-white'
-          : 'bg-gray-500 text-white dark:bg-gray-100 dark:text-gray-800'}"
-      >
-        {day}
+<div class="overflow-x-auto p-4">
+  <div class="flex gap-1">
+    <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+    {#each Array.from({ length: WEEKS }) as _week, weekIdx (weekIdx)}
+      <div class="flex flex-col gap-1">
+        <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+        {#each Array.from({ length: DAYS }) as _day, dayIdx (dayIdx)}
+          <div
+            class={`w-3.5 h-3.5 rounded-sm ${colorClasses[activityData[weekIdx * DAYS + dayIdx]]}`}
+          ></div>
+        {/each}
       </div>
-      {#if hasDot(day)}
-        <div class="w-1.5 h-1.5 mt-1 rounded-full bg-blue-500"></div>
-      {/if}
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>
