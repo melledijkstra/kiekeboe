@@ -21,3 +21,16 @@
   </div>
 </Story>
 
+<Story name="Overflowing">
+  <div class="flex flex-col gap-2">
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+    <div class="h-10 w-10 bg-red-500"></div>
+  </div>
+</Story>
+

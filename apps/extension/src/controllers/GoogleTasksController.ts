@@ -8,12 +8,12 @@ import { GoogleAuthProvider } from "@/oauth2/providers"
 import { addNotification } from "@/stores/notifications.svelte"
 
 export type TaskControllerInterface = {
-  getTasks: (taskListId: string) => Promise<Task[]>
+  getTasks: (taskListId?: string) => Promise<Task[]>
   getTaskLists: () => Promise<TaskList[]>
-  createTask: (taskTitle: string, taskListId: string) => Promise<boolean>
-  setTaskStatus: (taskId: string, status: boolean, taskListId: string) => Promise<boolean>
-  deleteTask: (taskId: string, taskListId: string) => Promise<boolean>
-  updateTask: (task: Task, taskListId: string) => Promise<boolean>
+  createTask: (taskTitle: string, taskListId?: string) => Promise<boolean>
+  setTaskStatus: (taskId: string, status: boolean, taskListId?: string) => Promise<boolean>
+  deleteTask: (taskId: string, taskListId?: string) => Promise<boolean>
+  updateTask: (task: Task, taskListId?: string) => Promise<boolean>
 }
 
 export class GoogleTasksController implements TaskControllerInterface, ILogger {
@@ -29,7 +29,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     this.state = state
   }
 
-  async deleteTask(taskId: string, taskListId: string): Promise<boolean> {
+  async deleteTask(taskId: string, taskListId?: string): Promise<boolean> {
     const success = await this.api.deleteTask(taskId, taskListId)
     if (success) {
       this.state.tasks = this.state.tasks.filter((task) => task.id !== taskId)
@@ -51,7 +51,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     return this.state.taskLists
   }
   
-  async getTasks(taskListId: string = '@default'): Promise<Task[]> {
+  async getTasks(taskListId?: string): Promise<Task[]> {
     try {
       const tasks = await this.api.fetchTasks(taskListId, false)
       
@@ -67,7 +67,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     }
   }
 
-  async createTask(inputTask: string, selectedTaskList: string): Promise<boolean> {
+  async createTask(inputTask: string, selectedTaskList?: string): Promise<boolean> {
     const newTask = await this.api.createTask(inputTask, selectedTaskList)
     if (newTask) {
       this.state.tasks = [newTask, ...this.state.tasks]
@@ -75,7 +75,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     return !!newTask
   }
 
-  async setTaskStatus(taskId: string, status: boolean, taskListId: string = '@default'): Promise<boolean> {
+  async setTaskStatus(taskId: string, status: boolean, taskListId?: string): Promise<boolean> {
     const taskStatus = status ? 'completed' : 'needsAction'
     const updatedTask = await this.api.setTaskStatus(taskId, taskStatus, taskListId)
     if (updatedTask) {
@@ -84,7 +84,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     return !!updatedTask
   }
 
-  async updateTask(task: Task, taskListId: string): Promise<boolean> {
+  async updateTask(task: Task, taskListId?: string): Promise<boolean> {
     const updatedTask = await this.api.updateTask(task, taskListId)
     if (updatedTask) {
       this.state.tasks = this.state.tasks.map((task) => task.id === task.id ? updatedTask : task)

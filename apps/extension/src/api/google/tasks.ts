@@ -23,7 +23,7 @@ export class GoogleTasksApiClient extends TokenBaseClient {
     return super.request<T>(endpoint, config, queryParams)
   }
 
-  async fetchTasks(taskListId?: string, completed?: boolean): Promise<Task[]> {
+  async fetchTasks(taskListId: string = '@default', completed?: boolean): Promise<Task[]> {
     try {
       const queryParams = new URLSearchParams()
 
@@ -32,7 +32,7 @@ export class GoogleTasksApiClient extends TokenBaseClient {
       }
 
       const response = await this.request<{ items: Task[] }>(
-        `/lists/${taskListId ?? '@default'}/tasks`,
+        `/lists/${taskListId}/tasks`,
         {},
         queryParams
       )
@@ -59,7 +59,7 @@ export class GoogleTasksApiClient extends TokenBaseClient {
   async setTaskStatus(
     task: string | Task,
     status: Task['status'] = 'completed',
-    taskListId?: string
+    taskListId: string = '@default'
   ): Promise<Task | undefined> {
     const id = typeof task === 'string' ? task : task.id
     const taskData: Partial<Task> = {
@@ -67,7 +67,7 @@ export class GoogleTasksApiClient extends TokenBaseClient {
     }
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks/${id}`,
+        `/lists/${taskListId}/tasks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json'
@@ -85,10 +85,10 @@ export class GoogleTasksApiClient extends TokenBaseClient {
     }
   }
 
-  async updateTask(task: Task, taskListId?: string): Promise<Task | undefined> {
+  async updateTask(task: Task, taskListId: string = '@default'): Promise<Task | undefined> {
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks/${task.id}`,
+        `/lists/${taskListId}/tasks/${task.id}`,
         {
           method: 'PATCH',
           headers: {
@@ -108,12 +108,12 @@ export class GoogleTasksApiClient extends TokenBaseClient {
 
   async createTask(
     title: string,
-    taskListId?: string
+    taskListId: string = '@default'
   ): Promise<Task | undefined> {
     const taskData = JSON.stringify({ title })
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks`,
+        `/lists/${taskListId}/tasks`,
         {
           method: 'POST',
           body: taskData
@@ -130,12 +130,12 @@ export class GoogleTasksApiClient extends TokenBaseClient {
 
   async deleteTask(
     task: string | Task,
-    taskListId?: string
+    taskListId: string = '@default'
   ): Promise<boolean> {
     const id = typeof task === 'string' ? task : task.id
     try {
       await this.request(
-        `/lists/${taskListId ?? '@default'}/tasks/${id}`,
+        `/lists/${taskListId}/tasks/${id}`,
         { method: 'DELETE' }
       )
       return true

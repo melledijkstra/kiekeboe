@@ -14,7 +14,7 @@
 <div
   {...props}
   class={[
-    'rounded-xl shadow-md backdrop-blur-xs overflow-auto',
+    'rounded-xl shadow-md backdrop-blur-xs overflow-y-auto',
     'z-40',
     // size
     size === 'small' && 'w-[300px] h-[300px]',
