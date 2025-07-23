@@ -1,25 +1,46 @@
 import type { TaskList, Task } from '@/api/definitions/google'
 import { TokenBaseClient } from '../tokenbaseclient'
+import type { AuthClient } from '@/oauth2/auth'
 
 const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
-export class TasksClient extends TokenBaseClient {
+export class GoogleTasksApiClient extends TokenBaseClient {
+  private auth: AuthClient
   public taskLists: TaskList[] = []
   public tasks: Task[] = []
 
-  constructor(token: string) {
-    super(BASE_URL, token)
+  constructor(auth: AuthClient) {
+    super(BASE_URL, '')
+    this.auth = auth
   }
 
-  async fetchTasks(taskListId?: string): Promise<Task[] | undefined> {
+  async request<T>(endpoint: string, config?: RequestInit, queryParams?: URLSearchParams): Promise<T | undefined> {
+    if (!this.token) {
+      const token = await this.auth.getAuthToken()
+      this.token = token ?? ''
+    }    
+
+    return super.request<T>(endpoint, config, queryParams)
+  }
+
+  async fetchTasks(taskListId: string = '@default', completed?: boolean): Promise<Task[]> {
     try {
+      const queryParams = new URLSearchParams()
+
+      if (!completed) {
+        queryParams.set('showCompleted', 'false')
+      }
+
       const response = await this.request<{ items: Task[] }>(
-        `/lists/${taskListId ?? '@default'}/tasks`
+        `/lists/${taskListId}/tasks`,
+        {},
+        queryParams
       )
 
       return response?.items ?? []
     } catch (error) {
       console.error('Error fetching tasks:', error)
+      return []
     }
   }
 
@@ -38,7 +59,7 @@ export class TasksClient extends TokenBaseClient {
   async setTaskStatus(
     task: string | Task,
     status: Task['status'] = 'completed',
-    taskListId?: string
+    taskListId: string = '@default'
   ): Promise<Task | undefined> {
     const id = typeof task === 'string' ? task : task.id
     const taskData: Partial<Task> = {
@@ -46,7 +67,7 @@ export class TasksClient extends TokenBaseClient {
     }
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks/${id}?alt=json`,
+        `/lists/${taskListId}/tasks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json'
@@ -64,18 +85,35 @@ export class TasksClient extends TokenBaseClient {
     }
   }
 
-  async updateTask(task: Task) {
-    throw new Error('Update Task not implemented yet!' + task.id)
+  async updateTask(task: Task, taskListId: string = '@default'): Promise<Task | undefined> {
+    try {
+      const response = await this.request<Task>(
+        `/lists/${taskListId}/tasks/${task.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(task)
+        }
+      )
+
+      if (response) {
+        return response
+      }
+    } catch (error) {
+      console.error('Error updating task', error)
+    }
   }
 
   async createTask(
     title: string,
-    taskListId?: string
+    taskListId: string = '@default'
   ): Promise<Task | undefined> {
     const taskData = JSON.stringify({ title })
     try {
       const response = await this.request<Task>(
-        `/lists/${taskListId ?? '@default'}/tasks`,
+        `/lists/${taskListId}/tasks`,
         {
           method: 'POST',
           body: taskData
@@ -88,5 +126,22 @@ export class TasksClient extends TokenBaseClient {
     } catch (error) {
       console.error('Error creating a task', error)
     }
+  }
+
+  async deleteTask(
+    task: string | Task,
+    taskListId: string = '@default'
+  ): Promise<boolean> {
+    const id = typeof task === 'string' ? task : task.id
+    try {
+      await this.request(
+        `/lists/${taskListId}/tasks/${id}`,
+        { method: 'DELETE' }
+      )
+      return true
+    } catch (error) {
+      console.error('Error deleting task', error)
+    }
+    return false
   }
 }

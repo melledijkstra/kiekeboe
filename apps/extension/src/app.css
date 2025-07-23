@@ -45,3 +45,16 @@
 body {
   @apply bg-black;
 }
+
+@layer components {
+  /* these styles are shared between the context menu and the dropdown menu */
+  .menu {
+    @apply dark:bg-black/90 rounded-lg z-50 py-2;
+  }
+  .menu-group-heading {
+    @apply dark:text-gray-400 text-xs font-bold px-2;
+  }
+  .menu-item {
+    @apply dark:text-white cursor-pointer focus:bg-gray-800 px-2 py-1 text-xs select-none;
+  }
+}

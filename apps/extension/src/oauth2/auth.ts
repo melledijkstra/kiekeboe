@@ -50,14 +50,6 @@ export class AuthClient {
 
   async isAuthenticated(): Promise<boolean> {
     try {
-      if (this.provider.name === 'google' && typeof chrome !== 'undefined') {
-        const token = await this.getAuthTokenChrome()
-        if (token) {
-          return true
-        }
-        return false
-      }
-  
       const token = await this.getAuthToken()
   
       this.logger.log({ token })
@@ -73,12 +65,8 @@ export class AuthClient {
   }
 
   async getAuthTokenChrome(interactive = false): Promise<string | undefined> {
-    try {
-      const oauth2 = await chrome.identity.getAuthToken({ interactive })
-      return oauth2?.token
-    } catch (error) {
-      this.logger.error(error)
-    }
+    const oauth2 = await chrome.identity.getAuthToken({ interactive })
+    return oauth2?.token
   }
 
   async deauthenticateChrome(): Promise<boolean> {
@@ -99,6 +87,11 @@ export class AuthClient {
       await this.removeAuthTokenFromStorage()
     }
     return true
+  }
+
+  async authenticate(): Promise<boolean> {
+    const token = await this.getAuthToken(true)
+    return !!token
   }
 
   async deauthenticate(): Promise<boolean> {
@@ -223,14 +216,17 @@ export class AuthClient {
       // if we are on chrome browser then use the preferred auth token
       // method that is already build in
       try {
+        this.logger.log(
+          'trying to retrieve oauth token using build in functionality'
+        )
         const token = await this.getAuthTokenChrome(interactive)
         if (token) {
           return token
         }
-      } catch (e) {
-        console.error(
+      } catch (error) {
+        this.logger.warn(
           `${this.provider.name}: No luck retrieving oauth token using build in functionality, trying manually`,
-          e
+          error
         )
       }
     }

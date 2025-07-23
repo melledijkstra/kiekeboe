@@ -9,7 +9,7 @@
   import { appState } from '@/app-state.svelte.ts'
   import { loadModule } from '@/modules'
   import TopBar from '@/components/topbar/TopBar.svelte'
-  import { tasks } from '@/stores/tasks.svelte.ts'
+  import { state as tasksState } from '@/modules/google-tasks/state.svelte'
   import NotificationCenter from '@/components/NotificationCenter.svelte'
   import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
   import { log } from './logger'
@@ -17,7 +17,7 @@
   import { clearUsername, retrieveUsername, storeUsername } from './browser'
 
   let currentTask = $derived(
-    $tasks.find((task) => task.status === 'needsAction')
+    tasksState.tasks.find((task) => task.status === 'needsAction')
   )
 
   onMount(async () => {
@@ -47,6 +47,15 @@
   <title>{appState.title}</title>
 </svelte:head>
 
+{#snippet renderCurrentTask()}
+  <div class="mt-4 text-lg empty:h-7">
+    {#if $settingsStore.ui.showCurrentTask && currentTask}
+      <input type="checkbox" class="scale-150 text-white mr-1" disabled />
+      <span class="text-white text-lg antialiased drop-shadow-md text-shadow-lg/20">{currentTask.title}</span>
+    {/if}
+  </div>
+{/snippet}
+
 {#await settings.initialize() then}
   <Background />
   <Curtain />
@@ -66,7 +75,7 @@
       <!-- MIDDLE --->
       {#key appState.mode}
         <main
-          transition:fade={{ duration: 100 }}
+          transition:fade={{ duration: 200 }}
           style="grid-area: 2 / 1"
           class="text-center place-self-center"
         >
@@ -78,12 +87,7 @@
                 onUsernameChange={onUsernameChange}
                 onClearUsername={onClearUsername} />
             {/if}
-            <div class="mt-4 text-lg empty:h-7">
-              {#if $settingsStore.ui.showCurrentTask && currentTask}
-                <input type="checkbox" class="scale-150 text-white mr-1" disabled />
-                <span class="text-white text-lg">{currentTask.title}</span>
-              {/if}
-            </div>
+            {@render renderCurrentTask()}
           {:else if appState.mode === 'breathing'}
             {#await loadModule('well_being') then Module}
               <Module.scene />

@@ -4,6 +4,7 @@
   import Button from '@/components/atoms/Button.svelte'
   import Input from '@/components/atoms/Input.svelte'
   import { onMount } from 'svelte'
+  import { SvelteDate } from 'svelte/reactivity'
   import {
     startTimer,
     stopTimer,
@@ -52,7 +53,7 @@
     if (alarmInput) {
       const [h, m] = alarmInput.split(':').map(Number)
       const now = new Date()
-      const alarm = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m)
+      const alarm = new SvelteDate(now.getFullYear(), now.getMonth(), now.getDate(), h, m)
       if (alarm.getTime() < now.getTime()) {
         alarm.setDate(alarm.getDate() + 1)
       }

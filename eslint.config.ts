@@ -24,6 +24,9 @@ export default ts.config([
       globals: {
         ...globals.browser,
       }
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn'
     }
   },
   // Extension Configuration
