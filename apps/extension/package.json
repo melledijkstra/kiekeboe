@@ -15,9 +15,9 @@
     "storybook:start": "storybook start"
   },
   "devDependencies": {
-    "@storybook/addon-svelte-csf": "^5.0.6",
-    "@storybook/svelte": "^9.0.15",
-    "@storybook/svelte-vite": "^9.0.15",
+    "@storybook/addon-svelte-csf": "^5.0.7",
+    "@storybook/svelte": "^9.0.18",
+    "@storybook/svelte-vite": "^9.0.18",
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tailwindcss/vite": "^4.1.11",
     "@tsconfig/svelte": "^5.0.4",
