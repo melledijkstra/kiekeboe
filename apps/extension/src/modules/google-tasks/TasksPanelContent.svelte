@@ -29,24 +29,25 @@
   })
 </script>
 
-<h3 class="flex items-center text-lg text-black dark:text-white">
+<h3 class="mb-2 flex items-center text-lg text-black dark:text-white">
   <img
-    class="mr-2 h-4 w-auto"
+    class="mr-2 size-5"
     src="icons/google-tasks.svg"
     alt="google task icon"
   />
-  Tasks
+  <select
+    name="task-list-selector"
+    class="w-full text-black dark:text-white text-lg"
+    bind:value={selectedTaskList}
+    onchange={() => controller.getTasks(selectedTaskList)}
+  >
+    {#each tasksState.taskLists as list (list.id)}
+      <option value={list.id}>{list.title}</option>
+    {/each}
+  </select>
 </h3>
-<select
-  class="my-2 w-full text-black dark:text-white"
-  bind:value={selectedTaskList}
-  onchange={() => controller.getTasks(selectedTaskList)}
->
-  {#each tasksState.taskLists as list (list.id)}
-    <option value={list.id}>{list.title}</option>
-  {/each}
-</select>
 <TaskList
+  class="flex-1 overflow-y-auto"
   tasks={tasksState.tasks}
   onToggleTask={(taskId, status) =>
     controller.setTaskStatus(taskId, status, selectedTaskList)}
@@ -54,6 +55,7 @@
   onRemoveTask={(taskId) => controller.deleteTask(taskId, selectedTaskList)}
 />
 <input
+  name="new-task-input"
   bind:value={newTaskTitle}
   onkeypress={(e) => {
     if (e.key === 'Enter' && newTaskTitle) {
@@ -61,7 +63,7 @@
       newTaskTitle = ''
     }
   }}
-  class="mt-1 border-none outline-hidden text-sm bg-transparent text-white"
+  class="mt-1 border-none outline-hidden text-sm bg-transparent dark:text-white"
   type="text"
   placeholder="New task"
 />

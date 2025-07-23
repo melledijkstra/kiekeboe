@@ -30,17 +30,17 @@
     {@render children()}
   </ContextMenu.Trigger>
   <ContextMenu.Portal>
-    <ContextMenu.Content {...contentProps} class="bg-black p-1 rounded z-50">
+    <ContextMenu.Content {...contentProps} class="menu">
       <ContextMenu.Group class="flex flex-col gap-1">
         {#if heading}
-          <ContextMenu.GroupHeading class="text-gray-400"
+          <ContextMenu.GroupHeading class="dark:text-gray-400 text-xs font-bold px-2"
             >{heading}</ContextMenu.GroupHeading
           >
         {/if}
         {#each items as item (item.label)}
           <ContextMenu.Item
             onSelect={() => item.onSelect(item.label)}
-            class="text-white cursor-pointer hover:bg-gray-500 rounded p-1"
+            class="dark:text-white cursor-pointer focus:bg-gray-600 px-2 py-1 text-xs"
           >
             {item.label}
           </ContextMenu.Item>

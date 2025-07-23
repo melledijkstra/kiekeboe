@@ -71,6 +71,7 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
     const newTask = await this.api.createTask(inputTask, selectedTaskList)
     if (newTask) {
       this.state.tasks = [newTask, ...this.state.tasks]
+      addNotification('Task created', 'success')
     }
     return !!newTask
   }
@@ -86,8 +87,9 @@ export class GoogleTasksController implements TaskControllerInterface, ILogger {
 
   async updateTask(task: Task, taskListId?: string): Promise<boolean> {
     const updatedTask = await this.api.updateTask(task, taskListId)
+    this.logger.log('updatedTask', updatedTask)
     if (updatedTask) {
-      this.state.tasks = this.state.tasks.map((task) => task.id === task.id ? updatedTask : task)
+      this.state.tasks = this.state.tasks.map((task) => task.id === updatedTask.id ? updatedTask : task)
     }
     return !!updatedTask
   }

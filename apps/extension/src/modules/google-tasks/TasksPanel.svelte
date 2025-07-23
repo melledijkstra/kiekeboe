@@ -17,9 +17,11 @@
     await tasksController.initialize()
     isAuthenticated = await tasksController.auth.isAuthenticated()
   })
+  
+  $inspect(tasksState)
 </script>
 
-<PopPanel panelProps={{ size: 'small' }}>
+<PopPanel panelProps={{ size: 'small', class: 'flex flex-col' }}>
   {#if isAuthenticated}
     <TasksPanelContent controller={tasksController} state={tasksState} />
   {:else}

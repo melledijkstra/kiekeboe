@@ -14,10 +14,11 @@
 <div
   {...props}
   class={[
+    'flex flex-col',
     'rounded-xl shadow-md backdrop-blur-xs overflow-y-auto',
     'z-40',
     // size
-    size === 'small' && 'w-[300px] h-[300px]',
+    size === 'small' && 'w-[300px] max-h-[300px]',
     size === 'medium' && 'w-[500px] h-[400px]',
     size === 'large' && 'w-[650px] h-[500px]',
     !nopadding && 'p-4',

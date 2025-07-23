@@ -1,54 +1,15 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf'
   import TaskList from '@/components/atoms/tasks/TaskList.svelte'
-  import Panel from '@/components/atoms/Panel.svelte'
-  import { MockTasksController } from '@/mocks/MockTasksController'
-  import type { ComponentProps } from 'svelte'
-
-  type Args = ComponentProps<typeof TaskList>
-
-  const state = $state({
-    tasks: [],
-    taskLists: []
-  })
-
-  const controller = new MockTasksController(state)
 
   const { Story } = defineMeta({
     title: 'Atoms/TaskList',
     component: TaskList,
-    render: template,
     args: {
       tasks: [],
     }
   })
 </script>
-
-{#snippet template(args: Args)}
-  <Panel size="small">
-    <TaskList {...args} />
-  </Panel>
-{/snippet}
-
-<Story name="Interactive" args={{
-  tasks: state.tasks,
-  onSaveEdit: (editedTask) => {
-    console.log('onSaveEdit', editedTask)
-    controller.updateTask(editedTask)
-  },
-  onRemoveTask: (taskId) => {
-    console.log('onRemoveTask', taskId)
-    controller.deleteTask(taskId, '@default')
-  },
-  onToggleTask: (taskId, checked) => {
-    console.log('onToggleTask', taskId, checked)
-    controller.setTaskStatus(taskId, checked, '@default')
-  },
-  onCreateTask: (taskTitle) => {
-    console.log('onCreateTask', taskTitle)
-    controller.createTask(taskTitle, '@default')
-  }
-}} />
 
 <Story name="No tasks" args={{
   tasks: []
@@ -78,7 +39,7 @@
   tasks: [
     {
       id: '1',
-      title: 'Task 1 with a long title that should wrap',
+      title: 'Task 1 with a long title that should wrap lore ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
       status: 'needsAction'
     },
     {
@@ -88,7 +49,7 @@
     },
     {
       id: '3',
-      title: 'Task 3 with a long title that should wrap',
+      title: 'Task 3 with a long title that should wrap lore ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.',
       status: 'completed'
     }
   ]

@@ -2,15 +2,16 @@
   import type { Snippet } from 'svelte'
   import { DropdownMenu, type WithoutChild } from 'bits-ui'
 
-  type DropdownMenuProps = DropdownMenu.Props & {
+  type DropdownMenuProps = DropdownMenu.RootProps & {
     open?: boolean
     items: {
       label: string
       onSelect: (label: string) => void
     }[]
     children: Snippet
-    triggerProps?: WithoutChild<DropdownMenu.Trigger.Props>
-    contentProps?: WithoutChild<DropdownMenu.Content.Props>
+    heading?: string
+    triggerProps?: WithoutChild<DropdownMenu.TriggerProps>
+    contentProps?: WithoutChild<DropdownMenu.ContentProps>
   }
 
   let {
@@ -31,11 +32,11 @@
   <DropdownMenu.Portal>
     <DropdownMenu.Content
       {...contentProps}
-      class="bg-black p-1 rounded z-50"
+      class="menu"
     >
       <DropdownMenu.Group class="flex flex-col gap-1">
         {#if heading}
-          <DropdownMenu.GroupHeading class="text-gray-400 text-xs"
+          <DropdownMenu.GroupHeading class="menu-group-heading"
             >{heading}</DropdownMenu.GroupHeading
           >
         {/if}
@@ -43,7 +44,7 @@
           <DropdownMenu.Item
             textValue={item.label}
             onSelect={() => item.onSelect(item.label)}
-            class="text-white cursor-pointer hover:bg-gray-500 rounded p-1"
+            class="menu-item"
           >
             {item.label}
           </DropdownMenu.Item>
