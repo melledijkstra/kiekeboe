@@ -9,7 +9,8 @@ export interface IExport<T> {
   update(item: T & { id: string }): Promise<void>
 }
 
-type DBItem<T> = T & { id: string; createdAt: Date; updatedAt: Date }
+export type DBItem<T> = T & { id: string; createdAt: Date; updatedAt: Date }
+
 export class DbStore<T> implements IExport<DBItem<T>> {
   private fetchAll: () => Promise<T[]>
   private addItem: (item: T) => Promise<void>
