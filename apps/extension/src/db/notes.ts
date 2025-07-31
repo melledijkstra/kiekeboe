@@ -3,6 +3,7 @@ import { storeInDB, getAllItems } from '@/db'
 export const DB_NAME = 'notes' as const
 
 export type Note = {
+  id: string
   title: string
   text: string
   dateCreated: Date

@@ -1,8 +1,9 @@
 <script lang="ts">
   import Button from '@/components/atoms/Button.svelte'
   import Input from '@/components/atoms/Input.svelte'
+  import type { Note } from '@/db/notes'
 
-  const { onSubmitNote } = $props()
+  const { onSubmitNote }: { onSubmitNote: (note: Omit<Note, 'id' | 'dateCreated'>) => void } = $props()
 
   let inputTitle = $state('')
   let inputText = $state('')
@@ -11,7 +12,6 @@
     const note = {
       title: inputTitle,
       text: inputText,
-      dateCreated: new Date()
     }
     onSubmitNote(note)
     inputTitle = ''

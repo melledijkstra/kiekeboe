@@ -2,7 +2,7 @@
   import Icon from '@/components/atoms/Icon.svelte'
   import { formatDate } from '@/date'
   import type { Note } from '@/db/notes'
-  import { mdiNote, mdiPlus } from '@mdi/js'
+  import { mdiNote } from '@mdi/js'
 
   export type NotesListProps = {
     notes: Note[]
@@ -21,7 +21,7 @@
     <p class="text-sm text-gray-500">No notes created yet</p>
   {:else}
     <ul class="dark:text-white h-full overflow-y-auto">
-      {#each notes as note}
+      {#each notes as note (note.id)}
         <li class="flex flex-col gap-2">
           <button onclick={() => onSelectNote(note)} class="cursor-pointer text-left">
             <p class="text-base">{note.title}</p>
