@@ -15,6 +15,7 @@
   import { log } from './logger'
   import SettingsMenuItem from './settings/SettingsMenuItem.svelte'
   import { clearUsername, retrieveUsername, storeUsername } from './browser'
+  import ModulesInitializer from './components/ModulesInitializer.svelte'
 
   let currentTask = $derived(
     tasksState.tasks.find((task) => task.status === 'needsAction')
@@ -60,6 +61,14 @@
   <Background />
   <Curtain />
 
+  {#if $settingsStore.modules.command_center}
+    {#await loadModule('command_center') then Module}
+      <Module.component />
+    {/await}
+  {/if}
+
+  <ModulesInitializer />
+
   <NotificationCenter position="bottom-right" />
 
   <div class="h-screen overflow-y-scroll snap-y snap-mandatory">
@@ -73,34 +82,36 @@
       <!-- TOP --->
       <TopBar />
       <!-- MIDDLE --->
-      {#key appState.mode}
-        <main
-          transition:fade={{ duration: 200 }}
-          style="grid-area: 2 / 1"
-          class="text-center place-self-center"
-        >
-          {#if appState.mode === 'default'}
-            <Clock />
-            {#if appState.user?.name}
-              <Welcome
-                user={appState.user}
-                onUsernameChange={onUsernameChange}
-                onClearUsername={onClearUsername} />
+      <main>
+        {#key appState.mode}
+          <main
+            transition:fade={{ duration: 200 }}
+            style="grid-area: 2 / 1"
+            class="text-center place-self-center"
+          >
+            {#if appState.mode === 'default'}
+              <Clock />
+              {#if appState.user?.name}
+                <Welcome
+                  user={appState.user}
+                  onUsernameChange={onUsernameChange}
+                  onClearUsername={onClearUsername} />
+              {/if}
+              {@render renderCurrentTask()}
+            {:else if appState.mode === 'breathing'}
+              {#await loadModule('well_being') then Module}
+                <Module.scene />
+              {/await}
+            {:else if appState.mode === 'focus'}
+              {#await loadModule('focus') then Module}
+                <Module.scene />
+              {/await}
+            {:else}
+              <p class="text-white text-lg">Not yet implemented!</p>
             {/if}
-            {@render renderCurrentTask()}
-          {:else if appState.mode === 'breathing'}
-            {#await loadModule('well_being') then Module}
-              <Module.scene />
-            {/await}
-          {:else if appState.mode === 'focus'}
-            {#await loadModule('focus') then Module}
-              <Module.scene />
-            {/await}
-          {:else}
-            <p class="text-white text-lg">Not yet implemented!</p>
-          {/if}
-        </main>
-      {/key}
+          </main>
+        {/key}
+      </main>
       <!-- BOTTOM -->
       <footer class={[
         "flex flex-row justify-between content-end items-end p-6",
@@ -129,10 +140,4 @@
     <!-- <section class="h-screen snap-start bg-gray-700/50"> 
     </section> -->
   </div>
-
-  {#if $settingsStore.modules.command_center}
-    {#await loadModule('command_center') then Module}
-      <Module.component />
-    {/await}
-  {/if}
 {/await}

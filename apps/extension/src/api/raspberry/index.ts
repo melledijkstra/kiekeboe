@@ -6,7 +6,7 @@ export const isRaspberryAlive = async (databaseUri?: string): Promise<boolean> =
     uri: _databaseUri
   });
   try {
-    const response = await fetch(`${_databaseUri}/status`, { priority: 'low' });
+    const response = await fetch(`${_databaseUri}/status`, { priority: 'low', signal: AbortSignal.timeout(2000) });
     return response.status === 200;
   } catch {
     return false;
