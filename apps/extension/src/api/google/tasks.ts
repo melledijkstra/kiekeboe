@@ -23,7 +23,7 @@ export class GoogleTasksApiClient extends TokenBaseClient {
     return super.request<T>(endpoint, config, queryParams)
   }
 
-  async fetchTasks(taskListId: string = '@default', completed?: boolean): Promise<Task[]> {
+  async fetchTasks(taskListId: string = '@default', completed: boolean = false): Promise<Task[]> {
     try {
       const queryParams = new URLSearchParams()
 

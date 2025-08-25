@@ -16,6 +16,7 @@
   import SettingsMenuItem from './settings/SettingsMenuItem.svelte'
   import { clearUsername, retrieveUsername, storeUsername } from './browser'
   import ModulesInitializer from './components/ModulesInitializer.svelte'
+  import QueryProvider from './components/QueryProvider.svelte'
 
   let currentTask = $derived(
     tasksState.tasks.find((task) => task.status === 'needsAction')
@@ -58,6 +59,7 @@
 {/snippet}
 
 {#await settings.initialize() then}
+<QueryProvider>
   <Background />
   <Curtain />
 
@@ -140,4 +142,5 @@
     <!-- <section class="h-screen snap-start bg-gray-700/50"> 
     </section> -->
   </div>
+</QueryProvider>
 {/await}

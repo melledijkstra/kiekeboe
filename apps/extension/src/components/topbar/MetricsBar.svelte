@@ -1,7 +1,6 @@
 <script lang="ts">
-  import lscache from 'lscache'
   import {
-  getIsSleepMetricEnabled,
+    getIsSleepMetricEnabled,
     setIsSleepMetricEnabled,
     trackers,
     type CountDown,
@@ -15,19 +14,19 @@
   import { AuthClient } from '@/oauth2/auth'
   import { FitbitAuthProvider } from '@/oauth2/providers'
   import { FitbitClient } from '@/api/fitbit'
+  import { createQuery } from '@tanstack/svelte-query'
+  import { derived, writable } from 'svelte/store'
 
   type Metric = CountDown | WorldClock | Counter
 
   const STORAGE_KEY = 'fitbit::sleep_minutes'
 
   const authClient = new AuthClient(new FitbitAuthProvider())
+  const fitbitClient = new FitbitClient(authClient)
 
   const props: { metrics?: Metric[] } = $props()
-  let sleepMetricEnabled = $state(false)
-  let token = $state<string>()
-  let client = $state<FitbitClient>()
-
-  let sleepMinutes = $state<number>(0) // Default to 8 hours in minutes
+  const sleepMetricEnabled = writable<boolean>(false)
+  const shouldFetch = writable<boolean>(false)
 
   const metrics: Metric[] = $derived.by(() => {
     if (props.metrics?.length) {
@@ -50,41 +49,24 @@
     return typeof (metric as WorldClock)?.timeZone !== 'undefined'
   }
 
-  async function getSleepData(token: string) {
-    if (!client) {
-      client = new FitbitClient(token)
-    }
-    sleepMinutes = await client.getSleep()
-    lscache.set(STORAGE_KEY, sleepMinutes, 60 * 1) // Cache for 1 hour
-  }
+  const sleepQuery = createQuery(
+    derived([shouldFetch, sleepMetricEnabled], ([shouldFetch, sleepMetricEnabled]) => ({
+      queryKey: ['fitbit', 'sleep'],
+      enabled: shouldFetch && sleepMetricEnabled,
+      queryFn: () => fitbitClient.getSleep()
+    })
+  ))
 
   async function authenticate() {
-    const tokenData = await authClient.getAuthToken(true)
-    if (tokenData) {
-      token = tokenData
-      getSleepData(token)
+    if (await authClient.authenticate()) {
+      $shouldFetch = true
     }
   }
 
   onMount(async () => {
-    sleepMetricEnabled = getIsSleepMetricEnabled()
-    if (!sleepMetricEnabled) {
-      return
-    }
-
-    const cacheSleepMinutes = lscache.get(STORAGE_KEY)
-
-    // if we have cached sleep minutes, use them
-    if (cacheSleepMinutes) {
-      sleepMinutes = cacheSleepMinutes
-      return
-    }
-
-    const tokenData = await authClient.getTokenFromStoreOrRefreshToken()
-    
-    if (tokenData) {
-      token = tokenData
-      getSleepData(token)
+    $sleepMetricEnabled = getIsSleepMetricEnabled()
+    if ($sleepMetricEnabled) {
+      $shouldFetch = true
     }
   })
 </script>
@@ -103,7 +85,7 @@
         </div>
       {/if}
     {/each}
-    {#if sleepMetricEnabled}
+    {#if $sleepMetricEnabled}
       <Sleep
         class="cursor-pointer"
         onclick={() => setIsSleepMetricEnabled(false)}
@@ -111,7 +93,7 @@
           e.preventDefault()
           authenticate()
         }}
-        minutes={sleepMinutes} />
+        minutes={$sleepQuery.data ?? 0} />
     {/if}
   </div>
 {/if}

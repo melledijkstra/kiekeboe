@@ -19,7 +19,7 @@
   })
 </script>
 
-<PopPanel panelProps={{ size: 'small', class: 'flex flex-col' }}>
+<PopPanel side="top" panelProps={{ size: 'small', class: 'flex flex-col' }}>
   {#if isAuthenticated}
     <TasksPanelContent controller={tasksController} state={tasksState} />
   {:else}

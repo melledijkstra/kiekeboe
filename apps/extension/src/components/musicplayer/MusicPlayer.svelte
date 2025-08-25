@@ -2,11 +2,13 @@
   import Devices from './Devices.svelte'
   import Playback from './Playback.svelte'
   import Playlists from './Playlists.svelte'
-  import type { MusicPlayerInterface, Playlist, PlaybackState, Track } from 'MusicPlayer'
+  import type { MusicPlayerInterface, Playlist, PlaybackState } from 'MusicPlayer'
   import type { Device } from 'SpotifyApi'
   import ListSkeleton from './ListSkeleton.svelte'
   import ScrollArea from '../atoms/ScrollArea.svelte'
   import TrackList from './TrackList.svelte'
+  import { createQuery } from '@tanstack/svelte-query'
+  import { derived, writable } from 'svelte/store'
 
   const {
     state: MPState,
@@ -20,7 +22,7 @@
     deviceId?: string
   } = $props()
 
-  let fetchItems = $state<Promise<Track[]>>()
+  const selectedPlaylist = writable<Playlist| undefined>()
 
   function playPause() {
     // Use play or pause based on current playback state
@@ -31,34 +33,43 @@
     }
   }
 
-  async function selectPlaylist(playlist: Playlist) {
-    fetchItems = controller.getPlaylistItems(playlist)
-  }
+  const playlistsQuery = createQuery({
+    queryKey: ['spotify', 'playlists'],
+    queryFn: () => controller.getPlaylists()
+  })
+
+  const playlistItemsQuery = createQuery(
+    derived(selectedPlaylist, (playlist) => ({
+      queryKey: ['spotify', 'playlist', playlist?.id, 'items'],
+      enabled: !!playlist,
+      queryFn: () => controller.getPlaylistItems(playlist as Playlist)
+    })
+  ))
 </script>
 
 <div class="grid grid-cols-2 grid-rows-3 music-player w-full h-full overflow-hidden">
   <ScrollArea scrollbarClasses="bg-transparent" orientation="vertical">
-    {#await controller.getPlaylists()}
+    {#if $playlistsQuery.isFetching}
       <ListSkeleton amount={20} />
-    {:then playlists}
+    {:else if $playlistsQuery.isSuccess}
       <Playlists
-        playlists={playlists}
+        playlists={$playlistsQuery.data}
         onPlaylistPlay={(playlist) => controller.playItem(playlist)}
-        onPlaylistSelected={(playlist) => selectPlaylist(playlist)}
+        onPlaylistSelected={(playlist) => {console.log(playlist); selectedPlaylist.set(playlist)}}
       />
-    {:catch error}
-      <p class="text-sm text-red-500">Error loading playlists: {error.message}</p>
-    {/await}
+    {:else}
+      <p class="text-sm text-red-500">Error loading playlists: {$playlistsQuery?.error?.message}</p>
+    {/if}
   </ScrollArea>
   <ScrollArea scrollbarClasses="bg-transparent" orientation="vertical">
-    {#await fetchItems}
+    {#if $playlistItemsQuery.isFetching}
       <ListSkeleton amount={20} />
-    {:then trackList}
+    {:else if $playlistItemsQuery.isSuccess}
       <TrackList
-        tracks={trackList ?? []}
+        tracks={$playlistItemsQuery.data ?? []}
         onTrackSelected={(track) => controller.playItem(track)}
       />
-    {/await}
+    {/if}
   </ScrollArea>
   <Playback
     class="col-span-2"
