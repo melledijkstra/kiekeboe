@@ -2,7 +2,6 @@
   import type { WorldClock } from "@/modules/trackers/state.svelte"
   import { renderTimezone, repeatEvery } from "@/time/utils"
   import { onDestroy, onMount } from "svelte"
-  import { fade } from "svelte/transition"
 
   const { metric }: { metric: WorldClock} = $props()
 
@@ -21,7 +20,7 @@
   })
 </script>
 
-<div transition:fade class="text-white rounded-lg text-right">
+<div class="text-white rounded-lg text-right">
   {#key updateKey}
     <p class="text-base">{renderTimezone(metric.timeZone)}</p>
   {/key}

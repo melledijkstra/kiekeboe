@@ -12,16 +12,28 @@
 
   type FormType = 'countdown' | 'worldclock' | 'sleep' | 'counter';
 
+  const TITLES: Record<FormType, string> = {
+    countdown: 'Countdowns 🗓️',
+    worldclock: 'World Clocks 🌎',
+    sleep: 'Sleep 💤',
+    counter: 'Counters 🔢'
+  } as const
+
+  const { visible }: { visible?: boolean } = $props()
+
   let isOpen = $state(false)
+  let title = $state()
 
   let currentForm = $state<FormType>();
 
   function showForm(formType: FormType) {
     currentForm = formType
+    title = TITLES[formType]
   }
 
   function backToMain() {
     currentForm = undefined
+    title = undefined
   }
 
   function addSleepTracker() {
@@ -32,7 +44,7 @@
 <Popover.Root bind:open={isOpen}>
   <Popover.Trigger
     class={[
-      isOpen ? 'opacity-100' : 'opacity-0',
+      isOpen || visible ? 'opacity-100' : 'opacity-0',
       'group-hover:opacity-100 focus:opacity-100 transition-opacity duration-300 flex flex-col cursor-pointer',
       'text-center dark:text-white/70 dark:hover:text-white text-zinc-500 hover:text-zinc-700',
       'cursor-pointer transition-colors',
@@ -43,9 +55,14 @@
   </Popover.Trigger>
   <PopPanel>
     {#if currentForm}
-      <button class="float-left" onclick={() => (currentForm = undefined)}>
-        <Icon path={mdiArrowLeft} size={20} />
-      </button>
+      <div class="flex flex-row gap-2 align-middle mb-3">
+        <button class="max-w-max rounded-full inline p-1 bg-gray-600 hover:bg-gray-400" onclick={() => (currentForm = undefined)}>
+          <Icon path={mdiArrowLeft} size={20} />
+        </button>
+        {#if title}
+          <h2 class="text-lg">{title}</h2>
+        {/if}
+      </div>
     {/if}
     {#if !currentForm}
       <p class="text-lg text-center mb-4 font-bold">Add Metric</p>
@@ -69,33 +86,31 @@
       </div>
       <hr class="my-2" />
       <!-- list of saved metrics -->
-      {#each trackers.countdowns as countdown, i (i)}
-        <div class="flex flex-row justify-between gap-2">
+      <div class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-2">
+        {#each trackers.countdowns as countdown, i (i)}
           <Countdown metric={countdown} />
+          <button onclick={() => trackers.pinWorldClock(i, !countdown.pinned)} class="cursor-pointer">
+            <Icon path={countdown.pinned ? mdiPin : mdiPinOff} size={20} />
+          </button>
           <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
             <Icon path={mdiDelete} size={20} />
           </button>
-        </div>
-      {/each}
-      {#each trackers.worldClocks as worldClock, i (i)}
-        <div class="flex flex-row justify-between gap-2">
-          <WorldClock metric={worldClock} />
-          <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
-            <Icon path={mdiDelete} size={20} />
-          </button>
-          <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
-            <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={20} />
-          </button>
-        </div>
-      {/each}
+          {/each}
+          {#each trackers.worldClocks as worldClock, i (i)}
+            <WorldClock metric={worldClock} />
+            <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
+              <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={20} />
+            </button>
+            <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
+              <Icon path={mdiDelete} size={20} />
+            </button>
+          {/each}
+      </div>
     {:else if currentForm === 'countdown'}
-      <h2 class="text-lg mb-3">Countdowns 🗓️</h2>
       <CountdownForm onSubmitted={backToMain} />
     {:else if currentForm === 'worldclock'}
-      <h2 class="text-lg mb-3">World Clocks 🌎</h2>
       <WorldClockForm onSubmitted={backToMain} />
     {:else if currentForm === 'counter'}
-      <h2 class="text-lg mb-3">Counters 🔢</h2>
       <!-- Placeholder for future counter form -->
       <p>Counter form not yet implemented.</p>
     {:else if currentForm === 'sleep'}

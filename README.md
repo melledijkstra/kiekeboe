@@ -1,5 +1,7 @@
 # Odysea Monorepo
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=melledijkstra_kiekeboe&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=melledijkstra_kiekeboe)
+
 This repository hosts the code for **Odysea**, a personal productivity ecosystem consisting of multiple applications. Each application lives in the `apps/` directory and has its own README with setup instructions.
 
 ## Directory Overview

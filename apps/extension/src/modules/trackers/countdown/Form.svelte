@@ -23,7 +23,7 @@
 </script>
 
 <form
-  class="mt-5 flex flex-col gap-1 text-white text-left"
+  class="flex flex-col gap-1 text-white text-left"
   onsubmit={(e) => {
     e.preventDefault()
     trackers.addCountdown(inputName, inputDate, inputPinned)

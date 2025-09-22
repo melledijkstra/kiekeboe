@@ -12,7 +12,6 @@
 </script>
 
 <div>
-  <h1 class="text-2xl font-bold">Query Test</h1>
   <Button onclick={() => $query.refetch()}>Refetch</Button>
   {#if $query.isFetching}
     <p class="text-sm text-gray-500">Loading...</p>

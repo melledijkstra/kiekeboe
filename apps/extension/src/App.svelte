@@ -9,7 +9,6 @@
   import { appState } from '@/app-state.svelte.ts'
   import { loadModule } from '@/modules'
   import TopBar from '@/components/topbar/TopBar.svelte'
-  import { state as tasksState } from '@/modules/google-tasks/state.svelte'
   import NotificationCenter from '@/components/NotificationCenter.svelte'
   import ImageRefreshButton from '@/components/ImageRefreshButton.svelte'
   import { log } from './logger'
@@ -17,10 +16,7 @@
   import { clearUsername, retrieveUsername, storeUsername } from './browser'
   import ModulesInitializer from './components/ModulesInitializer.svelte'
   import QueryProvider from './components/QueryProvider.svelte'
-
-  let currentTask = $derived(
-    tasksState.tasks.find((task) => task.status === 'needsAction')
-  )
+  import CurrentTask from './components/CurrentTask.svelte'
 
   onMount(async () => {
     log('App mounted')
@@ -48,15 +44,6 @@
 <svelte:head>
   <title>{appState.title}</title>
 </svelte:head>
-
-{#snippet renderCurrentTask()}
-  <div class="mt-4 text-lg empty:h-7">
-    {#if $settingsStore.ui.showCurrentTask && currentTask}
-      <input type="checkbox" class="scale-150 text-white mr-1" disabled />
-      <span class="text-white text-lg antialiased drop-shadow-md text-shadow-lg/20">{currentTask.title}</span>
-    {/if}
-  </div>
-{/snippet}
 
 {#await settings.initialize() then}
 <QueryProvider>
@@ -99,7 +86,9 @@
                   onUsernameChange={onUsernameChange}
                   onClearUsername={onClearUsername} />
               {/if}
-              {@render renderCurrentTask()}
+              <div class="mt-4 text-lg empty:h-7">
+                <CurrentTask />
+              </div>
             {:else if appState.mode === 'breathing'}
               {#await loadModule('well_being') then Module}
                 <Module.scene />

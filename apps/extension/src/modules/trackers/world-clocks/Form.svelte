@@ -20,7 +20,7 @@
 </script>
 
 <form
-  class="mt-5 flex flex-col gap-1"
+  class="flex flex-col gap-1"
   onsubmit={(e) => {
     e.preventDefault()
     trackers.addWorldClock(inputName, inputTimezone, inputPinned)

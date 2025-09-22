@@ -16,6 +16,7 @@
   import { FitbitClient } from '@/api/fitbit'
   import { createQuery } from '@tanstack/svelte-query'
   import { derived, writable } from 'svelte/store'
+  import lscache from 'lscache'
 
   type Metric = CountDown | WorldClock | Counter
 
@@ -53,7 +54,17 @@
     derived([shouldFetch, sleepMetricEnabled], ([shouldFetch, sleepMetricEnabled]) => ({
       queryKey: ['fitbit', 'sleep'],
       enabled: shouldFetch && sleepMetricEnabled,
-      queryFn: () => fitbitClient.getSleep()
+      queryFn: async () => {
+        const cacheMinutes = lscache.get(STORAGE_KEY)
+        if (cacheMinutes) {
+          return cacheMinutes
+        }
+        const sleepMinutes = await fitbitClient.getSleep()
+        if (sleepMinutes) {
+          lscache.set(STORAGE_KEY, sleepMinutes)
+        }
+        return sleepMinutes
+      }
     })
   ))
 
@@ -88,11 +99,17 @@
     {#if $sleepMetricEnabled}
       <Sleep
         class="cursor-pointer"
-        onclick={() => setIsSleepMetricEnabled(false)}
+        onclick={() => {
+          if (confirm('Remove sleep metric?')) {
+            setIsSleepMetricEnabled(false)
+            $sleepMetricEnabled = false
+          }
+        }}
         oncontextmenu={(e) => {
           e.preventDefault()
           authenticate()
         }}
+        loading={$sleepQuery.isLoading}
         minutes={$sleepQuery.data ?? 0} />
     {/if}
   </div>

@@ -3,7 +3,7 @@
 import type { HTMLAttributes } from "svelte/elements"
   import { fade } from "svelte/transition"
 
-  const { minutes, ...props }: { minutes: number } & HTMLAttributes<HTMLDivElement> = $props()
+  const { minutes, loading, ...props }: { minutes: number, loading: boolean } & HTMLAttributes<HTMLDivElement> = $props()
 
   const hours = $derived(Math.floor(minutes / 60))
   const remainingMins = $derived(minutes % 60)
@@ -31,6 +31,6 @@ import type { HTMLAttributes } from "svelte/elements"
     "text-white rounded-lg text-right",
     props.class
   ]}>
-  <p class="text-base">{formatted}</p>
+  <p class={["text-base inline-block"]}>{loading ? '...' : formatted}</p>
   <p class="text-xs flex justify-end gap-1 items-center"><IconFitbit /> Sleep</p>
 </div>
