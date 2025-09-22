@@ -16,6 +16,7 @@ export type SettingsState = {
     [key in ModuleID]: boolean
   }
   ui: {
+    showQuotes: boolean
     dailyImageQuery?: string
     showCurrentTask: boolean
   }
@@ -44,7 +45,8 @@ export const DEFAULT_SETTINGS: SettingsState = {
   modules: DEFAULT_MODULE_SETTINGS,
   ui: {
     showCurrentTask: false,
-    dailyImageQuery: 'landscape'
+    dailyImageQuery: 'landscape',
+    showQuotes: true
   }
 }
 

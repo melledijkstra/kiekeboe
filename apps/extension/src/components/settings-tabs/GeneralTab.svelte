@@ -10,6 +10,6 @@
   label="Show currently focussed task (requires Google Tasks module)"
   disabled={!googleTasksEnabled}
   parentClass="my-2"
-  onchange={() => settings.saveSettingsToStorage()}
+  onchange={settings.saveSettingsToStorage}
   bind:checked={$settingsStore.ui.showCurrentTask}
 />

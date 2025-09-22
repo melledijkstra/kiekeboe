@@ -16,6 +16,7 @@
   import SettingsMenuItem from './settings/SettingsMenuItem.svelte'
   import { clearUsername, retrieveUsername, storeUsername } from './browser'
   import ModulesInitializer from './components/ModulesInitializer.svelte'
+  import Quotes from './components/atoms/Quotes.svelte'
 
   let currentTask = $derived(
     tasksState.tasks.find((task) => task.status === 'needsAction')
@@ -82,36 +83,34 @@
       <!-- TOP --->
       <TopBar />
       <!-- MIDDLE --->
-      <main>
-        {#key appState.mode}
-          <main
-            transition:fade={{ duration: 200 }}
-            style="grid-area: 2 / 1"
-            class="text-center place-self-center"
-          >
-            {#if appState.mode === 'default'}
-              <Clock />
-              {#if appState.user?.name}
-                <Welcome
-                  user={appState.user}
-                  onUsernameChange={onUsernameChange}
-                  onClearUsername={onClearUsername} />
-              {/if}
-              {@render renderCurrentTask()}
-            {:else if appState.mode === 'breathing'}
-              {#await loadModule('well_being') then Module}
-                <Module.scene />
-              {/await}
-            {:else if appState.mode === 'focus'}
-              {#await loadModule('focus') then Module}
-                <Module.scene />
-              {/await}
-            {:else}
-              <p class="text-white text-lg">Not yet implemented!</p>
+      {#key appState.mode}
+        <main
+          transition:fade
+          style="grid-area: 2 / 1"
+          class="text-center place-self-center"
+        >
+          {#if appState.mode === 'default'}
+            <Clock />
+            {#if appState.user?.name}
+              <Welcome
+                user={appState.user}
+                onUsernameChange={onUsernameChange}
+                onClearUsername={onClearUsername} />
             {/if}
-          </main>
-        {/key}
-      </main>
+            {@render renderCurrentTask()}
+          {:else if appState.mode === 'breathing'}
+            {#await loadModule('well_being') then Module}
+              <Module.scene />
+            {/await}
+          {:else if appState.mode === 'focus'}
+            {#await loadModule('focus') then Module}
+              <Module.scene />
+            {/await}
+          {:else}
+            <p class="text-white text-lg">Not yet implemented!</p>
+          {/if}
+        </main>
+      {/key}
       <!-- BOTTOM -->
       <footer class={[
         "flex flex-row justify-between content-end items-end p-6",
@@ -123,6 +122,9 @@
           <SettingsMenuItem />
           <ImageRefreshButton />
         </div>
+        {#if $settingsStore.ui.showQuotes && appState.mode !== 'focus'}
+          <Quotes />
+        {/if}
         <div class="flex flex-row gap-5">
           {#if $settingsStore.modules.notes}
             {#await loadModule('notes') then Module}

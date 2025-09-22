@@ -1,6 +1,7 @@
 <script lang="ts">
   import Input from "@/components/atoms/Input.svelte"
   import { settings, settingsStore } from "@/settings/index.svelte"
+  import Toggle from "../atoms/Toggle.svelte"
 
   let unsplashQuery = $state($settingsStore.ui.dailyImageQuery)
 </script>
@@ -18,4 +19,12 @@
       settings.saveSettingsToStorage()
     }
   }}
+/>
+
+<Toggle
+  label="Show quotes"
+  name="show-quotes"
+  parentClass="mt-5"
+  onchange={settings.saveSettingsToStorage}
+  bind:checked={$settingsStore.ui.showQuotes}
 />
