@@ -21,7 +21,7 @@
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
     "@tailwindcss/vite": "^4.1.13",
     "@tsconfig/svelte": "^5.0.4",
-    "@types/chrome": "^0.1.0",
+    "@types/chrome": "^0.1.24",
     "@types/lscache": "^1.3.4",
     "@types/webextension-polyfill": "^0.12.3",
     "autoprefixer": "^10.4.21",
