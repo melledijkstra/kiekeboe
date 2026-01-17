@@ -8,11 +8,11 @@ Before you start, ensure you have the following tools installed:
 
 ## Installation
 
-`npm install`
+`pnpm install`
 
 ## Development
 
 ! Check if you have .env file with correct values !
 
-`npm run dev`
+`pnpm dev`
 

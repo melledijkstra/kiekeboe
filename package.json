@@ -22,7 +22,7 @@
     "serverless": "turbo run --filter=@odysea/serverless",
     "storybook": "turbo run storybook",
     "storybook:build": "turbo run storybook:build",
-    "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && npm cache clean --force"
+    "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && pnpm cache delete"
   },
   "engines": {
     "node": ">=20"
@@ -56,5 +56,5 @@
     "url": "https://github.com/melledijkstra/kiekeboe/issues"
   },
   "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
-  "packageManager": "npm@10.8.2"
+  "packageManager": "pnpm@10.26.2"
 }

@@ -33,7 +33,7 @@ The `.vscode/launch.json` file provides launch configurations for the mobile app
 
 Dependabot is configured in `.github/dependabot.yml` to manage dependencies for the following ecosystems:
 
-- **npm**: Weekly updates for TailwindCSS, Storybook, and Vite-related packages.
+- **pnpm**: Weekly updates for TailwindCSS, Storybook, and Vite-related packages.
 
 ---
 

@@ -14,15 +14,15 @@ This repository hosts the code for **Odysea**, a personal productivity ecosystem
 Install dependencies from the repository root:
 
 ```bash
-npm install
+pnpm install
 ```
 
 Use the workspace scripts to run or build specific apps. For example:
 
 ```bash
-npm run -w @odysea/extension dev      # start extension in dev mode
-npm run -w @odysea/serverless dev     # run serverless functions
-npm run -w @odysea/server start       # start the Node server
+pnpm -filter @odysea/extension dev      # start extension in dev mode
+pnpm -filter @odysea/serverless dev     # run serverless functions
+pnpm -filter @odysea/server start       # start the Node server
 ...
 ```
 

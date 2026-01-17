@@ -11,4 +11,4 @@ The Odysea Server is a backend service for the Odysea ecosystem. It provides API
 
 ## Installation
 
-`npm install`
+`pnpm install`

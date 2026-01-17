@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+
+ignoredBuiltDependencies:
+  - deno
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sqlite3

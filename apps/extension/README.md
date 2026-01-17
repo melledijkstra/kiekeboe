@@ -37,7 +37,7 @@ git clone https://github.com/melledijkstra/kiekeboe.git
 2. Install and build:
 
 ```bash
-npm run install && npm run build
+pnpm install && pnpm build
 ```
 
 3. Load the extension in your browser:

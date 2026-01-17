@@ -14,19 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: pnpm/action-setup@v4
+      - name: Install Dependencies
+        run: pnpm install
       - name: Build Packages
-        run: npm run build
+        run: pnpm build
       - name: Build storybook
-        run: npm run storybook:build
+        run: pnpm storybook:build
       - name: Lint Packages
-        run: npm run lint
+        run: pnpm lint
       - name: Test Packages
-        run: npm run test
+        run: pnpm test
       # - name: SonarQube Scan
       #   uses: SonarSource/sonarqube-scan-action@v5
       #   env:
