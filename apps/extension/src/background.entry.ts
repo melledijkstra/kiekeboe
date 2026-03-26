@@ -8,8 +8,6 @@ import { settings } from '@/settings/index.svelte'
 import { findExtensionTab, getActiveTab, isHomepageUrl } from '@/background/utils'
 import { trimCache } from './background/image-cache'
 
-const UNSPLASH_IMAGE_DOMAIN = 'https://images.unsplash.com'
-
 declare const self: ServiceWorkerGlobalScope;
 
 export const logger = new Logger('background')
@@ -65,24 +63,6 @@ browser.commands.onCommand.addListener(async (command) => {
 browser.notifications.onClicked.addListener((notificationId) => {
   logger.log('Notification clicked:', notificationId)
   browser.tabs.create({ url: '/index.html' })
-})
-
-self.addEventListener('fetch', (event) => {
-  const url = event.request.url;
-
-  if (url.startsWith(UNSPLASH_IMAGE_DOMAIN)) {
-    event.respondWith((async () => {
-      const imageCache = await caches.open('image-cache')
-      const match = await imageCache.match(event.request)
-      if (match) {
-        logger.log('Serving cached image:', event.request.url)
-        return match
-      }
-      const response = await fetch(event.request)
-      imageCache.put(event.request, response.clone())
-      return response
-    })())
-  }
 })
 
 self.addEventListener('install', () => {

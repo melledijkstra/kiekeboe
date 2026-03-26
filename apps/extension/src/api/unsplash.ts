@@ -64,33 +64,76 @@ export class UnsplashClient implements ILogger {
     }
 
     await this.cache.setNextImageInfo(next)
+
+    // Pre-cache the next image
+    try {
+      const imageCache = await caches.open('image-cache')
+      const fetchResponse = await fetch(next.url)
+      if (fetchResponse.ok) {
+        await imageCache.put(next.url, fetchResponse)
+      }
+    } catch (e) {
+      this.logger.error('Failed to pre-cache next image:', e)
+    }
+
     return next
+  }
+
+  private async getImageUrlFromCacheOrFetch(url: string): Promise<string> {
+    try {
+      const imageCache = await caches.open('image-cache')
+      const match = await imageCache.match(url)
+      if (match) {
+        this.logger.log('Serving image from Cache API:', url)
+        const blob = await match.blob()
+        return URL.createObjectURL(blob)
+      }
+
+      this.logger.log('Image not in Cache API, fetching:', url)
+      const response = await fetch(url)
+      if (response.ok) {
+        const cacheResponse = response.clone()
+        await imageCache.put(url, cacheResponse)
+        const blob = await response.blob()
+        return URL.createObjectURL(blob)
+      }
+    } catch (error) {
+      this.logger.error('Failed to get image from cache or fetch:', error)
+    }
+    return url
   }
 
   async getDailyImage(): Promise<string | undefined> {
     const today = formatDate(new Date())
     const cached = await this.cache.getDailyImageInfo()
 
+    let imageUrl = undefined
+
     if (cached && cached.date === today) {
       this.logger.log('retrieved daily image from cache')
-      return cached.url
+      imageUrl = cached.url
+    } else {
+      const next = await this.cache.getNextImageInfo()
+      if (next) {
+        this.logger.log('next image exists, use that one instead')
+        await this.cache.setDailyImageInfo({ ...next, date: today })
+        await this.cache.clearNextImage()
+        this.retrieveNextImage()
+        imageUrl = next.url
+      } else {
+        this.logger.log('no cached image found, fetching new one')
+        const data = await this.fetchUnsplashImage()
+        const daily: ImageInfo = { id: data.id, url: data.urls.full, date: today }
+        await this.cache.setDailyImageInfo(daily)
+        this.retrieveNextImage()
+        imageUrl = daily.url
+      }
     }
 
-    const next = await this.cache.getNextImageInfo()
-    if (next) {
-      this.logger.log('next image exists, use that one instead')
-      await this.cache.setDailyImageInfo({ ...next, date: today })
-      await this.cache.clearNextImage()
-      this.retrieveNextImage()
-      return next.url
+    if (imageUrl) {
+      return this.getImageUrlFromCacheOrFetch(imageUrl)
     }
-
-    this.logger.log('no cached image found, fetching new one')
-    const data = await this.fetchUnsplashImage()
-    const daily: ImageInfo = { id: data.id, url: data.urls.full, date: today }
-    await this.cache.setDailyImageInfo(daily)
-    this.retrieveNextImage()
-    return daily.url
+    return undefined
   }
 
   async refreshDailyImage(): Promise<string | undefined> {
