@@ -114,20 +114,21 @@ export class UnsplashClient implements ILogger {
       imageUrl = cached.url
     } else {
       const next = await this.cache.getNextImageInfo()
+      let dailyImageInfo: ImageInfo
+
       if (next) {
         this.logger.log('next image exists, use that one instead')
-        await this.cache.setDailyImageInfo({ ...next, date: today })
+        dailyImageInfo = { ...next, date: today }
         await this.cache.clearNextImage()
-        this.retrieveNextImage()
-        imageUrl = next.url
       } else {
         this.logger.log('no cached image found, fetching new one')
         const data = await this.fetchUnsplashImage()
-        const daily: ImageInfo = { id: data.id, url: data.urls.full, date: today }
-        await this.cache.setDailyImageInfo(daily)
-        this.retrieveNextImage()
-        imageUrl = daily.url
+        dailyImageInfo = { id: data.id, url: data.urls.full, date: today }
       }
+
+      await this.cache.setDailyImageInfo(dailyImageInfo)
+      this.retrieveNextImage()
+      imageUrl = dailyImageInfo.url
     }
 
     if (imageUrl) {
