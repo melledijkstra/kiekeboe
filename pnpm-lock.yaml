@@ -53,6 +53,15 @@ importers:
       '@mdi/js':
         specifier: ^7.4.47
         version: 7.4.47
+      '@melledijkstra/auth':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@melledijkstra/extension':
+        specifier: file:.yalc/@melledijkstra/extension
+        version: file:apps/extension/.yalc/@melledijkstra/extension
+      '@melledijkstra/toolbox':
+        specifier: ^1.0.0
+        version: 1.0.0
       bits-ui:
         specifier: ^2.8.10
         version: 2.8.12(@internationalized/date@3.8.2)(svelte@5.39.4)
@@ -495,6 +504,21 @@ packages:
   '@mdi/js@7.4.47':
     resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
+  '@melledijkstra/auth@1.0.0':
+    resolution: {integrity: sha512-ayS0rjmFXe0lOt9XFj6rfu+E/p8MZFfoNFqNshxAVHgFQn96g4MXQzmVuBh76We57ecVlcwb4JGAWxA6tipiUA==}
+
+  '@melledijkstra/config@1.0.0':
+    resolution: {integrity: sha512-/EuEYDa5s7vkFHVOvOSH9BsDAlfUCHDA2n1RIjscm4xd6ayi7Wf+G+dpOr3nWytLRX7m2vRl/flqGFYnux33zw==}
+
+  '@melledijkstra/extension@file:apps/extension/.yalc/@melledijkstra/extension':
+    resolution: {directory: apps/extension/.yalc/@melledijkstra/extension, type: directory}
+
+  '@melledijkstra/storage@1.0.0':
+    resolution: {integrity: sha512-M312AP9efjMBFqZTSQObSlze8/IrjokuiIK+EWH7sOCRhQTgjgz97lf2/A1vORhh2NOmDwBys3VhjJnBHMTh1A==}
+
+  '@melledijkstra/toolbox@1.0.0':
+    resolution: {integrity: sha512-ys6ym3H3a4P1pfrWJYotz2tvpM5zVW2271hRf8BQEI7J4QdOlgFKr486e7VOGKCKMV6h9q/GYijaKybK7EXYjA==}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -514,6 +538,24 @@ packages:
     resolution: {integrity: sha512-1SUf/Cg2GzGDyaf15aR9St9TWlb+XvbZXWpDx8YKs7MLzMH/BCeopv+y9vzrzgkfykCGuWOlSu3mZhj2+FQcrg==}
     engines: {node: '>=10'}
     deprecated: This functionality has been moved to @npmcli/fs
+
+  '@oslojs/asn1@1.0.0':
+    resolution: {integrity: sha512-zw/wn0sj0j0QKbIXfIlnEcTviaCzYOY3V5rAyjR6YtOByFtJiT574+8p9Wlach0lZH9fddD4yb9laEAIl4vXQA==}
+
+  '@oslojs/binary@1.0.0':
+    resolution: {integrity: sha512-9RCU6OwXU6p67H4NODbuxv2S3eenuQ4/WFLrsq+K/k682xrznH5EVWA7N4VFk9VYVcbFtKqur5YQQZc0ySGhsQ==}
+
+  '@oslojs/crypto@1.0.1':
+    resolution: {integrity: sha512-7n08G8nWjAr/Yu3vu9zzrd0L9XnrJfpMioQcvCMxBIiF5orECHe5/3J0jmXRVvgfqMm/+4oxlQ+Sq39COYLcNQ==}
+
+  '@oslojs/encoding@0.4.1':
+    resolution: {integrity: sha512-hkjo6MuIK/kQR5CrGNdAPZhS01ZCXuWDRJ187zh6qqF2+yMHZpD9fAYpX8q2bOO6Ryhl3XpCT6kUX76N8hhm4Q==}
+
+  '@oslojs/encoding@1.1.0':
+    resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
+
+  '@oslojs/jwt@0.2.0':
+    resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
 
   '@rollup/rollup-android-arm-eabi@4.45.1':
     resolution: {integrity: sha512-NEySIFvMY0ZQO+utJkgoMiCAjMrGvnbDLHvcmlA33UXJpYBCvlBEbMMtV837uCkS+plG2umfhn0T5mMAxGrlRA==}
@@ -1002,6 +1044,9 @@ packages:
 
   aproba@2.1.0:
     resolution: {integrity: sha512-tLIEcj5GuR2RSTnxNKdkK0dJ/GrC7P38sUkiDmDuHfsHmbagTFAxDVIBltoklXEVIQ/f14IL8IMJ5pn9Hez1Ew==}
+
+  arctic@3.7.0:
+    resolution: {integrity: sha512-ZMQ+f6VazDgUJOd+qNV+H7GohNSYal1mVjm5kEaZfE2Ifb7Ss70w+Q7xpJC87qZDkMZIXYf0pTIYZA0OPasSbw==}
 
   are-we-there-yet@3.0.1:
     resolution: {integrity: sha512-QZW4EDmGwlYur0Yyf/b2uGucHQMa8aFUP7eu9ddR73vvhFyt4V0Vl3QHPcTNJ8l6qYOBdxgXdnBXQrHilfRQBg==}
@@ -3352,6 +3397,27 @@ snapshots:
 
   '@mdi/js@7.4.47': {}
 
+  '@melledijkstra/auth@1.0.0':
+    dependencies:
+      '@melledijkstra/storage': 1.0.0
+      '@melledijkstra/toolbox': 1.0.0
+      arctic: 3.7.0
+
+  '@melledijkstra/config@1.0.0': {}
+
+  '@melledijkstra/extension@file:apps/extension/.yalc/@melledijkstra/extension':
+    dependencies:
+      '@melledijkstra/auth': 1.0.0
+      '@melledijkstra/config': 1.0.0
+      '@melledijkstra/storage': 1.0.0
+      '@melledijkstra/toolbox': 1.0.0
+
+  '@melledijkstra/storage@1.0.0':
+    dependencies:
+      '@melledijkstra/toolbox': 1.0.0
+
+  '@melledijkstra/toolbox@1.0.0': {}
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -3375,6 +3441,25 @@ snapshots:
       mkdirp: 1.0.4
       rimraf: 3.0.2
     optional: true
+
+  '@oslojs/asn1@1.0.0':
+    dependencies:
+      '@oslojs/binary': 1.0.0
+
+  '@oslojs/binary@1.0.0': {}
+
+  '@oslojs/crypto@1.0.1':
+    dependencies:
+      '@oslojs/asn1': 1.0.0
+      '@oslojs/binary': 1.0.0
+
+  '@oslojs/encoding@0.4.1': {}
+
+  '@oslojs/encoding@1.1.0': {}
+
+  '@oslojs/jwt@0.2.0':
+    dependencies:
+      '@oslojs/encoding': 0.4.1
 
   '@rollup/rollup-android-arm-eabi@4.45.1':
     optional: true
@@ -3889,6 +3974,12 @@ snapshots:
 
   aproba@2.1.0:
     optional: true
+
+  arctic@3.7.0:
+    dependencies:
+      '@oslojs/crypto': 1.0.1
+      '@oslojs/encoding': 1.1.0
+      '@oslojs/jwt': 0.2.0
 
   are-we-there-yet@3.0.1:
     dependencies:

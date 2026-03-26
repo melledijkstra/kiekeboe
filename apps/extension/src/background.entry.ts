@@ -1,11 +1,11 @@
 /// <reference lib="webworker" />
 import browser from 'webextension-polyfill'
+import { isHomepageUrl, getActiveTab, findExtensionTab } from '@melledijkstra/extension'
 import { FocusService } from '@/services/focus'
 import { TimeToolsService } from '@/services/time-tools'
 import { Logger } from '@/logger'
 import { commandCenterOpen } from '@/modules/command-center/messages'
 import { settings } from '@/settings/index.svelte'
-import { findExtensionTab, getActiveTab, isHomepageUrl } from '@/background/utils'
 import { trimCache } from './background/image-cache'
 
 const UNSPLASH_IMAGE_DOMAIN = 'https://images.unsplash.com'
