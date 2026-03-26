@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from '@/components/atoms/Button.svelte'
-  import { Timer } from '@/time/timer'
+  import { Timer } from '@melledijkstra/toolbox'
   import { formatSeconds } from '@/time/utils'
   import { onMount } from 'svelte'
 

@@ -9,3 +9,7 @@ node_modules/
 # storybook
 storybook-static/
 storybook.log
+
+# yalc for development
+.yalc/
+yalc.lock
