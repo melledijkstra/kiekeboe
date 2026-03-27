@@ -9,3 +9,8 @@ node_modules/
 # storybook
 storybook-static/
 storybook.log
+debug-storybook.log
+
+# yalc
+.yalc/
+yalc.lock
