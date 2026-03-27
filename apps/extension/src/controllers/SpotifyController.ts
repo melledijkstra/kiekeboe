@@ -107,7 +107,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
     this.player.addListener('player_state_changed', (state) => this.playerStateChanged(state))
 
     this.player.addListener('playback_error', ({ message }) => {
-      console.error('Playback error', message)
+      this.logger.error('Playback error', message)
     })
 
     this.player.connect().then((success) => {
@@ -207,7 +207,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
   }
 
   async seek(position: number) {
-    console.log('Seeking to position:', position, this.isPlayerActive)
+    this.logger.log('Seeking to position:', position, this.isPlayerActive)
     if (this.isPlayerActive) {
       await this.player?.seek(position)
     } else {
