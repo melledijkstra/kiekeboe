@@ -25,7 +25,3 @@ jobs:
         run: pnpm lint
       - name: Test Packages
         run: pnpm test
-      # - name: SonarQube Scan
-      #   uses: SonarSource/sonarqube-scan-action@v5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
