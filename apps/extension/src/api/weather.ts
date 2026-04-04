@@ -3,6 +3,7 @@ import { Logger } from '@/logger'
 import { getCurrentPosition } from '@/api/geolocation'
 import type { WeatherResponse } from '@/api/definitions/openweathermap'
 import { ApiKeyBaseClient } from './keybaseclient'
+import { appState } from '@/app-state.svelte'
 
 export type WeatherInfo = {
   location: string
@@ -38,8 +39,11 @@ export class WeatherClient extends ApiKeyBaseClient {
 
     if (!position) {
       const pos = await getCurrentPosition()
-      lat = pos?.[0]
-      lon = pos?.[1]
+      lat = pos?.lat
+      lon = pos?.lon
+      if (pos?.locationInfo) {
+        appState.geolocation = pos.locationInfo
+      }
     }
 
     const response = await this.request<WeatherResponse>(
