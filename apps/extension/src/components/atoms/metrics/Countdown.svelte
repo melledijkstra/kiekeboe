@@ -6,7 +6,7 @@
   const { metric }: { metric: CountDown } = $props()
 </script>
 
-<div transition:fade class="text-white rounded-lg text-right">
-  <p class="text-base">{calculateDays(metric.date)}d</p>
-  <p class="text-xs">{metric.name}</p>
+<div transition:fade class="dark:text-white text-black rounded-lg">
+  <p class="text-sm font-bold truncate leading-tight">{metric.name}</p>
+  <p class="text-xs opacity-70 truncate">{calculateDays(metric.date)} days remaining</p>
 </div>
