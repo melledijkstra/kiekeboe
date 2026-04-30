@@ -15,6 +15,7 @@
     "start": "turbo run start",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
     "server": "turbo run --filter=@odysea/server",
