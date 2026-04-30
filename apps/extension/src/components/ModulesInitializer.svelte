@@ -7,15 +7,23 @@
 
   onMount(() => {
     console.log('ModulesInitializer mounted')
-    settingsStore.subscribe(async (settings) => {
-      for (const [moduleName, moduleEnabled] of Object.entries(settings.modules)) {
-        if (moduleEnabled) {
-          const module = await loadModule(moduleName as ModuleID)
-          if (module) {
-            modules.push(module)
-          }
+    const unsub = settingsStore.subscribe(async (settings) => {
+      const modulePromises = Object.entries(settings.modules)
+        .filter(([_, enabled]) => enabled)
+        .map(([name]) => loadModule(name as ModuleID))
+
+      const loadedModules = await Promise.allSettled(modulePromises)
+
+      // Update modules array atomically to trigger Svelte reactivity correctly if needed
+      // though $state handles array mutations, but it's cleaner to reset it if it's meant to represent current settings
+      modules.length = 0
+      for (const module of loadedModules) {
+        if (module) {
+          modules.push(module)
         }
       }
-    })  
+    })
+
+    return unsub
   })
 </script>
