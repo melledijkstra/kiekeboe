@@ -27,7 +27,7 @@ export const test = base.extend<{
     if (!serviceWorker)
       serviceWorker = await context.waitForEvent('serviceworker');
 
-    const extensionId = serviceWorker.url().split('/')[2];
+    const extensionId = new URL(serviceWorker.url()).hostname;
     await use(extensionId);
   },
 });
