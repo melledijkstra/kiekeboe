@@ -12,7 +12,7 @@
         .filter(([_, enabled]) => enabled)
         .map(([name]) => loadModule(name as ModuleID))
 
-      const loadedModules = await Promise.all(modulePromises)
+      const loadedModules = await Promise.allSettled(modulePromises)
 
       // Update modules array atomically to trigger Svelte reactivity correctly if needed
       // though $state handles array mutations, but it's cleaner to reset it if it's meant to represent current settings
