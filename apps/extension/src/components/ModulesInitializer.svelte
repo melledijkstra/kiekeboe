@@ -8,14 +8,17 @@
   onMount(() => {
     console.log('ModulesInitializer mounted')
     settingsStore.subscribe(async (settings) => {
-      for (const [moduleName, moduleEnabled] of Object.entries(settings.modules)) {
-        if (moduleEnabled) {
-          const module = await loadModule(moduleName as ModuleID)
-          if (module) {
-            modules.push(module)
-          }
+      const modulePromises = Object.entries(settings.modules)
+        .filter(([_, enabled]) => enabled)
+        .map(([name]) => loadModule(name as ModuleID))
+
+      const loadedModules = await Promise.all(modulePromises)
+
+      for (const module of loadedModules) {
+        if (module) {
+          modules.push(module)
         }
       }
-    })  
+    })
   })
 </script>
