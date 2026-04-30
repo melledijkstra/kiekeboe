@@ -1,6 +1,17 @@
 <script lang="ts">
   import Icon from '@/components/atoms/Icon.svelte'
-  import { mdiArrowLeft, mdiDelete, mdiPin, mdiPinOff, mdiPlusCircle, mdiPlus } from '@mdi/js'
+  import {
+    mdiArrowLeft,
+    mdiDelete,
+    mdiPin,
+    mdiPinOff,
+    mdiPlusCircle,
+    mdiPlus,
+    mdiClockOutline,
+    mdiCalendarClock,
+    mdiNumeric,
+    mdiBedOutline,
+  } from '@mdi/js'
   import CountdownForm from './countdown/Form.svelte'
   import WorldClockForm from './world-clocks/Form.svelte'
   import Button from '@/components/atoms/Button.svelte'
@@ -9,12 +20,13 @@
   import WorldClock from '@/components/atoms/metrics/WorldClock.svelte'
   import { Popover } from 'bits-ui'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
+  import IconButton from '@/components/atoms/IconButton.svelte'
 
-  type FormType = 'countdown' | 'worldclock' | 'sleep' | 'counter';
+  type FormType = 'countdown' | 'worldclock' | 'sleep' | 'counter'
 
   let isOpen = $state(false)
 
-  let currentForm = $state<FormType>();
+  let currentForm = $state<FormType>()
 
   function showForm(formType: FormType) {
     currentForm = formType
@@ -25,7 +37,7 @@
   }
 
   function addSleepTracker() {
-    setIsSleepMetricEnabled(true);
+    setIsSleepMetricEnabled(true)
   }
 </script>
 
@@ -41,53 +53,119 @@
     <Icon path={mdiPlus} size={24} class="mx-auto" />
     <span class="text-xs">Add</span>
   </Popover.Trigger>
-  <PopPanel>
+  <PopPanel panelProps={{ size: 'small' }}>
     {#if currentForm}
-      <button class="float-left" onclick={() => (currentForm = undefined)}>
-        <Icon path={mdiArrowLeft} size={20} />
-      </button>
+      <IconButton
+        icon={mdiArrowLeft}
+        size={20}
+        onclick={() => (currentForm = undefined)}
+        class="mb-2"
+      />
     {/if}
     {#if !currentForm}
-      <p class="text-lg text-center mb-4 font-bold">Add Metric</p>
-      <div class="flex flex-row justify-between gap-4 items-stretch">
-        <button onclick={() => showForm('countdown')}>
-          <Icon path={mdiPlusCircle} />
-          Countdown
+      <p class="text-lg text-center mb-6 font-bold dark:text-white text-black">
+        Add Metric
+      </p>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <button
+          onclick={() => showForm('countdown')}
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 group"
+        >
+          <Icon
+            path={mdiCalendarClock}
+            size={24}
+            class="mb-2 text-primary group-hover:scale-110 transition-transform"
+          />
+          <span class="text-xs font-medium dark:text-white text-black"
+            >Countdown</span
+          >
         </button>
-        <button onclick={() => showForm('worldclock')}>
-          <Icon path={mdiPlusCircle} />
-          World Clock
+        <button
+          onclick={() => showForm('worldclock')}
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 group"
+        >
+          <Icon
+            path={mdiClockOutline}
+            size={24}
+            class="mb-2 text-primary group-hover:scale-110 transition-transform"
+          />
+          <span class="text-xs font-medium dark:text-white text-black"
+            >World Clock</span
+          >
         </button>
-        <button onclick={() => showForm('counter')}>
-          <Icon path={mdiPlusCircle} />
-          Counter
+        <button
+          onclick={() => showForm('counter')}
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 group"
+        >
+          <Icon
+            path={mdiNumeric}
+            size={24}
+            class="mb-2 text-primary group-hover:scale-110 transition-transform"
+          />
+          <span class="text-xs font-medium dark:text-white text-black"
+            >Counter</span
+          >
         </button>
-        <button onclick={() => showForm('sleep')}>
-          <Icon path={mdiPlusCircle} />
-          Sleep Metrics
+        <button
+          onclick={() => showForm('sleep')}
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 group"
+        >
+          <Icon
+            path={mdiBedOutline}
+            size={24}
+            class="mb-2 text-primary group-hover:scale-110 transition-transform"
+          />
+          <span class="text-xs font-medium dark:text-white text-black"
+            >Sleep</span
+          >
         </button>
       </div>
-      <hr class="my-2" />
-      <!-- list of saved metrics -->
-      {#each trackers.countdowns as countdown, i (i)}
-        <div class="flex flex-row justify-between gap-2">
-          <Countdown metric={countdown} />
-          <button onclick={() => trackers.deleteCountdown(i)} class="cursor-pointer">
-            <Icon path={mdiDelete} size={20} />
-          </button>
+
+      {#if trackers.countdowns.length > 0 || trackers.worldClocks.length > 0}
+        <div class="space-y-2 mt-4 pt-4 border-t border-white/10">
+          <p class="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">Active Metrics</p>
+          {#each trackers.countdowns as countdown, i (i)}
+            <div
+              class="flex flex-row items-center justify-between gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group/item"
+            >
+              <div class="flex-1 min-w-0">
+                <Countdown metric={countdown} />
+              </div>
+              <div class="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                <IconButton
+                  icon={mdiDelete}
+                  size={18}
+                  onclick={() => trackers.deleteCountdown(i)}
+                  class="hover:text-red-400"
+                />
+              </div>
+            </div>
+          {/each}
+          {#each trackers.worldClocks as worldClock, i (i)}
+            <div
+              class="flex flex-row items-center justify-between gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group/item"
+            >
+              <div class="flex-1 min-w-0">
+                <WorldClock metric={worldClock} />
+              </div>
+              <div class="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                <IconButton
+                  icon={worldClock.pinned ? mdiPin : mdiPinOff}
+                  size={18}
+                  onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)}
+                  class={worldClock.pinned ? 'text-primary' : ''}
+                />
+                <IconButton
+                  icon={mdiDelete}
+                  size={18}
+                  onclick={() => trackers.deleteWorldClock(i)}
+                  class="hover:text-red-400"
+                />
+              </div>
+            </div>
+          {/each}
         </div>
-      {/each}
-      {#each trackers.worldClocks as worldClock, i (i)}
-        <div class="flex flex-row justify-between gap-2">
-          <WorldClock metric={worldClock} />
-          <button onclick={() => trackers.deleteWorldClock(i)} class="cursor-pointer">
-            <Icon path={mdiDelete} size={20} />
-          </button>
-          <button onclick={() => trackers.pinWorldClock(i, !worldClock.pinned)} class="cursor-pointer">
-            <Icon path={worldClock.pinned ? mdiPin : mdiPinOff} size={20} />
-          </button>
-        </div>
-      {/each}
+      {/if}
     {:else if currentForm === 'countdown'}
       <h2 class="text-lg mb-3">Countdowns 🗓️</h2>
       <CountdownForm onSubmitted={backToMain} />

@@ -23,7 +23,7 @@
 </script>
 
 <form
-  class="mt-5 flex flex-col gap-1 text-white text-left"
+  class="mt-4 flex flex-col gap-4 text-left"
   onsubmit={(e) => {
     e.preventDefault()
     trackers.addCountdown(inputName, inputDate, inputPinned)
@@ -31,26 +31,27 @@
     resetForm()
   }}
 >
-  <Input
-    id="countdown-date"
-    label="Date"
-    type="date"
-    required
-    bind:value={inputDate}
-  />
-  <Input
-    label="Name"
-    class="mb-2"
-    placeholder="Countdown Name"
-    required
-    type="text"
-    bind:value={inputName}
-  />
-  <Toggle bind:checked={inputPinned} label="Pin?" />
-  <button
-    class="flex items-center justify-center gap-1 mt-2 py-2 px-3 bg-slate-800 hover:bg-slate-500 rounded-sm cursor-pointer"
+  <div class="space-y-3">
+    <Input
+      id="countdown-date"
+      label="Date"
+      type="date"
+      required
+      bind:value={inputDate}
+    />
+    <Input
+      label="Name"
+      placeholder="e.g. Vacation"
+      required
+      type="text"
+      bind:value={inputName}
+    />
+    <Toggle bind:checked={inputPinned} label="Pin to Top Bar" />
+  </div>
+  <Button
+    class="w-full justify-center mt-2"
     type="submit"
   >
-    <Icon size={16} path={mdiCalendarPlusOutline} /> Add Countdown
-  </button>
+    <Icon size={18} path={mdiCalendarPlusOutline} class="mr-2" /> Add Countdown
+  </Button>
 </form>
