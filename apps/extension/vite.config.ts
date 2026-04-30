@@ -58,6 +58,7 @@ const defaultConfig = defineConfig(({ mode }) => ({
   test: {
     environment: 'jsdom',
     setupFiles: ['./test-setup.ts'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/tests/e2e/**'],
   }
 }))
 

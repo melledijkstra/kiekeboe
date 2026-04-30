@@ -16,6 +16,7 @@
     "test": "turbo run test --filter=!@odysea/serverless",
     "test:all": "turbo run test",
     "test:watch": "turbo run test:watch",
+    "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
     "server": "turbo run --filter=@odysea/server",
