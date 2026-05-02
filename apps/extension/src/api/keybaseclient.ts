@@ -10,10 +10,6 @@ export class ApiKeyBaseClient extends BaseClient {
   ) {
     super(baseUrl)
 
-    if (!apiKey) {
-      throw new Error('ApiKeyBaseClient needs to be instantiated with a valid API key.')
-    }
-
     this.apiKey = apiKey
 
     if (this.constructor === ApiKeyBaseClient) {
@@ -27,8 +23,12 @@ export class ApiKeyBaseClient extends BaseClient {
     endpoint: string,
     config?: RequestInit,
   ): Promise<T | undefined> {
+    const key = this.getApiKey()
+    if (!key) {
+      throw new Error('API Key is missing')
+    }
     const searchParams = new URLSearchParams(endpoint.split('?')[1] || '');
-    searchParams.set(this.urlQueryKeyName, this.apiKey)
+    searchParams.set(this.urlQueryKeyName, key)
     return super.request(endpoint, config, searchParams);
   }
 
