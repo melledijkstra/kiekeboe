@@ -6,7 +6,6 @@
   import MetricsPanel from '@/modules/trackers/MetricsPanel.svelte'
   import Account from './Account.svelte'
   import Metrics from './MetricsBar.svelte'
-  import RaspberryPi from '../RaspberryPi.svelte'
   import MenuButton from '../atoms/MenuButton.svelte'
 </script>
 
@@ -28,7 +27,6 @@
   <div
     class="float-left flex flex-row items-center justify-start align-middle gap-5"
   >
-    <RaspberryPi />
     <MenuButton
       onclick={() => switchAppMode('default')}
       tooltip="Home"

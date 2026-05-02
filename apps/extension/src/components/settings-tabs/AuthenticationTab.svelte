@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { settingsStore, settings } from '@/settings/index.svelte'
   import AuthButton from '@/components/AuthButton.svelte'
   import { log } from '@/logger'
   import { AuthClient } from '@/oauth2/auth'
@@ -8,6 +9,8 @@
     FitbitAuthProvider,
     type OauthProvider
   } from '@/oauth2/providers'
+  import Input from '@/components/atoms/Input.svelte'
+   // import Button from '@/components/atoms/Button.svelte'
 
   const clients = {
     google: new AuthClient(new GoogleAuthProvider()),
@@ -38,6 +41,30 @@
     authState[provider] = false
   }
 </script>
+
+<h1 class="text-xl mb-3">API Keys</h1>
+<div class="flex flex-col gap-3 mb-6">
+  <Input
+    label="OpenWeather API Key"
+    bind:value={$settingsStore.apiKeys.weather}
+    onchange={() => settings.saveSettingsToStorage()}
+  />
+  <Input
+    label="Google Client ID"
+    bind:value={$settingsStore.apiKeys.google}
+    onchange={() => settings.saveSettingsToStorage()}
+  />
+  <Input
+    label="Spotify Client ID"
+    bind:value={$settingsStore.apiKeys.spotify}
+    onchange={() => settings.saveSettingsToStorage()}
+  />
+  <Input
+    label="Fitbit Client ID"
+    bind:value={$settingsStore.apiKeys.fitbit}
+    onchange={() => settings.saveSettingsToStorage()}
+  />
+</div>
 
 <h1 class="text-xl mb-3">Authentication</h1>
 {#await retrieveAuthState()}

@@ -20,6 +20,12 @@ export type SettingsState = {
     dailyImageQuery?: string
     showCurrentTask: boolean
   }
+  apiKeys: {
+    weather?: string
+    google?: string
+    spotify?: string
+    fitbit?: string
+  }
 }
 
 const SETTINGS_KEY = 'settings' as const
@@ -47,7 +53,8 @@ export const DEFAULT_SETTINGS: SettingsState = {
     showCurrentTask: false,
     dailyImageQuery: 'landscape',
     showQuotes: true
-  }
+  },
+  apiKeys: {}
 }
 
 export const settingsStore = writable<SettingsState>(DEFAULT_SETTINGS)
