@@ -1,10 +1,10 @@
-# Kiekeboe
+# Mizu
 
 ## Overview
 
-Kiekeboe is a personal homepage extension that enhances your new tab page with a variety of productivity tools. It is designed to help you stay organized and efficient by providing quick access to essential features right from your browser's new tab.
+Mizu is a personal homepage extension that enhances your new tab page with a variety of productivity tools. It is designed to help you stay organized and efficient by providing quick access to essential features right from your browser's new tab.
 
-![Impression of extension](./docs/impression-kiekeboe-extension.png)
+![Impression of extension](./docs/impression-mizu-extension.png)
 
 ## Features
 
@@ -31,7 +31,7 @@ Kiekeboe is a personal homepage extension that enhances your new tab page with a
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/melledijkstra/kiekeboe.git
+git clone https://github.com/melledijkstra/mizu.git
 ```
 
 2. Install and build:

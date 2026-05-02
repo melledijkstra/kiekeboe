@@ -18,7 +18,7 @@ export const playlists: Playlist[] = [
     ],
     "name": "💃🏽🕺🏽 Salsa ",
     "owner": {
-      "display_name": "Melle Dijkstra",
+      "display_name": "John Doe",
       "external_urls": {
         "spotify": "https://open.spotify.com/user/1187898094"
       },
@@ -54,7 +54,7 @@ export const playlists: Playlist[] = [
     ],
     "name": "🔥 Afrobeats",
     "owner": {
-      "display_name": "Melle Dijkstra",
+      "display_name": "John Doe",
       "external_urls": {
         "spotify": "https://open.spotify.com/user/1187898094"
       },
@@ -90,7 +90,7 @@ export const playlists: Playlist[] = [
     ],
     "name": "🎹 Piano",
     "owner": {
-      "display_name": "Melle Dijkstra",
+      "display_name": "John Doe",
       "external_urls": {
         "spotify": "https://open.spotify.com/user/1187898094"
       },
