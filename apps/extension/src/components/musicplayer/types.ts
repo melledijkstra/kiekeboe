@@ -34,6 +34,7 @@ declare module 'MusicPlayer' {
     title: string;
     description?: string; // optional
     coverArtUrl?: string; // optional
+    trackCount?: number; // optional
     type: 'playlist'
   }
 
@@ -54,6 +55,8 @@ declare module 'MusicPlayer' {
     setVolume(volume: number): void;
     getPlaybackState(): Promise<PlaybackState>;
     activateDevice?(deviceId: string): void;
+    switchRepeatMode?(repeatMode: number | string): Promise<void>;
+    toggleShuffle?(enabled?: boolean): Promise<void>;
   }
 
   type PlaybackState = {
@@ -62,5 +65,6 @@ declare module 'MusicPlayer' {
     volume: number; // 0-100
     position_ms: number; // in milliseconds
     shuffle: boolean;
+    repeatMode?: number; // 0, 1, 2
   }
 }
