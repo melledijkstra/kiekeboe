@@ -51,7 +51,8 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     if (!this.api) {
       throw new Error('Spotify API client is not initialized');
     }
-    return await this.api?.toggleRepeatMode(repeatMode)
+    await this.api?.toggleRepeatMode(repeatMode);
+    await this.getPlaybackState();
   }
 
   async togglePlayPause(): Promise<void> {

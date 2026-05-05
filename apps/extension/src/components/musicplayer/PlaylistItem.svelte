@@ -30,6 +30,6 @@
       class="truncate hover:underline cursor-pointer"
       onclick={() => onPlaylistSelected(playlist)}>{playlist.title}</button
     >
-    <p class="text-xs italic">X songs</p>
+    <p class="text-xs italic">{playlist.trackCount ?? 0} songs</p>
   </div>
 </div>
