@@ -22,6 +22,7 @@
     "serverless": "turbo run --filter=@odysea/serverless",
     "storybook": "turbo run storybook",
     "storybook:build": "turbo run storybook:build",
+    "local:ci": "pnpm build && pnpm lint && pnpm test:all",
     "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && pnpm cache delete"
   },
   "engines": {
@@ -40,7 +41,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0",
     "@types/node": "^24.0.10",
-    "vitest": "^4.1.3"
+    "vitest": "^4.1.6"
   },
   "repository": {
     "type": "git",
