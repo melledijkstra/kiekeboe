@@ -75,6 +75,16 @@ describe('time/utils.ts', () => {
     it('should handle large number of seconds', () => {
       expect(formatSeconds(3661)).toBe('61:01')
     })
+
+    it('should handle fractional seconds', () => {
+      // Current implementation returns "0:1.5" for 1.5s, which is inconsistent with millisecondsToTime
+      expect(formatSeconds(1.5)).toBe('0:01')
+    })
+
+    it('should handle negative seconds', () => {
+      // Current implementation returns "-1:-5" for -5s, which is likely a bug
+      expect(formatSeconds(-5)).toBe('-0:05')
+    })
   })
 
   describe('millisecondsToTime', () => {
