@@ -7,7 +7,7 @@ import { Logger } from '@/logger'
 
 export const logger = new Logger('db')
 
-export interface PersonalExtensionDB extends DBSchema {
+export interface OdyseaExtensionDB extends DBSchema {
   habits: {
     key: string
     value: Habit
@@ -25,10 +25,10 @@ export interface PersonalExtensionDB extends DBSchema {
   }
 }
 
-type StoreName = StoreNames<PersonalExtensionDB>
+type StoreName = StoreNames<OdyseaExtensionDB>
 
 async function createSimpleDB(
-  db: IDBPDatabase<PersonalExtensionDB>,
+  db: IDBPDatabase<OdyseaExtensionDB>,
   dbName: StoreName
 ) {
   if (!db.objectStoreNames.contains(dbName)) {
@@ -40,7 +40,7 @@ async function createSimpleDB(
   }
 }
 
-export const dbPromise = openDB<PersonalExtensionDB>('PersonalExtensionDB', 7, {
+export const dbPromise = openDB<OdyseaExtensionDB>('OdyseaExtensionDB', 7, {
   upgrade: async (db) => {
     await createSimpleDB(db, 'habits')
     await createSimpleDB(db, 'notes')
@@ -48,24 +48,24 @@ export const dbPromise = openDB<PersonalExtensionDB>('PersonalExtensionDB', 7, {
   }
 })
 
-export async function getAllItems<DBName extends StoreNames<PersonalExtensionDB>>(
+export async function getAllItems<DBName extends StoreNames<OdyseaExtensionDB>>(
   dbName: DBName
-): Promise<StoreValue<PersonalExtensionDB, DBName>[]> {
+): Promise<StoreValue<OdyseaExtensionDB, DBName>[]> {
   const db = await dbPromise
   return await db.getAll(dbName)
 }
 
-export async function storeInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+export async function storeInDB<DBName extends StoreNames<OdyseaExtensionDB>>(
   dbName: DBName,
-  value: StoreValue<PersonalExtensionDB, DBName>
+  value: StoreValue<OdyseaExtensionDB, DBName>
 ) {
   const db = await dbPromise
   await db.add(dbName, value)
 }
 
-export async function updateInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+export async function updateInDB<DBName extends StoreNames<OdyseaExtensionDB>>(
   dbName: DBName,
-  value: StoreValue<PersonalExtensionDB, DBName>,
+  value: StoreValue<OdyseaExtensionDB, DBName>,
   key?: string
 ) {
   console.log('updateInDB', dbName, value, key)
@@ -73,7 +73,7 @@ export async function updateInDB<DBName extends StoreNames<PersonalExtensionDB>>
   await db.put(dbName, value, key)
 }
 
-export async function deleteInDB<DBName extends StoreNames<PersonalExtensionDB>>(
+export async function deleteInDB<DBName extends StoreNames<OdyseaExtensionDB>>(
   dbName: DBName,
   id: string
 ) {

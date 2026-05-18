@@ -39,7 +39,7 @@ function isSpotifySDKLoaded(): boolean {
 
 function createPlayer(authClient: AuthClient, initialVolume: number): Spotify.Player {
   return new window.Spotify.Player({
-    name: 'Personal Homepage Player',
+    name: 'Mizu Player',
     getOAuthToken: async (callback) => {
       const token = await authClient.getAuthToken()
       if (token) {
