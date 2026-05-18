@@ -8,21 +8,24 @@ export async function trimCache() {
   const now = Date.now();
 
   // 1) Remove by age (using server Date header if present)
-  for (const req of requests) {
-    const resp = await cache.match(req);
-    if (!resp) continue;
-    const dateHdr = resp.headers.get('Date');
-    if (dateHdr) {
-      const fetchedAt = new Date(dateHdr).getTime();
-      if (now - fetchedAt > MAX_AGE_SECONDS * 1000) {
-        await cache.delete(req);
+  await Promise.all(
+    requests.map(async (req) => {
+      const resp = await cache.match(req);
+      if (!resp) return;
+      const dateHdr = resp.headers.get('Date');
+      if (dateHdr) {
+        const fetchedAt = new Date(dateHdr).getTime();
+        if (now - fetchedAt > MAX_AGE_SECONDS * 1000) {
+          await cache.delete(req);
+        }
       }
-    }
-  }
+    })
+  );
 
   // 2) Enforce max entries (oldest-first)
-  const remaining = [...await cache.keys()];
-  while (remaining.length > MAX_ENTRIES) {
-    await cache.delete(remaining.shift()!);
+  const remaining = await cache.keys();
+  if (remaining.length > MAX_ENTRIES) {
+    const toDelete = remaining.slice(0, remaining.length - MAX_ENTRIES);
+    await Promise.all(toDelete.map((req) => cache.delete(req)));
   }
 }
