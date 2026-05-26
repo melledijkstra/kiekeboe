@@ -48,6 +48,7 @@ export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => (
   title: playlist.name,
   description: playlist.description || '',
   coverArtUrl: playlist.images[0]?.url || '',
+  trackCount: playlist.tracks?.total,
   type: 'playlist'
 })
 
@@ -59,6 +60,7 @@ export const convertApiPlaybackState = (state: ApiPlaybackState): PlaybackState 
     volume: device.volume_percent ?? 0,
     position_ms: state.progress_ms,
     shuffle: state.shuffle_state,
+    repeatMode: state.repeat_state === 'off' ? 0 : state.repeat_state === 'track' ? 1 : 2,
     currentItem: convertSpotifyTrackToMPTrack(track),
   }
 }
@@ -72,7 +74,8 @@ export const convertPlayerState = (state: Spotify.PlaybackState, currentState?: 
     isPlaying: !state.paused,
     position_ms: state.position,
     volume: currentState?.volume ?? 0,
-    shuffle: currentState?.shuffle ?? false,
+    shuffle: state.shuffle ?? currentState?.shuffle ?? false,
+    repeatMode: state.repeat_mode ?? currentState?.repeatMode ?? 0,
     currentItem: {
       id: currentTrack.uri,
       uri: currentTrack.uri,

@@ -19,6 +19,7 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
   abstract activateDevice?(deviceId: string): void
   abstract getPlaybackState(): Promise<PlaybackState>
   abstract toggleShuffle(enabled?: boolean): Promise<void>
+  abstract switchRepeatMode?(repeatMode: string | number): Promise<void>
   
   protected trackEnded() {
     this.stopPlaybackLoop()

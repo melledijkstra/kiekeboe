@@ -135,9 +135,25 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
 
   async toggleRepeatMode(repeatMode: string | number): Promise<void> {
     await this.retrieveAccessToken()
-    const mode = typeof repeatMode === 'number' ? repeatMode : (repeatMode === 'off' ? 'off' : 'context')
     
-    await this.request(`/me/player/repeat?state=${mode}`, {
+    let mode = 'off'
+    
+    switch (repeatMode) {
+      case 1:
+        mode = 'track'
+        break
+      case 2:
+        mode = 'context'
+        break
+      case 0:
+        mode = 'off'
+        break
+      default:
+        mode = repeatMode as string
+        break
+    }
+    
+    await this.request(`/me/player/repeat?state=${encodeURIComponent(mode)}`, {
       method: 'PUT'
     })
   }
