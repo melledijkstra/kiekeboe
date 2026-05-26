@@ -13,10 +13,10 @@
 </script>
 
 <div
-  class="flex flex-row text-left w-full items-center p-2 hover:bg-neutral-400 rounded-sm transition text-white"
+  class="flex flex-row gap-2 w-full items-center p-2 hover:bg-neutral-400 rounded-sm transition text-white"
 >
   <button
-    class="cursor-pointer hover:opacity-30"
+    class="cursor-pointer hover:opacity-30 shrink-0"
     onclick={() => onPlaylistPlay(playlist)}
   >
     <img
@@ -25,11 +25,11 @@
       alt="Playlist cover"
     />
   </button>
-  <div class="flex flex-col ml-2 overflow-hidden text-sm">
+  <div class="flex flex-col overflow-hidden text-sm items-start">
     <button
-      class="truncate hover:underline cursor-pointer"
+      class="inline-block truncate hover:underline cursor-pointer"
       onclick={() => onPlaylistSelected(playlist)}>{playlist.title}</button
     >
-    <p class="text-xs italic">X songs</p>
+    <p class="text-xs italic">{playlist.trackCount ?? 0} songs</p>
   </div>
 </div>

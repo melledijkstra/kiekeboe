@@ -72,4 +72,8 @@ export class MockMusicPlayerController extends BaseMusicController {
   async toggleShuffle(enabled?: boolean): Promise<void> {
     this.state.playback.shuffle = enabled ?? !this.state.playback.shuffle;
   }
+
+  async switchRepeatMode(repeatMode: number | string): Promise<void> {
+    this.state.playback.repeatMode = typeof repeatMode === 'number' ? repeatMode : 0;
+  }
 }

@@ -123,7 +123,7 @@ export class Settings implements ILogger {
     return { ...DEFAULT_SETTINGS, ...storageSettings, loaded: true }
   }
 
-  async saveSettingsToStorage() {
+  saveSettingsToStorage = async () => {
     this.isLocalSettingsChange = true
     // make sure we don't save the loaded property to storage
     const settingsToStore = structuredClone(this.settingsCopy)
