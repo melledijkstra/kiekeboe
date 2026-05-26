@@ -8,7 +8,8 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ playwright: _ }, use) => {
+  // eslint-disable-next-line no-empty-pattern
+  context: async ({}, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
     const context = await chromium.launchPersistentContext('', {
