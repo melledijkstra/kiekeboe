@@ -26,7 +26,7 @@ jobs:
       - name: Test Packages
         run: pnpm test
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install chromium --with-deps
+        run: pnpm --filter @odysea/extension exec playwright install chromium --with-deps
       - name: Run E2E Tests
         run: xvfb-run pnpm test:e2e
       - name: Upload Screenshots
