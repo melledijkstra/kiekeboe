@@ -7,6 +7,7 @@ This repository hosts the code for **Odysea**, a personal productivity ecosystem
 - **`apps/extension`** – Svelte browser extension providing a customizable new‑tab page with optional modules such as Unsplash backgrounds, Google Tasks integration and more.
 - **`apps/serverless`** – Deno serverless functions (Hono) used for API calls that require secrets, e.g. Unsplash image requests.
 - **`apps/server`** – RaspberryPi Node + Express server that connects with an SQLite database via Knex to store perminent data storage.
+- **`apps/mobile`** – Flutter mobile app offering a simple interface to the server.
 
 ## Development
 

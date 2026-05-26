@@ -8,7 +8,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ }, use) => {
+  context: async ({ request: _ }, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
     const context = await chromium.launchPersistentContext('', {
@@ -27,7 +27,7 @@ export const test = base.extend<{
     if (!serviceWorker)
       serviceWorker = await context.waitForEvent('serviceworker');
 
-    const extensionId = new URL(serviceWorker.url()).hostname;
+    const extensionId = serviceWorker.url().split('/')[2];
     await use(extensionId);
   },
 });

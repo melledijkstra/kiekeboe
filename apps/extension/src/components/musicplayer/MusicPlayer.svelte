@@ -68,8 +68,6 @@
     onNextTrack={() => controller.next()}
     onSeek={(pos) => controller.seek(pos)}
     onVolumeChange={(volume) => controller.setVolume(volume)}
-    onToggleShuffle={(shuffle) => controller.toggleShuffle?.(shuffle)}
-    onSwitchRepeatMode={(mode) => controller.switchRepeatMode?.(mode)}
   />
   <Devices
     class="col-span-2"

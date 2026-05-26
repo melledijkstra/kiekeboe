@@ -13,8 +13,9 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "turbo run test --filter=!@odysea/serverless",
+    "test:all": "turbo run test",
+    "test:watch": "turbo run test:watch",
     "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
@@ -22,15 +23,14 @@
     "serverless": "turbo run --filter=@odysea/serverless",
     "storybook": "turbo run storybook",
     "storybook:build": "turbo run storybook:build",
-    "local:ci": "pnpm build && pnpm lint && pnpm test:all",
     "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && pnpm cache delete"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "prettier": "^3.8.3",
-    "@eslint/js": "^9.39.4",
+    "prettier": "^3.6.2",
+    "@eslint/js": "^9.30.1",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.1",
@@ -41,7 +41,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0",
     "@types/node": "^24.0.10",
-    "vitest": "^4.1.6"
+    "vitest": "^3.2.4"
   },
   "repository": {
     "type": "git",

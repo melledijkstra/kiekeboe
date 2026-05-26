@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Track } from 'MusicPlayer'
-  import { millisecondsToTime } from '@/time/utils'
 
   const { tracks, onTrackSelected }: {
     tracks: Track[]
@@ -12,12 +11,9 @@
   <button class="flex flex-row w-full text-left items-center p-2 hover:bg-neutral-400 cursor-pointer rounded-sm transition text-white"
        onclick={() => onTrackSelected(track)}>
     <img class="size-10 aspect-square" src={track.coverArtUrl ?? '/icons/album-cover-placeholder.png'} alt="Track cover" />
-    <div class="ml-2 overflow-hidden flex-1">
+    <div class="ml-2 overflow-hidden">
       <p class="truncate text-sm font-bold">{track.title}</p>
       <p class="truncate text-xs">{track.artist.name}</p>
-    </div>
-    <div class="ml-2 text-xs opacity-75">
-      {millisecondsToTime(track.duration_ms)}
     </div>
   </button>
 {/snippet}
