@@ -22,17 +22,19 @@ export function repeatEvery(callback: () => void, interval: number) {
 }
 
 export function millisecondsToTime(milliseconds: number): string {
-  const seconds = Math.floor(milliseconds / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const secondsLeft = seconds % 60
-
-  return `${minutes}:${secondsLeft.toString().padStart(2, '0')}`
+  return formatSeconds(milliseconds / 1000)
 }
 
 export function formatSeconds(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  const isNegative = seconds < 0
+
+  const absoluteSeconds = Math.floor(Math.abs(seconds))
+  const minutes = Math.floor(absoluteSeconds / 60)
+  const remainingSeconds = absoluteSeconds % 60
+
+  const formatted = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+
+  return (isNegative && absoluteSeconds > 0) ? `-${formatted}` : formatted
 }
 
 export function renderTimezone(timezone: string) {

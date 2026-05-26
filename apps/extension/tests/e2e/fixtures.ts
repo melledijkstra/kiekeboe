@@ -8,7 +8,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ request: _ }, use) => {
+  context: async ({ }, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
     console.log('Loading extension from:', pathToExtension);

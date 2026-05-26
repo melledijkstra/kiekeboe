@@ -45,7 +45,7 @@
 
   let isShuffling = $derived(state?.shuffle ?? false)
 
-  let repeatMode = $derived(0)
+  let repeatMode = $derived(state?.repeatMode ?? 0)
   let repeatModeIcon = $derived.by(() => {
     switch (repeatMode) {
       case 1:
@@ -144,10 +144,9 @@
         </button>
         <button
           class="cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed"
-          disabled={true}
           onclick={() => onSwitchRepeatMode?.(repeatMode === 2 ? 0 : repeatMode + 1)}
         >
-          <Icon class="size-6" path={repeatModeIcon} />
+          <Icon class="size-6 {repeatMode > 0 ? 'text-green-500' : ''}" path={repeatModeIcon} />
         </button>
       </div>
     </div>

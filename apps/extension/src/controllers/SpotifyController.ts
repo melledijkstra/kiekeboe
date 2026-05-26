@@ -51,7 +51,8 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     if (!this.api) {
       throw new Error('Spotify API client is not initialized');
     }
-    return await this.api?.toggleRepeatMode(repeatMode)
+    await this.api?.toggleRepeatMode(repeatMode);
+    await this.syncState();
   }
 
   async togglePlayPause(): Promise<void> {
@@ -107,7 +108,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
     this.player.addListener('player_state_changed', (state) => this.playerStateChanged(state))
 
     this.player.addListener('playback_error', ({ message }) => {
-      console.error('Playback error', message)
+      this.logger.error('Playback error', message)
     })
 
     this.player.connect().then((success) => {
@@ -144,7 +145,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
         this.isPlayerActive = true;
       } else {
         this.isPlayerActive = false;
-        this.syncState()
+        await this.syncState()
       }
       spotifyState.devices = spotifyState.devices.map(device => ({
         ...device,
@@ -155,7 +156,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
 
   async playItem(mediaItem: Playlist | Album | Track) {
     this.logger.log('Playing item:', mediaItem.title, mediaItem)
-    this.api.play(mediaItem.uri)
+    await this.api.play(mediaItem.uri)
   }
 
   async play() {
@@ -183,7 +184,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
       await this.player?.nextTrack()
     } else {
       await this.api.nextTrack()
-      this.syncState()
+      await this.syncState()
     }
   }
 
@@ -192,7 +193,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
       await this.player?.previousTrack()
     } else {
       await this.api.previousTrack()
-      this.syncState()
+      await this.syncState()
     }
   }
 
@@ -207,7 +208,7 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
   }
 
   async seek(position: number) {
-    console.log('Seeking to position:', position, this.isPlayerActive)
+    this.logger.log('Seeking to position:', position, this.isPlayerActive)
     if (this.isPlayerActive) {
       await this.player?.seek(position)
     } else {
@@ -265,6 +266,6 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
     : !this.state.playback.shuffle;
     this.logger.log('Toggling shuffle mode', { newState });
     await this.api?.toggleShuffle(newState);
-    this.getPlaybackState()
+    await this.syncState();
   }
 }
