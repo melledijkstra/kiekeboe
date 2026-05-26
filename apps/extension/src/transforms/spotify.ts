@@ -60,7 +60,7 @@ export const convertApiPlaybackState = (state: ApiPlaybackState): PlaybackState 
     volume: device.volume_percent ?? 0,
     position_ms: state.progress_ms,
     shuffle: state.shuffle_state,
-    repeatMode: state.repeat_state === 'off' ? 0 : state.repeat_state === 'track' ? 1 : 2,
+    repeatMode: state.repeat_state === 'track' ? 1 : state.repeat_state === 'context' ? 2 : 0,
     currentItem: convertSpotifyTrackToMPTrack(track),
   }
 }
