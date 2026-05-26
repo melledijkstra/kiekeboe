@@ -8,8 +8,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use) => {
+  context: async ({ playwright: _ }, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
     console.log('Loading extension from:', pathToExtension);

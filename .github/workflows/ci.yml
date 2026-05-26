@@ -29,7 +29,7 @@ jobs:
         run: pnpm --filter @odysea/extension exec playwright install chromium --with-deps
       - name: Run E2E Tests
         timeout-minutes: 60
-        run: xvfb-run -a pnpm --filter @odysea/extension test:e2e
+        run: xvfb-run pnpm test:e2e
       - name: Upload Report
         uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
