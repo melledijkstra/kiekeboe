@@ -22,7 +22,7 @@
     "serverless": "turbo run --filter=@odysea/serverless",
     "storybook": "turbo run storybook",
     "storybook:build": "turbo run storybook:build",
-    "local:ci": "pnpm build && pnpm lint && CI=true pnpm test",
+    "local:ci": "pnpm build && pnpm lint && CI=true pnpm test && pnpm test:e2e",
     "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && pnpm cache delete"
   },
   "engines": {
