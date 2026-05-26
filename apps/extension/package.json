@@ -9,12 +9,14 @@
     "build": "vite build",
     "test": "vitest",
     "test:watch": "vitest watch",
+    "test:e2e": "playwright test",
     "lint": "eslint .",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:start": "storybook start"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@storybook/addon-svelte-csf": "^5.1.2",
     "@storybook/svelte": "^10.4.0",
     "@storybook/svelte-vite": "^10.4.0",
@@ -23,8 +25,10 @@
     "@tsconfig/svelte": "^5.0.8",
     "@types/chrome": "^0.1.33",
     "@types/lscache": "^1.3.4",
+    "@types/node": "^25.9.1",
     "@types/webextension-polyfill": "^0.12.3",
     "autoprefixer": "^10.4.21",
+    "jsdom": "^26.1.0",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "sass-embedded": "^1.89.2",
     "storybook": "^10.4.0",
@@ -32,16 +36,12 @@
     "tailwindcss": "^4.3.0",
     "vite": "^8.0.13",
     "vite-plugin-static-copy": "^4.1.0",
-    "webextension-polyfill": "^0.12.0",
-    "jsdom": "^26.1.0"
+    "webextension-polyfill": "^0.12.0"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "bits-ui": "^2.18.1",
     "idb": "^8.0.3",
     "lscache": "^1.3.2"
-  },
-  "optionalDependencies": {
-    "lightningcss-darwin-x64": "^1.30.1"  
   }
 }

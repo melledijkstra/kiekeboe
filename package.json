@@ -15,13 +15,14 @@
     "start": "turbo run start",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "test:e2e": "turbo run test:e2e",
     "lint": "turbo run lint",
     "extension": "turbo run --filter=@odysea/extension",
     "server": "turbo run --filter=@odysea/server",
     "serverless": "turbo run --filter=@odysea/serverless",
     "storybook": "turbo run storybook",
     "storybook:build": "turbo run storybook:build",
-    "local:ci": "pnpm build && pnpm lint && pnpm test:all",
+    "local:ci": "pnpm build && pnpm lint && CI=true pnpm test && pnpm test:e2e",
     "clean": "rm -rf .turbo node_modules && rm -fr apps/*/node_modules && pnpm cache delete"
   },
   "engines": {

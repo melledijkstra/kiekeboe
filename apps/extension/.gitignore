@@ -14,3 +14,11 @@ debug-storybook.log
 # yalc
 .yalc/
 yalc.lock
+
+# playwright
+/playwright-report/
+/test-results/
+/tests/e2e/screenshots/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

@@ -5,4 +5,4 @@ export const NEXT_IMAGE_KEY = 'nextDailyImage'
 export const ACCOUNT_CACHE_KEY = 'account'
 
 export const SERVERLESS_HOST_URL =
-  'https://melledijkstra-kiekeboe.deno.dev/'
+  'https://kiekeboe.melledijkstra.deno.net/'
