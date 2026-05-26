@@ -107,5 +107,9 @@ describe('time/utils.ts', () => {
     it('should format milliseconds more than a minute', () => {
       expect(millisecondsToTime(75000)).toBe('1:15')
     })
+
+    it('should handle negative milliseconds', () => {
+      expect(millisecondsToTime(-5000)).toBe('-0:05')
+    })
   })
 })
