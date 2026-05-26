@@ -1,5 +1,5 @@
 {
-  "$schema": "https://turborepo.dev/schema.json",
+  "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "dev": {
       "persistent": true,
@@ -24,15 +24,13 @@
       "dependsOn": ["^test"],
       "outputs": []
     },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "outputs": ["tests/e2e/screenshots/**"]
+    },
     "test:watch": {
       "cache": false,
       "persistent": true
-    },
-    "test:e2e": {
-      "outputs": [
-        "playwright-report/**",
-        "test-results/**"
-      ]
     },
     "storybook": {
       "persistent": true,

@@ -18,7 +18,5 @@ yalc.lock
 # playwright
 /playwright-report/
 /test-results/
-/tests/e2e/screenshots/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
+/tests/e2e/screenshots/*
+!/tests/e2e/screenshots/.gitkeep
