@@ -138,7 +138,7 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
     
     let mode = 'off'
     
-    switch (typeof repeatMode === 'number' ? repeatMode : repeatMode) {
+    switch (repeatMode) {
       case 1:
         mode = 'track'
         break
