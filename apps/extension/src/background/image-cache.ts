@@ -8,7 +8,7 @@ export async function trimCache() {
   const now = Date.now();
 
   // 1) Remove by age (using server Date header if present)
-  await Promise.all(
+  await Promise.allSettled(
     requests.map(async (req) => {
       const resp = await cache.match(req);
       if (!resp) return;
@@ -26,6 +26,6 @@ export async function trimCache() {
   const remaining = await cache.keys();
   if (remaining.length > MAX_ENTRIES) {
     const toDelete = remaining.slice(0, remaining.length - MAX_ENTRIES);
-    await Promise.all(toDelete.map((req) => cache.delete(req)));
+    await Promise.allSettled(toDelete.map((req) => cache.delete(req)));
   }
 }
