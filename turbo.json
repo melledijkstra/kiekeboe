@@ -32,6 +32,12 @@
       "cache": false,
       "persistent": true
     },
+    "test:e2e": {
+      "outputs": [
+        "playwright-report/**",
+        "test-results/**"
+      ]
+    },
     "storybook": {
       "persistent": true,
       "cache": false,

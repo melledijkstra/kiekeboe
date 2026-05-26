@@ -12,6 +12,7 @@ export const test = base.extend<{
   context: async ({}, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
+    console.log('Loading extension from:', pathToExtension);
     const context = await chromium.launchPersistentContext('', {
       headless: false, // Must be headed for extensions in many cases
       args: [
@@ -19,6 +20,7 @@ export const test = base.extend<{
         `--load-extension=${pathToExtension}`,
       ],
     });
+    console.log('Extension loaded, waiting for it to initialize...');
     await use(context);
     await context.close();
   },
@@ -28,7 +30,8 @@ export const test = base.extend<{
     if (!serviceWorker)
       serviceWorker = await context.waitForEvent('serviceworker');
 
-    const extensionId = serviceWorker.url().split('/')[2];
+    const extensionId = new URL(serviceWorker.url()).hostname;
+    console.log('Extension initialized with ID:', extensionId);
     await use(extensionId);
   },
 });
