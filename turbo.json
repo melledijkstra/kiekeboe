@@ -24,10 +24,6 @@
       "dependsOn": ["^test"],
       "outputs": []
     },
-    "test:e2e": {
-      "dependsOn": ["build"],
-      "outputs": ["tests/e2e/screenshots/**"]
-    },
     "test:watch": {
       "cache": false,
       "persistent": true

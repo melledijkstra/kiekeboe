@@ -1,5 +1,5 @@
 import { test as base, chromium, type BrowserContext } from '@playwright/test';
-import path from 'node:path';
+import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -8,7 +8,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({ playwright: _ }, use) => {
+  context: async ({ request: _ }, use) => {
     // Path to the built extension
     const pathToExtension = path.join(__dirname, '../../dist');
     console.log('Loading extension from:', pathToExtension);
