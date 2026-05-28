@@ -57,7 +57,7 @@ export class WeatherClient extends ApiKeyBaseClient {
     }
 
     const response = await this.request<WeatherResponse>(
-      `/weather?lat=${lat}&lon=${lon}&appid=${this.getApiKey()}`
+      `/weather?lat=${lat}&lon=${lon}`
     )
 
     if (response) {

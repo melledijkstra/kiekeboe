@@ -25,5 +25,5 @@
   {#key updateKey}
     <p class="text-base truncate">{renderTimezone(metric.timeZone)}</p>
   {/key}
-  <p class="text-xs font-bold truncate leading-tight">{metric.name}</p>
+  <p class="text-xs truncate leading-tight">{metric.name}</p>
 </div>

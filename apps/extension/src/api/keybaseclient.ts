@@ -27,8 +27,10 @@ export class ApiKeyBaseClient extends BaseClient {
     if (!key) {
       throw new Error('API Key is missing')
     }
-    const searchParams = new URLSearchParams(endpoint.split('?')[1] || '');
+    const [path, query] = endpoint.split('?')
+    const searchParams = new URLSearchParams(query || '')
     searchParams.set(this.urlQueryKeyName, key)
+    endpoint = path
     return super.request(endpoint, config, searchParams);
   }
 

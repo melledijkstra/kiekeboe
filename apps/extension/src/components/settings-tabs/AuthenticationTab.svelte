@@ -10,7 +10,6 @@
     type OauthProvider
   } from '@/oauth2/providers'
   import Input from '@/components/atoms/Input.svelte'
-   // import Button from '@/components/atoms/Button.svelte'
 
   const clients = {
     google: new AuthClient(new GoogleAuthProvider()),
