@@ -72,7 +72,7 @@
 
   <NotificationCenter position="bottom-right" />
 
-  <div class="h-screen overflow-y-scroll snap-y snap-mandatory">
+  <div class="h-screen snap-y snap-mandatory">
     <!-- Grid playground: https://play.tailwindcss.com/1AWUsAQwTi -->
     <section
       class={[

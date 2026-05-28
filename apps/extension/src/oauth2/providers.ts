@@ -10,9 +10,14 @@ export interface AuthProvider {
   tokenEndpoint: string
 }
 
+import { settingsStore } from '@/settings/index.svelte'
+import { get } from 'svelte/store'
+
 export class GoogleAuthProvider implements AuthProvider {
   name: OauthProvider = 'google'
-  clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  get clientId() {
+    return get(settingsStore).apiKeys.google || ''
+  }
   scopes = manifest.oauth2.scopes
   authEndpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
   tokenEndpoint = 'https://oauth2.googleapis.com/token'
@@ -20,7 +25,9 @@ export class GoogleAuthProvider implements AuthProvider {
 
 export class SpotifyAuthProvider implements AuthProvider {
   name: OauthProvider = 'spotify'
-  clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID
+  get clientId() {
+    return get(settingsStore).apiKeys.spotify || ''
+  }
   scopes = [
     'streaming',
     'app-remote-control',
@@ -34,7 +41,9 @@ export class SpotifyAuthProvider implements AuthProvider {
 
 export class FitbitAuthProvider implements AuthProvider {
   name: OauthProvider = 'fitbit'
-  clientId = import.meta.env.VITE_FITBIT_CLIENT_ID
+  get clientId() {
+    return get(settingsStore).apiKeys.fitbit || ''
+  }
   scopes = ['sleep', 'activity']
   authEndpoint = 'https://www.fitbit.com/oauth2/authorize'
   tokenEndpoint = 'https://api.fitbit.com/oauth2/token'

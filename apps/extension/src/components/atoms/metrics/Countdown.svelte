@@ -7,6 +7,6 @@
 </script>
 
 <div transition:fade class="dark:text-white text-black">
-  <p class="text-base opacity-70 truncate">{calculateDays(metric.date)}d</p>
-  <p class="text-xs font-bold truncate leading-tight">{metric.name}</p>
+  <p class="text-base truncate">{calculateDays(metric.date)}d</p>
+  <p class="text-xs truncate leading-tight">{metric.name}</p>
 </div>
