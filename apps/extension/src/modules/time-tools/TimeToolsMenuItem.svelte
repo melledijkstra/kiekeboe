@@ -21,8 +21,7 @@
     alarmTriggered
   } from './messages'
   import type { TimerState, ChronometerState, AlarmState } from './types'
-  import { Timer } from '@/time/timer'
-  import { formatSeconds } from '@/time/utils'
+  import { Timer, formatSeconds } from '@melledijkstra/toolbox'
   import { Popover } from 'bits-ui'
   import PopPanel from '@/components/atoms/PopPanel.svelte'
   import Icon from '@/components/atoms/Icon.svelte'

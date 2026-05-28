@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import { Timer } from '@/time/timer'
+import { Timer } from '@melledijkstra/toolbox'
 import type { BackgroundService } from '@/services/types'
 import {
   startTimer,
