@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { HTMLAttributes } from "svelte/elements"
+  import type { HTMLAttributes } from 'svelte/elements'
 
   type IconProps = {
-		path: string
-		class?: string
+    path: string
+    class?: string
     size?: number | string
     viewbox?: `${number} ${number} ${number} ${number}`
     flip?: string
@@ -11,31 +11,37 @@
   } & HTMLAttributes<SVGElement>
 
   const {
-		path,
+    path,
     size,
     viewbox,
     flip = 'none',
     rotate = 0,
     ...props
-  }: IconProps = $props();
+  }: IconProps = $props()
 
-	const sizeValue = size ?? 20
-	const viewboxValue = viewbox ?? '0 0 24 24'
-	const sx = ['both', 'horizontal'].includes(flip) ? '-1' : '1'
-	const sy = ['both', 'vertical'].includes(flip) ? '-1' : '1'
-	const r = isNaN(rotate) ? rotate : rotate + 'deg'
+  const sizeValue = $derived(size ?? 20)
+  const viewboxValue = $derived(viewbox ?? '0 0 24 24')
+  const sx = $derived(['both', 'horizontal'].includes(flip) ? '-1' : '1')
+  const sy = $derived(['both', 'vertical'].includes(flip) ? '-1' : '1')
+  const r = $derived(isNaN(rotate) ? rotate : rotate + 'deg')
 </script>
 
 <style>
-	svg {
-		transform: rotate(var(--r, 0deg)) scale(var(--sx, 1), var(--sy, 1));
-	}
+  svg {
+    transform: rotate(var(--r, 0deg)) scale(var(--sx, 1), var(--sy, 1));
+  }
 
-	path {
-		fill: currentColor;
-	}
+  path {
+    fill: currentColor;
+  }
 </style>
 
-<svg width={sizeValue} height={sizeValue} viewBox={viewboxValue} style="--sx: {sx}; --sy: {sy}; --r: {r}" {...props}>
-	<path d={path} />
+<svg
+  width={sizeValue}
+  height={sizeValue}
+  viewBox={viewboxValue}
+  style="--sx: {sx}; --sy: {sy}; --r: {r}"
+  {...props}
+>
+  <path d={path} />
 </svg>

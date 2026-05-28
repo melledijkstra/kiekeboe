@@ -4,7 +4,7 @@
 
 Kiekeboe is a personal homepage extension that enhances your new tab page with a variety of productivity tools. It is designed to help you stay organized and efficient by providing quick access to essential features right from your browser's new tab.
 
-![Impression of extension](./docs/impression-kiekeboe-extension.png)
+![Impression of extension](./docs/current-newtab.png)
 
 ## Features
 

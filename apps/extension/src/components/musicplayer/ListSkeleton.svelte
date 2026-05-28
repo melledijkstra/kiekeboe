@@ -1,6 +1,6 @@
 <script lang="ts">
   const { amount }: { amount: number } = $props()
-  const items = new Array(amount).fill(0)
+  const items = $derived(new Array(amount).fill(0))
 </script>
 
 <div

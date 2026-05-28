@@ -19,7 +19,7 @@
     return false;
   }
 
-  const hasColor = hasColorClass(props?.class);
+  const hasColor = $derived(!!props?.class && hasColorClass(props?.class));
 </script>
 
 <button
