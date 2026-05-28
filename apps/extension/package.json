@@ -29,7 +29,7 @@
     "@types/webextension-polyfill": "^0.12.3",
     "autoprefixer": "^10.4.21",
     "jsdom": "^26.1.0",
-    "prettier-plugin-tailwindcss": "^0.6.13",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "sass-embedded": "^1.89.2",
     "storybook": "^10.4.0",
     "svelte": "^5.55.9",
