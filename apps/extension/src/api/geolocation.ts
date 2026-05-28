@@ -59,18 +59,16 @@ export type GeoPositionResponse = {
 export async function getCurrentPosition(): Promise<
   GeoPositionResponse | undefined
 > {
-  try {
-    const browserPos = await getGeolocationBrowser()
-    if (browserPos) {
-      return { lat: browserPos[0], lon: browserPos[1] }
-    }
-  } catch {
-    log('Failed to retrieve geolocation through browser, trying API service...')
-    // if we can't get geolocation through browser we try through API service
-    const data = await cachedFetchGeolocation()
-    if (data?.status === 'success') {
-      log('retrieved location from API', [data.lat, data.lon])
-      return { lat: data.lat, lon: data.lon, locationInfo: data }
-    }
+  const browserPos = await getGeolocationBrowser().catch((_err) => undefined);
+  if (browserPos) {
+    return { lat: browserPos[0], lon: browserPos[1] }
+  }
+
+  log('Failed to retrieve geolocation through browser, trying API service...')
+  // if we can't get geolocation through browser we try through API service
+  const data = await cachedFetchGeolocation()
+  if (data?.status === 'success') {
+    log('retrieved location from API', [data.lat, data.lon])
+    return { lat: data.lat, lon: data.lon, locationInfo: data }
   }
 }
