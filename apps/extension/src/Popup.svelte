@@ -3,7 +3,7 @@
   import { appState } from "./app-state.svelte"
   import { getPomodoroState } from "./modules/focus/messages"
   import type { PomodoroState } from "./modules/focus/types"
-  import { Timer } from "./time/timer"
+  import { Timer } from "@melledijkstra/toolbox"
 
   let pomodoroState = $state<PomodoroState>()
 

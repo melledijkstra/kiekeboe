@@ -1,4 +1,4 @@
-import { Timer } from '@/time/timer'
+import { Timer } from '@melledijkstra/toolbox'
 import type { TimeToolState } from '../types'
 
 export abstract class BaseTimeToolService<T extends TimeToolState> {

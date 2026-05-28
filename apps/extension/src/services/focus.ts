@@ -9,7 +9,7 @@ import {
   stopPomodoro,
   switchMode
 } from '@/modules/focus/messages'
-import { Timer } from '@/time/timer'
+import { Timer } from '@melledijkstra/toolbox'
 import type { Mode, PomodoroState } from '@/modules/focus/types'
 
 const WORK_DURATION = 25 * 60 * 1000

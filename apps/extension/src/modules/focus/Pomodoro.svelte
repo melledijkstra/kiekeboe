@@ -1,6 +1,6 @@
 <script lang="ts">
   import browser from 'webextension-polyfill'
-  import { Timer } from '@/time/timer'
+  import { Timer } from '@melledijkstra/toolbox'
   import { onMount } from 'svelte'
   import {
     getPomodoroState,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Timer } from '@/time/timer'
+  import { Timer } from '@melledijkstra/toolbox'
   import { onDestroy, onMount } from 'svelte'
   import { millisecondsToTime } from '@/time/utils'
   import { fade } from 'svelte/transition'

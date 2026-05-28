@@ -1,5 +1,5 @@
 import { BaseTimeToolService } from './BaseTimeToolService'
-import { Timer } from '@/time/timer'
+import { Timer } from '@melledijkstra/toolbox'
 import type { TimeToolState } from '../types'
 import browser from 'webextension-polyfill'
 
