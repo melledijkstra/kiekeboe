@@ -4,6 +4,7 @@
   import { trackers } from '../state.svelte'
   import { mdiCalendarPlusOutline } from '@mdi/js'
   import Input from '@/components/atoms/Input.svelte'
+  import Button from '@/components/atoms/Button.svelte'
 
   const { onSubmitted }: { onSubmitted?: () => void } = $props()
 
@@ -23,7 +24,7 @@
 </script>
 
 <form
-  class="mt-4 flex flex-col gap-4 text-left"
+  class="flex flex-col gap-4 text-left"
   onsubmit={(e) => {
     e.preventDefault()
     trackers.addCountdown(inputName, inputDate, inputPinned)

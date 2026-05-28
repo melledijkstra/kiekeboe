@@ -5,7 +5,6 @@
     mdiDelete,
     mdiPin,
     mdiPinOff,
-    mdiPlusCircle,
     mdiPlus,
     mdiClockOutline,
     mdiCalendarClock,
@@ -121,7 +120,7 @@
         </button>
       </div>
 
-      {#if trackers.countdowns.length > 0 || trackers.worldClocks.length > 0}
+      {#if trackers.countdowns.length > 0 || trackers.worldClocks.length > 0 || trackers.counters.length > 0}
         <div class="space-y-2 mt-4 pt-4 border-t border-white/10">
           <p class="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2">Active Metrics</p>
           {#each trackers.countdowns as countdown, i (i)}
@@ -159,6 +158,24 @@
                   icon={mdiDelete}
                   size={18}
                   onclick={() => trackers.deleteWorldClock(i)}
+                  class="hover:text-red-400"
+                />
+              </div>
+            </div>
+          {/each}
+          {#each trackers.counters as counter, i (i)}
+            <div
+              class="flex flex-row items-center justify-between gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group/item"
+            >
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold truncate leading-tight dark:text-white text-black">{counter.name}</p>
+                <p class="text-xs opacity-70 truncate dark:text-white text-black">{counter.value}</p>
+              </div>
+              <div class="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                <IconButton
+                  icon={mdiDelete}
+                  size={18}
+                  onclick={() => trackers.deleteCounter(i)}
                   class="hover:text-red-400"
                 />
               </div>

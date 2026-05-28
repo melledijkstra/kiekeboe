@@ -93,17 +93,13 @@
   <div class="flex flex-row gap-5 items-center">
     {#each metrics as metric, i (i)}
       {#if isClock(metric)}
-        <div class="text-right [&>div]:text-right">
-          <Clock metric={metric} />
-        </div>
+        <Clock metric={metric} />
       {:else if isCounter(metric)}
-        <div class="text-right [&>div]:text-right">
-          <Countdown metric={metric} />
-        </div>
+        <Countdown metric={metric} />
       {:else}
         <div class="dark:text-white text-black rounded-lg text-right">
-          <p class="text-base leading-none font-bold">{metric.value}</p>
-          <p class="text-xs opacity-70">{metric.name}</p>
+          <p class="text-base leading-none">{metric.value}</p>
+          <p class="text-xs">{metric.name}</p>
         </div>
       {/if}
     {/each}

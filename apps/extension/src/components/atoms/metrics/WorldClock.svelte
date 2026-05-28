@@ -21,9 +21,9 @@
   })
 </script>
 
-<div transition:fade class="dark:text-white text-black rounded-lg">
-  <p class="text-sm font-bold truncate leading-tight">{metric.name}</p>
+<div transition:fade class="dark:text-white text-black">
   {#key updateKey}
-    <p class="text-xs opacity-70 truncate">{renderTimezone(metric.timeZone)}</p>
+    <p class="text-base truncate">{renderTimezone(metric.timeZone)}</p>
   {/key}
+  <p class="text-xs font-bold truncate leading-tight">{metric.name}</p>
 </div>
