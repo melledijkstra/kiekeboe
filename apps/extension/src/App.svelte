@@ -33,7 +33,7 @@
 
 {#snippet middleSnippet()}
   {#if appState.mode === 'default'}
-    <DefaultModeContent user={appState.user} {renderCurrentTask} />
+    <DefaultModeContent {renderCurrentTask} />
   {:else if appState.mode === 'breathing'}
     <ModuleLoader id="well_being" type="scene" />
   {:else if appState.mode === 'focus'}

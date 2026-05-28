@@ -1,6 +1,6 @@
 <script lang="ts">
   import { settingsStore } from '@/settings/index.svelte'
-  import { appState } from '@/app-state.svelte.ts'
+  import { appState } from '@/app-state.svelte'
   import SettingsMenuItem from '../settings/SettingsMenuItem.svelte'
   import ImageRefreshButton from './ImageRefreshButton.svelte'
   import Quotes from './atoms/Quotes.svelte'

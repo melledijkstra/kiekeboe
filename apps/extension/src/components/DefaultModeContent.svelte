@@ -6,11 +6,10 @@
   import { onMount, type Snippet } from 'svelte'
 
   interface Props {
-    user: { name: string } | undefined
     renderCurrentTask: Snippet
   }
 
-  let { user, renderCurrentTask }: Props = $props()
+  let { renderCurrentTask }: Props = $props()
 
   function onUsernameChange(name: string) {
     storeUsername(name)
@@ -35,9 +34,9 @@
 </script>
 
 <Clock />
-{#if user?.name}
+{#if appState?.user}
   <Welcome
-    {user}
+    user={appState.user}
     {onUsernameChange}
     {onClearUsername} />
 {/if}
