@@ -22,7 +22,7 @@ The extension utilizes a primarily dark theme (`bg-black`) with targeted accents
 
 ### Typography
 - The application uses default Tailwind sans-serif fonts.
-- Headings on Menus: `text-xs font-bold text-gray-400`
+- Headings on Menus: text-xs font-bold dark:text-gray-400
 - Extended Text Sizes: Custom classes exist for very large typography (e.g., clocks) ranging from `text-5xl` up to `text-13xl`.
 
 ### Border Radius
