@@ -81,7 +81,7 @@ These are the fundamental building blocks of the UI. When designing new interfac
 
 ### Menus (Dropdown/Context)
 - **Container:** `dark:bg-black/90` with `rounded-lg` and slight padding.
-- **Items:** `text-xs`. Hovering/Focusing highlights the item background (`focus:bg-gray-800` or `focus:bg-gray-600`).
+- Items: text-xs. Hovering/Focusing highlights the item background (focus:bg-gray-800).
 
 ### Notifications
 - **Appearance:** Floating alerts, solid white/dark gray background (`bg-white` / `dark:bg-gray-800`), bordered, `rounded-md`, `shadow-sm`.
