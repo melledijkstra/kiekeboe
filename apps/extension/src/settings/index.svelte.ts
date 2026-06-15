@@ -31,7 +31,6 @@ export type SettingsState = {
 const SETTINGS_KEY = 'settings' as const
 
 const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
-  command_center: false,
   well_being: false,
   focus: false,
   weather: false,

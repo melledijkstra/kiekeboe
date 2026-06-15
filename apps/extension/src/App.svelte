@@ -44,9 +44,6 @@
 {/snippet}
 
 {#await settings.initialize() then}
-  {#if $settingsStore.modules.command_center}
-    <ModuleLoader id="command_center" />
-  {/if}
 
   <ModulesInitializer />
 
