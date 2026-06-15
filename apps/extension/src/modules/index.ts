@@ -31,11 +31,6 @@ export const MODULE_CONFIG = [
     import: () => import('./notes/index.ts')
   },
   {
-    id: 'command_center',
-    title: 'Command Center',
-    import: () => import('./command-center/index.ts')
-  },
-  {
     id: 'well_being',
     title: 'Well Being',
     import: () => import('./well-being/index.ts')
