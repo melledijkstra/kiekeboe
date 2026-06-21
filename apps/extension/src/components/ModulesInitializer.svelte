@@ -5,12 +5,16 @@
   const modules = $state<Module[]>([])
 
   $effect(() => {
+    let active = true
+
     const loadEnabledModules = async () => {
       const modulePromises = Object.entries(settingsStore.modules)
         .filter(([_, enabled]) => enabled)
         .map(([name]) => loadModule(name as ModuleID))
 
       const loadedModulesResults = await Promise.allSettled(modulePromises)
+
+      if (!active) return
 
       // Update modules array atomically to trigger Svelte reactivity correctly if needed
       modules.length = 0
@@ -22,5 +26,9 @@
     }
 
     loadEnabledModules()
+
+    return () => {
+      active = false
+    }
   })
 </script>
