@@ -8,7 +8,8 @@ Before you start, ensure you have the following tools installed:
 
 ## Installation
 
-`pnpm install`
+`pnpm install` (to install Deno)
+`deno install` (to install dependencies of Deno)
 
 ## Development
 
