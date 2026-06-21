@@ -3,7 +3,7 @@
   import Input from '@/components/atoms/Input.svelte'
   import type { Note } from '@/db/notes'
 
-  const { onSubmitNote }: { onSubmitNote: (note: Omit<Note, 'id' | 'dateCreated'>) => void } = $props()
+  const { onSubmitNote }: { onSubmitNote: (note: Omit<Note, 'id' | 'createdAt'>) => void } = $props()
 
   let inputTitle = $state('')
   let inputText = $state('')

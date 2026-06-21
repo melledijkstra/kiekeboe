@@ -1,8 +1,5 @@
-import { writable, type Writable } from 'svelte/store'
-
 export interface IExport<T> {
-  subscribe: Writable<T[]>['subscribe']
-  set: Writable<T[]>['set']
+  readonly items: T[]
   initialize(): Promise<void>
   add(item: T): Promise<void>
   remove(id: string): Promise<void>
@@ -16,10 +13,12 @@ export class DbStore<T> implements IExport<DBItem<T>> {
   private addItem: (item: T) => Promise<void>
   private updateItem: (item: T & { id: string }) => Promise<void>
   private deleteItem: (id: string) => Promise<void>
-  private store: Writable<DBItem<T>[]>
+  
+  private _items = $state<DBItem<T>[]>([])
 
-  public subscribe: Writable<DBItem<T>[]>['subscribe']
-  public set: Writable<DBItem<T>[]>['set']
+  get items() {
+    return this._items
+  }
 
   constructor(
     fetchAll: () => Promise<T[]>,
@@ -31,14 +30,11 @@ export class DbStore<T> implements IExport<DBItem<T>> {
     this.addItem = addItem
     this.updateItem = updateItem
     this.deleteItem = deleteItem
-    this.store = writable([])
-    this.subscribe = this.store.subscribe
-    this.set = this.store.set
   }
 
   async initialize() {
-    const items = await this.fetchAll() as (T & { id: string; createdAt: Date; updatedAt: Date })[]
-    this.set(items)
+    const items = await this.fetchAll() as DBItem<T>[]
+    this._items = items
   }
 
   async add(item: T) {
@@ -47,13 +43,16 @@ export class DbStore<T> implements IExport<DBItem<T>> {
       createdAt: new Date(),
       updatedAt: new Date()
     })
-    const items = await this.fetchAll() as (T & { id: string; createdAt: Date; updatedAt: Date })[]
-    this.set(items)
+    const items = await this.fetchAll() as DBItem<T>[]
+    this._items = items
   }
 
   async remove(id: string) {
     await this.deleteItem(id)
-    this.store.update(items => items.filter(item => item.id !== id))
+    const index = this._items.findIndex(item => item.id === id)
+    if (index !== -1) {
+      this._items.splice(index, 1)
+    }
   }
 
   async update(updatedItem: T & { id: string }) {
@@ -62,12 +61,9 @@ export class DbStore<T> implements IExport<DBItem<T>> {
       ...updatedItem,
       updatedAt
     })
-    this.store.update(items =>
-      items.map(item =>
-        item.id === updatedItem.id
-          ? { ...item, ...updatedItem, updatedAt }
-          : item
-      )
-    )
+    const index = this._items.findIndex(item => item.id === updatedItem.id)
+    if (index !== -1) {
+      this._items[index] = { ...this._items[index], ...updatedItem, updatedAt }
+    }
   }
 }

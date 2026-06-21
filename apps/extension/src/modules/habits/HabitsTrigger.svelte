@@ -45,7 +45,7 @@
       </Button>
     </div>
     <ul class="mt-4">
-      {#each $habits as habit, i (i)}
+      {#each habits.items as habit, i (i)}
         <li style:color={habit.color} class="p-2 border-b">{habit.name}</li>
       {/each}
     </ul>

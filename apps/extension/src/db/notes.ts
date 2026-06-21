@@ -6,7 +6,7 @@ export type Note = {
   id: string
   title: string
   text: string
-  dateCreated: Date
+  createdAt: Date
 }
 
 export async function addNote(note: Note) {

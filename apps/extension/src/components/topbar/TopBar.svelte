@@ -10,7 +10,7 @@
 </script>
 
 {#snippet module(moduleId: ModuleID)}
-  {#if $settingsStore.modules?.[moduleId]}
+  {#if settingsStore.modules?.[moduleId]}
     {#await loadModule(moduleId) then Module}
       {#if Module.trigger}
         <Module.trigger />

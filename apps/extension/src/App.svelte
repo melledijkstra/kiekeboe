@@ -21,7 +21,7 @@
 
 {#snippet renderCurrentTask()}
   <div class="mt-4 text-lg empty:h-7">
-    {#if $settingsStore.ui.showCurrentTask && currentTask}
+    {#if settingsStore.ui.showCurrentTask && currentTask}
       <input type="checkbox" class="scale-150 text-white mr-1" disabled />
       <span
         class="text-white text-lg antialiased drop-shadow-md text-shadow-lg/20"
@@ -44,7 +44,6 @@
 {/snippet}
 
 {#await settings.initialize() then}
-
   <ModulesInitializer />
 
   <NotificationCenter position="bottom-right" />

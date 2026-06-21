@@ -3,12 +3,12 @@
   import type { SettingsState } from "@/settings/index.svelte"
   import { settings, settingsStore } from "@/settings/index.svelte"
 
-  let databaseUri = $state($settingsStore.network.databaseUri)
-  let serverlessHost = $state($settingsStore.network.serverlessHost)
+  let databaseUri = $state(settingsStore.network.databaseUri)
+  let serverlessHost = $state(settingsStore.network.serverlessHost)
 
   const onKeyDown = (e: KeyboardEvent, settingsKey: keyof SettingsState['network'], value: string) => {
     if (e.key === "Enter") {
-      $settingsStore.network[settingsKey] = value
+      settingsStore.network[settingsKey] = value
       settings.saveSettingsToStorage()
     }
   }

@@ -25,7 +25,7 @@
         <li class="flex flex-col gap-2">
           <button onclick={() => onSelectNote(note)} class="cursor-pointer text-left">
             <p class="text-base">{note.title}</p>
-            <span class="text-xs text-gray-500">{formatDate(note.dateCreated)}</span>
+            <span class="text-xs text-gray-500">{formatDate(note.createdAt)}</span>
           </button>
         </li>
       {/each}
