@@ -14,7 +14,7 @@
     'flex flex-col gap-1 fixed z-50',
   ]}
 >
-  {#each $notifications as notification (notification.id)}
+  {#each notifications as notification (notification.id)}
     <Notification {...notification} onDismiss={() => removeNotification(notification.id)} />
   {/each}
 </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { backgroundImage } from '@/stores/background.svelte'
+  import { background } from '@/stores/background.svelte'
   import { fade } from 'svelte/transition'
 
-  let url = $derived($backgroundImage)
+  let url = $derived(background.url)
 </script>
 
 {#if url}

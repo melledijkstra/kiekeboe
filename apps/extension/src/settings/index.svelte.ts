@@ -2,7 +2,6 @@ import browser, { type Storage } from 'webextension-polyfill'
 import type { ModuleID } from '@/modules'
 import { Logger } from '@/logger'
 import type { ILogger } from '@/interfaces/logger.interface'
-import { writable,  } from 'svelte/store'
 
 let changeListenersSet = false
 
@@ -56,11 +55,10 @@ export const DEFAULT_SETTINGS: SettingsState = {
   apiKeys: {}
 }
 
-export const settingsStore = writable<SettingsState>(DEFAULT_SETTINGS)
+export const settingsStore = $state<SettingsState>(structuredClone(DEFAULT_SETTINGS))
 
 export class Settings implements ILogger {
   logger = new Logger('settings')
-  private settingsCopy: SettingsState = DEFAULT_SETTINGS
   // flag to indicate if the settings store is currently loading
   private loading = false
   // flag to indicate if the settings were changed locally
@@ -68,16 +66,10 @@ export class Settings implements ILogger {
   // were changed by the same source as the listener
   private isLocalSettingsChange = false
 
-  private _unsub?: () => void
-
-  constructor() {
-    this._unsub = settingsStore.subscribe((value) => {
-      this.settingsCopy = value
-    })
-  }
+  constructor() {}
 
   public async initialize() {
-    if (this.settingsCopy.loaded || this.loading) {
+    if (settingsStore.loaded || this.loading) {
       this.logger.log('Settings store is already initialized or loading from storage')
       return
     }
@@ -88,7 +80,6 @@ export class Settings implements ILogger {
 
   public destroy() {
     this.removeSettingsChangeListener()
-    this._unsub?.()
   }
 
   async syncSettingsStoreWithStorage() {
@@ -101,17 +92,19 @@ export class Settings implements ILogger {
 
     const { settings: storageSettings } = (await browser.storage.sync.get(
       SETTINGS_KEY
-    )) as { settings: Settings }
+    )) as { settings: SettingsState }
     
     this.logger.log('syncing settings store with storage...', {
       storageSettings
     })
 
-    settingsStore.set({
+    const mergedSettings = {
       ...DEFAULT_SETTINGS,
       ...storageSettings,
       loaded: true
-    })
+    }
+
+    Object.assign(settingsStore, mergedSettings)
 
     if (!changeListenersSet) {
       browser.storage.sync.onChanged.addListener((changes) => this.onStorageSettingsChanged(changes))
@@ -132,7 +125,7 @@ export class Settings implements ILogger {
   saveSettingsToStorage = async () => {
     this.isLocalSettingsChange = true
     // make sure we don't save the loaded property to storage
-    const settingsToStore = structuredClone(this.settingsCopy)
+    const settingsToStore = structuredClone($state.snapshot(settingsStore))
     delete settingsToStore.loaded
     this.logger.log('Saving settings to storage', {
       settingsToStore
@@ -158,15 +151,11 @@ export class Settings implements ILogger {
       newSettings
     })
 
-    settingsStore.update((current) => ({
-      ...current,
-      ...newSettings,
-      loaded: true // ensure loaded is set to true
-    }))
+    Object.assign(settingsStore, newSettings, { loaded: true })
   }
 
   export(): SettingsState {
-    const exportSettings = structuredClone(this.settingsCopy)
+    const exportSettings = structuredClone($state.snapshot(settingsStore))
     // remove the loaded property from the exported settings
     delete exportSettings.loaded
     return exportSettings

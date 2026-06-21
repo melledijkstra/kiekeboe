@@ -5,17 +5,16 @@
   import { mdiCameraRetakeOutline } from '@mdi/js'
   import { settingsStore } from '@/settings/index.svelte'
   import { log } from '@/logger'
-  import { onMount } from 'svelte'
 
   let unsplashClient = $state<UnsplashClient>(
     new UnsplashClient(
-      $settingsStore.network.serverlessHost,
-      $settingsStore.ui.dailyImageQuery
+      settingsStore.network.serverlessHost,
+      settingsStore.ui.dailyImageQuery
     )
   )
 
-  let serverlessHost = $derived($settingsStore.network.serverlessHost)
-  let dailyImageQuery = $derived($settingsStore.ui.dailyImageQuery)
+  let serverlessHost = $derived(settingsStore.network.serverlessHost)
+  let dailyImageQuery = $derived(settingsStore.ui.dailyImageQuery)
 
   async function refreshBackround() {
     const url = await unsplashClient?.refreshDailyImage()
@@ -30,36 +29,34 @@
     }
   })
 
-  onMount(() => {
-    settingsStore.subscribe((settings) => {
-      log('settings changed', {
-        serverlessHost: settings.network.serverlessHost,
-        unsplashHost: unsplashClient?.host,
-        dailyImageQuery: settings.ui.dailyImageQuery,
+  $effect(() => {
+    log('settings changed', {
+      serverlessHost: settingsStore.network.serverlessHost,
+      unsplashHost: unsplashClient?.host,
+      dailyImageQuery: settingsStore.ui.dailyImageQuery,
+      unsplashQuery: unsplashClient.query
+    })
+    if (!!serverlessHost && serverlessHost !== unsplashClient?.host) {
+      log('serverlessHost changed', {
+        serverlessHost,
+        unsplashHost: unsplashClient?.host
+      })
+      unsplashClient.setHost(settingsStore.network.serverlessHost)
+    }
+    if (dailyImageQuery !== unsplashClient.query) {
+      log('query changed', {
+        dailyImageQuery,
         unsplashQuery: unsplashClient.query
       })
-      if (!!serverlessHost && serverlessHost !== unsplashClient?.host) {
-        log('serverlessHost changed', {
-          serverlessHost,
-          unsplashHost: unsplashClient?.host
-        })
-        unsplashClient.setHost(settings.network.serverlessHost)
-      }
-      if (dailyImageQuery !== unsplashClient.query) {
-        log('query changed', {
-          dailyImageQuery,
-          unsplashQuery: unsplashClient.query
-        })
-        unsplashClient.query = settings.ui.dailyImageQuery
-        unsplashClient.clearNextImage()
-      }
-    })
+      unsplashClient.query = settingsStore.ui.dailyImageQuery
+      unsplashClient.clearNextImage()
+    }
   })
 </script>
 
 <IconButton
   size={25}
-  disabled={!$settingsStore.loaded}
+  disabled={!settingsStore.loaded}
   onclick={refreshBackround}
   icon={mdiCameraRetakeOutline}
 />

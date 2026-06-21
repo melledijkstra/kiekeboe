@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { getMomentOfDay } from './ui'
-import { setBackgroundImage, backgroundImage } from './stores/background.svelte'
+import { setBackgroundImage, background } from './stores/background.svelte'
 
 describe('ui.ts', () => {
   describe('getMomentOfDay', () => {
@@ -53,13 +53,10 @@ describe('ui.ts', () => {
     it('should set the background image', async () => {
       // setup
       const mockUrl = 'https://example.com/image.jpg'
-      let result: string | undefined
-      const unsub = backgroundImage.subscribe((v) => (result = v))
 
       await setBackgroundImage(mockUrl)
 
-      expect(result).toBe(mockUrl)
-      unsub()
+      expect(background.url).toBe(mockUrl)
     })
   })
 })

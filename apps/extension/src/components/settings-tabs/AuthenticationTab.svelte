@@ -45,22 +45,22 @@
 <div class="flex flex-col gap-3 mb-6">
   <Input
     label="OpenWeather API Key"
-    bind:value={$settingsStore.apiKeys.weather}
+    bind:value={settingsStore.apiKeys.weather}
     onchange={() => settings.saveSettingsToStorage()}
   />
   <Input
     label="Google Client ID"
-    bind:value={$settingsStore.apiKeys.google}
+    bind:value={settingsStore.apiKeys.google}
     onchange={() => settings.saveSettingsToStorage()}
   />
   <Input
     label="Spotify Client ID"
-    bind:value={$settingsStore.apiKeys.spotify}
+    bind:value={settingsStore.apiKeys.spotify}
     onchange={() => settings.saveSettingsToStorage()}
   />
   <Input
     label="Fitbit Client ID"
-    bind:value={$settingsStore.apiKeys.fitbit}
+    bind:value={settingsStore.apiKeys.fitbit}
     onchange={() => settings.saveSettingsToStorage()}
   />
 </div>

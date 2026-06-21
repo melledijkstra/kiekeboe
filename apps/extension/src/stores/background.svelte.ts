@@ -1,4 +1,3 @@
-import { writable } from 'svelte/store'
 import { Logger } from '@/logger'
 
 const logger = new Logger('background-store')
@@ -15,11 +14,9 @@ function fetchImage(src: string): Promise<string> {
   })
 }
 
-const { subscribe, set } = writable<string | undefined>(undefined)
-
-export const backgroundImage = { subscribe }
+export const background = $state<{ url: string | undefined }>({ url: undefined })
 
 export async function setBackgroundImage(url: string) {
   const src = await fetchImage(url)
-  set(src)
+  background.url = src
 }

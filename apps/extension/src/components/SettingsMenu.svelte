@@ -66,7 +66,7 @@
   />
   {#each sections as sectionName (sectionName)}
     <Tabs.Content value={sectionName} class="flex-1 p-5 overflow-y-auto">
-      {#if sectionName === 'general' && !$settingsStore.loaded}
+      {#if sectionName === 'general' && !settingsStore.loaded}
         <div>Loading...</div>
       {/if}
       {#if sectionName === 'general'}

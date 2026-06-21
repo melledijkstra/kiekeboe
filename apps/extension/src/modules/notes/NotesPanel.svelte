@@ -13,5 +13,5 @@
 </script>
 
 <PopPanel class="overflow-auto">
-  <NotesPanelContent notes={$notes} onSubmitNote={onSubmitNote} />
+  <NotesPanelContent notes={notes.items} onSubmitNote={onSubmitNote} />
 </PopPanel>

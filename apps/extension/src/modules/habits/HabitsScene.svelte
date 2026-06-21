@@ -31,7 +31,7 @@
     </tr>
   </thead>
   <tbody class="bg-gray-600 divide-y divide-gray-200">
-    {#each $habits as habit (habit.id)}
+    {#each habits.items as habit (habit.id)}
       <tr>
         <td class="px-4 py-2 text-sm text-gray-300">{habit.id}</td>
         <td class="px-4 py-2">

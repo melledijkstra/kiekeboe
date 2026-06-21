@@ -9,19 +9,22 @@
 
   const notes: Array<Note> = [
     {
+      id: '1',
       title: 'Note 1',
       text: 'This is the first note',
-      dateCreated: new Date()
+      createdAt: new Date()
     },
     {
+      id: '2',
       title: 'Note 2',
       text: 'This is the second note',
-      dateCreated: new Date()
+      createdAt: new Date()
     },
     {
+      id: '3',
       title: 'Note 3',
       text: 'This is the third note',
-      dateCreated: new Date()
+      createdAt: new Date()
     }
   ]
 

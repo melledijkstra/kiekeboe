@@ -17,15 +17,15 @@
     <ImageRefreshButton />
   </div>
 
-  {#if $settingsStore.ui.showQuotes && appState.mode !== 'focus'}
+  {#if settingsStore.ui.showQuotes && appState.mode !== 'focus'}
     <Quotes />
   {/if}
 
   <div class="flex flex-row gap-5">
-    {#if $settingsStore.modules.notes}
+    {#if settingsStore.modules.notes}
       <ModuleLoader id="notes" />
     {/if}
-    {#if $settingsStore.modules.google_tasks}
+    {#if settingsStore.modules.google_tasks}
       <ModuleLoader id="google_tasks" />
     {/if}
   </div>

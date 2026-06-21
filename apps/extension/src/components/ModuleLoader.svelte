@@ -10,7 +10,7 @@
 </script>
 
 {#await loadModule(id) then Module}
-  {#if type === 'component'}
+  {#if type === 'component' && Module.component}
     <Module.component />
   {:else if type === 'scene' && Module.scene}
     <Module.scene />

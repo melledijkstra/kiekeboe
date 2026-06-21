@@ -1,4 +1,3 @@
-import { writable } from 'svelte/store'
 
 export type Notification = {
   id: string
@@ -9,7 +8,7 @@ export type Notification = {
   duration?: number
 }
 
-export const notifications = writable<Array<Notification>>([])
+export const notifications = $state<Array<Notification>>([])
 
 /**
  * @param message the message of the notification
@@ -50,10 +49,7 @@ export function addNotification(
   // Unique ID based on timestamp and random number
   const id = `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
   
-  notifications.update((current) => [
-    ...current,
-    { ...notification, id },
-  ]);
+  notifications.push({ ...notification, id });
 
   setTimeout(() => {
     removeNotification(id);
@@ -61,5 +57,8 @@ export function addNotification(
 }
 
 export function removeNotification(id: string) {
-  notifications.update((current) => current.filter((toast) => toast.id !== id))
+  const index = notifications.findIndex((n) => n.id === id)
+  if (index !== -1) {
+    notifications.splice(index, 1)
+  }
 }
