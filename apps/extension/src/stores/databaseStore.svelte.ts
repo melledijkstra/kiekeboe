@@ -1,3 +1,5 @@
+import { SvelteDate } from "svelte/reactivity"
+
 export interface IExport<T> {
   readonly items: T[]
   initialize(): Promise<void>
@@ -6,7 +8,7 @@ export interface IExport<T> {
   update(item: T & { id: string }): Promise<void>
 }
 
-export type DBItem<T> = T & { id: string; createdAt: Date; updatedAt: Date }
+export type DBItem<T> = T & { id: string; createdAt: SvelteDate; updatedAt: SvelteDate }
 
 export class DbStore<T> implements IExport<DBItem<T>> {
   private fetchAll: () => Promise<T[]>
@@ -40,8 +42,8 @@ export class DbStore<T> implements IExport<DBItem<T>> {
   async add(item: T) {
     await this.addItem({
       ...item,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: new SvelteDate(),
+      updatedAt: new SvelteDate()
     })
     const items = await this.fetchAll() as DBItem<T>[]
     this._items = items
@@ -56,7 +58,7 @@ export class DbStore<T> implements IExport<DBItem<T>> {
   }
 
   async update(updatedItem: T & { id: string }) {
-    const updatedAt = new Date()
+    const updatedAt = new SvelteDate()
     await this.updateItem({
       ...updatedItem,
       updatedAt
