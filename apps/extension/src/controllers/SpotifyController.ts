@@ -89,21 +89,13 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     }
   }
 
-  private handleStorageChange = async (changes: Record<string, browser.Storage.StorageChange>) => {
+  private readonly handleStorageChange = async (changes: Record<string, browser.Storage.StorageChange>) => {
     const key = this.authClient.storageKey
     if (changes[key]) {
-      const newValue = changes[key].newValue
-      spotifyState.isAuthenticated = !!newValue
+      const isAuthenticated = changes[key].newValue
+      spotifyState.isAuthenticated = !!isAuthenticated
       this.logger.log('Spotify auth state changed reactively:', spotifyState.isAuthenticated)
-      if (!newValue) {
-        this.isPlayerActive = false
-        if (this.player) {
-          this.player.disconnect()
-          delete this.player
-        }
-        delete spotifyState.deviceId
-        spotifyState.devices = []
-      } else {
+      if (isAuthenticated) {
         if (!this.player) {
           try {
             await this.initializeSpotifyPlayer(this.authClient)
@@ -111,6 +103,14 @@ export class SpotifyController extends BaseMusicController implements ILogger {
             this.logger.error('Failed to initialize Spotify player after re-auth:', err)
           }
         }
+      } else {
+        this.isPlayerActive = false
+        if (this.player) {
+          this.player.disconnect()
+          delete this.player
+        }
+        delete spotifyState.deviceId
+        spotifyState.devices = []
       }
     }
   }

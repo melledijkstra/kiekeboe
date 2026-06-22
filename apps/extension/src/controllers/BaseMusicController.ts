@@ -10,22 +10,22 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
 
   protected cancelPlaybackLoop?: () => void
   
-  abstract playItem(item: Track | Playlist | Album): void;
+  abstract playItem(item: Track | Playlist | Album): Promise<void> | void;
   abstract getPlaylistItems(playlist: Playlist): Promise<Track[]>
   abstract getPlaylists(): Promise<Playlist[]>
-  abstract next(): void
-  abstract previous(): void
+  abstract next(): Promise<void> | void
+  abstract previous(): Promise<void> | void
   abstract initialize?(): Promise<void>
-  abstract activateDevice?(deviceId: string): Promise<void>
+  abstract activateDevice?(deviceId: string): Promise<void> | void
   abstract getPlaybackState(): Promise<PlaybackState>
-  abstract toggleShuffle(enabled?: boolean): Promise<void>
-  abstract switchRepeatMode?(repeatMode: string | number): Promise<void>
+  abstract toggleShuffle(enabled?: boolean): Promise<void> | void
+  abstract switchRepeatMode?(repeatMode: string | number): Promise<void> | void
   
   protected trackEnded() {
     this.stopPlaybackLoop()
   }
 
-  play() {
+  play(): Promise<void> | void {
     if (this.state.playback.isPlaying) {
       return
     }
@@ -33,7 +33,7 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
     this.setupPlaybackLoop()
   }
 
-  pause() {
+  pause(): Promise<void> | void {
     if (!this.state.playback.isPlaying) {
       return
     }
