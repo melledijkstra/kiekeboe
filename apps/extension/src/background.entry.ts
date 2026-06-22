@@ -1,7 +1,6 @@
 /// <reference lib="webworker" />
 import browser from 'webextension-polyfill'
 import { FocusService } from '@/services/focus'
-import { TimeToolsService } from '@/services/time-tools'
 import { Logger } from '@/logger'
 import { trimCache } from './background/image-cache'
 
@@ -44,8 +43,11 @@ self.addEventListener('activate', e => {
 });
 
 logger.log('Service worker activated')
-services.push(new FocusService())
-services.push(new TimeToolsService())
+logger.log('Initializing services...')
+services.push(
+  new FocusService()
+)
+logger.log(`Services initialized: ${services.map(s => s.constructor.name).join(', ')}`)
 
 if (import.meta.env.DEV) {
   // add global r() function to make development easier reloading

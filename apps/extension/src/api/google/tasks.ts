@@ -5,7 +5,7 @@ import type { AuthClient } from '@/oauth2/auth'
 const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
 export class GoogleTasksApiClient extends TokenBaseClient {
-  private auth: AuthClient
+  private readonly auth: AuthClient
   public taskLists: TaskList[] = []
   public tasks: Task[] = []
 
@@ -15,10 +15,8 @@ export class GoogleTasksApiClient extends TokenBaseClient {
   }
 
   async request<T>(endpoint: string, config?: RequestInit, queryParams?: URLSearchParams): Promise<T | undefined> {
-    if (!this.token) {
-      const token = await this.auth.getAuthToken()
-      this.token = token ?? ''
-    }    
+    const token = await this.auth.getAuthToken()
+    this.token = token ?? ''
 
     return super.request<T>(endpoint, config, queryParams)
   }

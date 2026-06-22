@@ -12,7 +12,7 @@ export class UnsplashClient implements ILogger {
   public logger: Logger = new Logger('UnsplashClient')
   private HOST: string
   public query?: string
-  private cache: ImageCache
+  private readonly cache: ImageCache
 
   constructor(host: string = SERVERLESS_HOST_URL, query?: string) {
     this.HOST = host ?? SERVERLESS_HOST_URL
@@ -109,7 +109,7 @@ export class UnsplashClient implements ILogger {
 
     let imageUrl = undefined
 
-    if (cached && cached.date === today) {
+    if (cached?.date === today) {
       this.logger.log('retrieved daily image from cache')
       imageUrl = cached.url
     } else {

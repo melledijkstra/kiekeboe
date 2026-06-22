@@ -10,13 +10,13 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
 
   protected cancelPlaybackLoop?: () => void
   
-  abstract playItem(item: Track | Playlist | Album): Promise<void>;
+  abstract playItem(item: Track | Playlist | Album): void;
   abstract getPlaylistItems(playlist: Playlist): Promise<Track[]>
   abstract getPlaylists(): Promise<Playlist[]>
   abstract next(): void
   abstract previous(): void
   abstract initialize?(): Promise<void>
-  abstract activateDevice?(deviceId: string): void
+  abstract activateDevice?(deviceId: string): Promise<void>
   abstract getPlaybackState(): Promise<PlaybackState>
   abstract toggleShuffle(enabled?: boolean): Promise<void>
   abstract switchRepeatMode?(repeatMode: string | number): Promise<void>
@@ -99,7 +99,7 @@ export abstract class BaseMusicController implements MusicPlayerInterface, ILogg
     this.state.playback.position_ms = position
   }
 
-  async setVolume(volume: number): Promise<void> {
+  setVolume(volume: number): void {
     this.state.playback.volume = volume
   }
 }

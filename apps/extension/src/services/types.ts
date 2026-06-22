@@ -1,4 +1,4 @@
 export interface BackgroundService {
-  initialize(): Promise<void>;
+  initialize(): void;
   destroy(): void;
 }

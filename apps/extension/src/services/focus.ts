@@ -19,13 +19,13 @@ const BREAK_DURATION = 5 * 60 * 1000
 const browserAction = browser.action ?? browser.browserAction
 
 export class FocusService implements BackgroundService {
-  private state: PomodoroState = {
+  private readonly state: PomodoroState = {
     isRunning: false,
     mode: 'work',
     duration: WORK_DURATION,
     timeRemaining: WORK_DURATION
   }
-  private timer: Timer
+  private readonly timer: Timer
 
   constructor() {
     this.initialize()
@@ -36,7 +36,7 @@ export class FocusService implements BackgroundService {
     })
   }
 
-  async initialize(): Promise<void> {
+  initialize() {
     logger.log('Pomodoro service initialized')
     this.wireEvents()
   }

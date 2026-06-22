@@ -66,8 +66,6 @@ export class Settings implements ILogger {
   // were changed by the same source as the listener
   private isLocalSettingsChange = false
 
-  constructor() {}
-
   public async initialize() {
     if (settingsStore.loaded || this.loading) {
       this.logger.log('Settings store is already initialized or loading from storage')

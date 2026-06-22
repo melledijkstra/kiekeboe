@@ -135,7 +135,13 @@ export class AuthClient {
     if (!response.ok) {
       const errorBody = await response.text()
       this.logger.error('Refresh token request failed:', errorBody)
-      if (errorBody.includes('invalid_grant')) {
+      let parsedError: { error?: string } = {}
+      try {
+        parsedError = JSON.parse(errorBody)
+      } catch {
+        // ignore JSON parsing errors and rely on text search
+      }
+      if (parsedError.error === 'invalid_grant' || errorBody.includes('invalid_grant')) {
         throw new AuthError(
           `Failed to refresh token: ${errorBody}`,
           'invalid_token',

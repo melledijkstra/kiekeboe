@@ -9,19 +9,17 @@ const BASE_URL = 'https://api.spotify.com/v1'
 export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   logger = new Logger('SpotifyClient')
   
-  constructor(private authClient: AuthClient) {
+  constructor(private readonly authClient: AuthClient) {
     super(BASE_URL, '')
   }
   
   async retrieveAccessToken() {
-    if (this.getAccessToken() !== '') {
-      return
-    }
-    
     const token = await this.authClient.getAuthToken()
     
     if (token) {
       super.setAccessToken(token)
+    } else {
+      super.setAccessToken('')
     }
   }
 
@@ -136,7 +134,7 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   async toggleRepeatMode(repeatMode: string | number): Promise<void> {
     await this.retrieveAccessToken()
     
-    let mode = 'off'
+    let mode: string
     
     switch (repeatMode) {
       case 1:
@@ -146,10 +144,8 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
         mode = 'context'
         break
       case 0:
-        mode = 'off'
-        break
       default:
-        mode = repeatMode as string
+        mode = 'off'
         break
     }
     
