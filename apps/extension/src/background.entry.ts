@@ -1,7 +1,6 @@
 /// <reference lib="webworker" />
 import browser from 'webextension-polyfill'
 import { FocusService } from '@/services/focus'
-import { TimeToolsService } from '@/services/time-tools'
 import { Logger } from '@/logger'
 import { trimCache } from './background/image-cache'
 
@@ -46,8 +45,7 @@ self.addEventListener('activate', e => {
 logger.log('Service worker activated')
 logger.log('Initializing services...')
 services.push(
-  new FocusService(),
-  new TimeToolsService()
+  new FocusService()
 )
 logger.log(`Services initialized: ${services.map(s => s.constructor.name).join(', ')}`)
 
