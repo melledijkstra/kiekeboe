@@ -1,3 +1,7 @@
+// we don't want svelte reactivity for the createdAt and 
+// updatedAt fields because they are managed by the database and not the UI
+/* eslint-disable svelte/prefer-svelte-reactivity */
+
 export interface IExport<T> {
   readonly items: T[]
   initialize(): Promise<void>
