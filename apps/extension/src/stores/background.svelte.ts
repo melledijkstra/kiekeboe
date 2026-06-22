@@ -8,7 +8,7 @@ function fetchImage(src: string): Promise<string> {
     image.onload = () => resolve(image.src)
     image.onerror = (err) => {
       logger.error('Failed to load image', err)
-      reject(new Error(err.toString()))
+      reject(new Error(`Failed to load image from source: ${src}`))
     }
     image.src = src
   })
