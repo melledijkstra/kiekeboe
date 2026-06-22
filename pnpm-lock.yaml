@@ -139,6 +139,8 @@ importers:
         specifier: ^0.12.0
         version: 0.12.0
 
+  apps/n8n: {}
+
   apps/server:
     dependencies:
       cors:
