@@ -17,7 +17,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
   protected authClient: AuthClient = new AuthClient(new SpotifyAuthProvider());
   protected api: SpotifyApiClient = new SpotifyApiClient(this.authClient);
   protected player?: Spotify.Player;
-  private cache = new MemoryCache();
+  private readonly cache = new MemoryCache();
 
   private initialized: boolean = false;
   public isPlayerActive: boolean = false;
@@ -78,7 +78,7 @@ export class SpotifyController extends BaseMusicController implements ILogger {
     this.initialized = true;
   }
 
-  async destroy() {
+  destroy() {
     super.destroy()
 
     browser.storage.local.onChanged.removeListener(this.handleStorageChange)
@@ -146,10 +146,10 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
     })
 
     this.player.connect().then((success) => {
-      if (!success) {
-        throw new Error('Failed to connect')
-      } else {
+      if (success) {
         this.logger.log('Connected to Spotify Web Playback SDK')
+      } else {
+        throw new Error('Failed to connect')
       }
     })
   }
@@ -164,10 +164,10 @@ private async initializeSpotifyPlayer(authClient: AuthClient) {
 
     this.state.playback = convertPlayerState(state, this.state.playback);
 
-    if (!state.paused) {
-      this.setupPlaybackLoop(state.position);
-    } else {
+    if (state.paused) {
       this.cancelPlaybackLoop?.()
+    } else {
+      this.setupPlaybackLoop(state.position);
     }
   }
 

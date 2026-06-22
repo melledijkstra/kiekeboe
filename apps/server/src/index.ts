@@ -11,7 +11,6 @@ app.use(express.json())
 
 app.use('/status', (_req, res) => {
   res.status(200).send('OK');
-  return;
 })
 
 app.use('/focus-sessions', focusSessionsRouter)

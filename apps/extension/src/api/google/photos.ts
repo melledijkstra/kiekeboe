@@ -1,20 +1,26 @@
-import { log } from '@/logger'
 import { AuthClient } from '@/oauth2/auth'
 import { GoogleAuthProvider } from '@/oauth2/providers'
+import { Logger } from '@melledijkstra/toolbox'
+
+const logger = new Logger('Google Photos API')
 
 export async function fetchPhotos() {
   const client = new AuthClient(new GoogleAuthProvider())
-  const token = client.getAuthToken()
+  const token = await client.getAuthToken()
+
+  if (!token) {
+    return
+  }
 
   fetch('https://photoslibrary.googleapis.com/v1/mediaItems', {
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token?.toString()}`
     }
   })
     .then((response) => response.json())
     .then((data) => {
-      log('Photos:', data.mediaItems)
+      logger.log('Photos:', data.mediaItems)
     })
-    .catch((error) => console.error('Error fetching photos:', error))
+    .catch((error) => logger.error('Error fetching photos:', error))
 }

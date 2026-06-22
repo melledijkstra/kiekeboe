@@ -5,7 +5,7 @@ import type { AuthClient } from '@/oauth2/auth'
 const BASE_URL = 'https://tasks.googleapis.com/tasks/v1'
 
 export class GoogleTasksApiClient extends TokenBaseClient {
-  private auth: AuthClient
+  private readonly auth: AuthClient
   public taskLists: TaskList[] = []
   public tasks: Task[] = []
 

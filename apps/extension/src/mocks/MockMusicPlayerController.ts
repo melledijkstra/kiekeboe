@@ -22,13 +22,13 @@ export class MockMusicPlayerController extends BaseMusicController {
     return tracks
   }
 
-  activateDevice?(): void {
+  async activateDevice?(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
   async playItem(item: Track | Playlist | Album): Promise<void> {
     if (item.type === 'track') {
-      this.state.playback.currentItem = item as Track;
+      this.state.playback.currentItem = item;
     }
 
     this.state.playback.position_ms = 0;

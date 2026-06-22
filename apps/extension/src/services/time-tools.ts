@@ -31,7 +31,7 @@ export class TimeToolsService implements BackgroundService {
     this.initialize()
   }
 
-  async initialize(): Promise<void> {
+  initialize() {
     logger.log('TimeTools service initialized')
     // Timer events are now handled by TimerToolService
     startTimer.on((duration) => this.timerTool.start(duration))

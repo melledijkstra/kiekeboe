@@ -55,12 +55,14 @@ export const convertSpotifyPlaylist = (playlist: SpotifyPlaylist): Playlist => (
 export const convertApiPlaybackState = (state: ApiPlaybackState): PlaybackState => {
   const track = state.item
   const device = state.device
+  const repeatMode = state.repeat_state === 'off' ? 0 : state.repeat_state === 'track' ? 1 : 2
+
   return {
     isPlaying: state.is_playing,
     volume: device.volume_percent ?? 0,
     position_ms: state.progress_ms,
     shuffle: state.shuffle_state,
-    repeatMode: state.repeat_state === 'off' ? 0 : state.repeat_state === 'track' ? 1 : 2,
+    repeatMode,
     currentItem: convertSpotifyTrackToMPTrack(track),
   }
 }

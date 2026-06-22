@@ -34,7 +34,7 @@ function loadSpotifySDK(): Promise<void> {
 }
 
 function isSpotifySDKLoaded(): boolean {
-  return typeof window?.Spotify !== 'undefined' && typeof window.Spotify?.Player !== 'undefined'
+  return window?.Spotify?.Player !== undefined
 }
 
 function createPlayer(authClient: AuthClient, initialVolume: number): Spotify.Player {

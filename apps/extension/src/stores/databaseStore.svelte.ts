@@ -13,10 +13,10 @@ export interface IExport<T> {
 export type DBItem<T> = T & { id: string; createdAt: Date; updatedAt: Date }
 
 export class DbStore<T> implements IExport<DBItem<T>> {
-  private fetchAll: () => Promise<T[]>
-  private addItem: (item: T) => Promise<void>
-  private updateItem: (item: T & { id: string }) => Promise<void>
-  private deleteItem: (id: string) => Promise<void>
+  private readonly fetchAll: () => Promise<T[]>
+  private readonly addItem: (item: T) => Promise<void>
+  private readonly updateItem: (item: T & { id: string }) => Promise<void>
+  private readonly deleteItem: (id: string) => Promise<void>
   
   private _items = $state<DBItem<T>[]>([])
 

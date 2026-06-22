@@ -31,12 +31,12 @@ const cachedFetchGeolocation = withCache(fetchGeolocation)
 
 async function getGeolocationBrowser(): Promise<[number, number] | undefined> {
   return new Promise((resolve, reject) => {
-    window.navigator.geolocation.getCurrentPosition(
+    globalThis.navigator.geolocation.getCurrentPosition(
       (currentPosition) => {
         const { latitude, longitude } = currentPosition.coords
         resolve([latitude, longitude])
       },
-      (error) => reject(error),
+      (error) => reject(new Error(error.message)),
       {
         timeout: 3000 // allow 3 seconds to return the position
       }

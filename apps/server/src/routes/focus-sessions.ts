@@ -15,7 +15,6 @@ router.get('/', async (_req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  console.log('POST /focus-sessions', req.body)
   const { duration, task } = req.body ?? {}
   if (!duration || !task) {
     res.status(400).json({ error: 'Duration and task are required' })
@@ -41,7 +40,7 @@ router.put('/:id', async (req, res) => {
   }
   try {
     const [session] = await db<FocusSession>('focus-sessions')
-      .where({ id: parseInt(id) })
+      .where({ id: Number.parseInt(id) })
       .update({ duration, task })
       .returning('*')
     if (!session) {
@@ -60,7 +59,7 @@ router.get('/:id', async (req, res) => {
   try {
     const session = await db<FocusSession>('focus-sessions')
       .select('*')
-      .where({ id: parseInt(id) })
+      .where({ id: Number.parseInt(id) })
       .first()
     if (!session) {
       res.status(404).json({ error: 'Session not found' })
@@ -77,7 +76,7 @@ router.delete('/:id', async (req, res) => {
   const { id } = req.params
   try {
     const deleted = await db<FocusSession>('focus-sessions')
-      .where({ id: parseInt(id) })
+      .where({ id: Number.parseInt(id) })
       .del()
     if (!deleted) {
       res.status(404).json({ error: 'Session not found' })
