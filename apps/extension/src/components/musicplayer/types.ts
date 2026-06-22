@@ -43,20 +43,20 @@ declare module 'MusicPlayer' {
       playback: PlaybackState
     };
     getPlaylistItems(playlist: Playlist): Promise<Track[]>;
-    playItem(item: Track | Playlist | Album): void;
+    playItem(item: Track | Playlist | Album): Promise<void> | void;
     getPlaylists(): Promise<Playlist[]>;
-    play(mediaItem?: Track | Playlist | Album): void;
-    pause(): void;
-    next(): void;
-    previous(): void;
-    seek(position_ms: number): Promise<void>;
+    play(mediaItem?: Track | Playlist | Album): Promise<void> | void;
+    pause(): Promise<void> | void;
+    next(): Promise<void> | void;
+    previous(): Promise<void> | void;
+    seek(position_ms: number): Promise<void> | void;
     initialize?(): Promise<void>;
     destroy?(): void;
-    setVolume(volume: number): void;
+    setVolume(volume: number): Promise<void> | void;
     getPlaybackState(): Promise<PlaybackState>;
-    activateDevice?(deviceId: string): void;
-    switchRepeatMode?(repeatMode: number | string): Promise<void>;
-    toggleShuffle?(enabled?: boolean): Promise<void>;
+    activateDevice?(deviceId: string): Promise<void> | void;
+    switchRepeatMode?(repeatMode: number | string): Promise<void> | void;
+    toggleShuffle?(enabled?: boolean): Promise<void> | void;
   }
 
   type PlaybackState = {
