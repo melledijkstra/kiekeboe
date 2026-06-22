@@ -1,4 +1,6 @@
-import { SvelteDate } from "svelte/reactivity"
+// we don't want svelte reactivity for the createdAt and 
+// updatedAt fields because they are managed by the database and not the UI
+/* eslint-disable svelte/prefer-svelte-reactivity */
 
 export interface IExport<T> {
   readonly items: T[]
@@ -8,7 +10,7 @@ export interface IExport<T> {
   update(item: T & { id: string }): Promise<void>
 }
 
-export type DBItem<T> = T & { id: string; createdAt: SvelteDate; updatedAt: SvelteDate }
+export type DBItem<T> = T & { id: string; createdAt: Date; updatedAt: Date }
 
 export class DbStore<T> implements IExport<DBItem<T>> {
   private fetchAll: () => Promise<T[]>
@@ -42,8 +44,8 @@ export class DbStore<T> implements IExport<DBItem<T>> {
   async add(item: T) {
     await this.addItem({
       ...item,
-      createdAt: new SvelteDate(),
-      updatedAt: new SvelteDate()
+      createdAt: new Date(),
+      updatedAt: new Date()
     })
     const items = await this.fetchAll() as DBItem<T>[]
     this._items = items
@@ -58,7 +60,7 @@ export class DbStore<T> implements IExport<DBItem<T>> {
   }
 
   async update(updatedItem: T & { id: string }) {
-    const updatedAt = new SvelteDate()
+    const updatedAt = new Date()
     await this.updateItem({
       ...updatedItem,
       updatedAt
