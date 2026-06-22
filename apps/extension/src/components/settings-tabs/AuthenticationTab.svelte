@@ -10,6 +10,8 @@
     type OauthProvider
   } from '@/oauth2/providers'
   import Input from '@/components/atoms/Input.svelte'
+  import { onMount, onDestroy } from 'svelte'
+  import browser from 'webextension-polyfill'
 
   const clients = {
     google: new AuthClient(new GoogleAuthProvider()),
@@ -21,6 +23,24 @@
     google: false,
     spotify: false,
     fitbit: false
+  })
+
+  function handleStorageChange(changes: Record<string, browser.Storage.StorageChange>) {
+    for (const key of Object.keys(clients)) {
+      const provider = key as OauthProvider
+      const storageKey = clients[provider].storageKey
+      if (changes[storageKey]) {
+        authState[provider] = !!changes[storageKey].newValue
+      }
+    }
+  }
+
+  onMount(() => {
+    browser.storage.local.onChanged.addListener(handleStorageChange)
+  })
+
+  onDestroy(() => {
+    browser.storage.local.onChanged.removeListener(handleStorageChange)
   })
 
   async function retrieveAuthState() {

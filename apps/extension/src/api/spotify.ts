@@ -14,14 +14,12 @@ export class SpotifyApiClient extends TokenBaseClient implements ILogger {
   }
   
   async retrieveAccessToken() {
-    if (this.getAccessToken() !== '') {
-      return
-    }
-    
     const token = await this.authClient.getAuthToken()
     
     if (token) {
       super.setAccessToken(token)
+    } else {
+      super.setAccessToken('')
     }
   }
 

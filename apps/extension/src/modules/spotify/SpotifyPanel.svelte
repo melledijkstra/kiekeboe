@@ -12,7 +12,6 @@
     controller: SpotifyController
   } = $props()
 
-  let isAuthenticated = $state(false)
   let hasTabLock = $state(false)
 
   function cleanup() {
@@ -25,14 +24,14 @@
 
     await controller.initialize()
     hasTabLock = true
-    isAuthenticated = await controller.auth.isAuthenticated()
-    controller.syncState()
+    if (spotifyState.isAuthenticated) {
+      controller.syncState()
+    }
   })
 
   async function authenticate() {
     const token = await controller.auth.getAuthToken(true)
-    isAuthenticated = !!token
-    if (isAuthenticated) {
+    if (token) {
       controller.syncState()
     }
   }
@@ -52,7 +51,7 @@
       </p>
     </div>
   {:else}
-    {#if !isAuthenticated}
+    {#if !spotifyState.isAuthenticated}
       <div class="flex flex-col gap-4 items-center justify-center h-full">
         <p class="text-center text-lg">You are not authenticated with Spotify</p>
         <AuthButton provider="spotify" onclick={authenticate} />

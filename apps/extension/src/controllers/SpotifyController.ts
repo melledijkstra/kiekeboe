@@ -9,6 +9,7 @@ import type { ILogger } from "@/interfaces/logger.interface";
 import { MemoryCache, MIN_5 } from "@/cache/memory";
 import { convertApiPlaybackState, convertPlayerState, convertSpotifyPlaylist, convertSpotifyTrackToMPTrack } from "@/transforms/spotify";
 import { BaseMusicController } from "./BaseMusicController";
+import browser from 'webextension-polyfill';
 
 export class SpotifyController extends BaseMusicController implements ILogger {
   logger: Logger = new Logger('SpotifyController');
@@ -67,7 +68,12 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       return;
     }
 
-    await this.initializeSpotifyPlayer(this.authClient)
+    spotifyState.isAuthenticated = await this.authClient.isAuthenticated()
+    browser.storage.local.onChanged.addListener(this.handleStorageChange)
+
+    if (spotifyState.isAuthenticated) {
+      await this.initializeSpotifyPlayer(this.authClient)
+    }
 
     this.initialized = true;
   }
@@ -75,9 +81,37 @@ export class SpotifyController extends BaseMusicController implements ILogger {
   async destroy() {
     super.destroy()
 
+    browser.storage.local.onChanged.removeListener(this.handleStorageChange)
+
     if (this.player) {
       this.player.disconnect()
       delete this.player
+    }
+  }
+
+  private handleStorageChange = async (changes: Record<string, browser.Storage.StorageChange>) => {
+    const key = this.authClient.storageKey
+    if (changes[key]) {
+      const newValue = changes[key].newValue
+      spotifyState.isAuthenticated = !!newValue
+      this.logger.log('Spotify auth state changed reactively:', spotifyState.isAuthenticated)
+      if (!newValue) {
+        this.isPlayerActive = false
+        if (this.player) {
+          this.player.disconnect()
+          delete this.player
+        }
+        delete spotifyState.deviceId
+        spotifyState.devices = []
+      } else {
+        if (!this.player) {
+          try {
+            await this.initializeSpotifyPlayer(this.authClient)
+          } catch (err) {
+            this.logger.error('Failed to initialize Spotify player after re-auth:', err)
+          }
+        }
+      }
     }
   }
 
