@@ -4,7 +4,7 @@ This document provides guidance for AI agents working on the repository. It outl
 
 ## Repository Overview
 
-The `kiekeboe` repository contains multiple applications and configurations, including a browser extension, a server, and serverless functions. The project uses modern web development tools and frameworks such as Svelte, Vite, and TailwindCSS, alongside backend integrations with Google APIs.
+The `odysea` repository contains multiple applications and configurations, including a browser extension, a server, and serverless functions. The project uses modern web development tools and frameworks such as Svelte, Vite, and TailwindCSS, alongside backend integrations with Google APIs.
 
 ### Monorepo Packages
 

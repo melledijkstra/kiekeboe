@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/melledijkstra/kiekeboe.git"
+    "url": "git+ssh://git@github.com/melledijkstra/odysea.git"
   },
   "keywords": [
     "chrome",
@@ -55,8 +55,8 @@
     "productivity"
   ],
   "bugs": {
-    "url": "https://github.com/melledijkstra/kiekeboe/issues"
+    "url": "https://github.com/melledijkstra/odysea/issues"
   },
-  "homepage": "https://github.com/melledijkstra/kiekeboe#readme",
+  "homepage": "https://github.com/melledijkstra/odysea#readme",
   "packageManager": "pnpm@10.26.2"
 }
