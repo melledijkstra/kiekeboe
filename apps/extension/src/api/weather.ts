@@ -1,9 +1,11 @@
-import lscache from 'lscache'
+import { CacheService } from '@/cache/cache-service'
 import { Logger } from '@/logger'
 import { getCurrentPosition } from '@/api/geolocation'
 import type { WeatherResponse } from '@/api/definitions/openweathermap'
 import { ApiKeyBaseClient } from './keybaseclient'
 import { appState } from '@/app-state.svelte'
+import { LocalStorageAdapter } from '@/cache/localstorage'
+import { MIN_10 } from '@/cache/memory'
 
 export type WeatherInfo = {
   location: string
@@ -17,6 +19,7 @@ export type GeoPosition = {
 }
 
 const logger = new Logger('weather')
+const cache = new CacheService(new LocalStorageAdapter())
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5'
 
@@ -28,10 +31,10 @@ export class WeatherClient extends ApiKeyBaseClient {
   }
 
   async getWeather(position?: GeoPosition): Promise<WeatherInfo | undefined> {
-    const data = lscache.get('weather')
+    const data = await cache.get<WeatherInfo>('weather')
     if (data) {
-      logger.log('weather data from lscache')
-      return data as WeatherInfo
+      logger.log('weather data from cache')
+      return data
     }
 
     let lat = position?.lat
@@ -59,7 +62,7 @@ export class WeatherClient extends ApiKeyBaseClient {
         temperature: response.main.temp,
         icon: response.weather[0].icon
       }
-      lscache.set('weather', info, 60) // cache for 1 hour
+      await cache.set('weather', info, MIN_10)
       return info
     }
   }

@@ -20,14 +20,14 @@ export class SpotifyApiService {
   }
 
   async getPlaylists(): Promise<Playlist[]> {
-    const cached = this.cache.get<Playlist[]>('playlists');
+    const cached = await this.cache.get<Playlist[]>('playlists');
     if (cached) {
       return cached;
     }
     try {
       const playlists = await this.api.userPlaylists();
       const converted = playlists.map(convertSpotifyPlaylist);
-      this.cache.set('playlists', converted, MIN_5);
+      await this.cache.set('playlists', converted, MIN_5);
       return converted;
     } catch (error) {
       this.logger.error('Failed to retrieve playlists', error);
