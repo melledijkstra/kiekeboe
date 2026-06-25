@@ -1,15 +1,6 @@
-import type { ILogger } from '@/interfaces/logger.interface'
 import { Logger } from '@/logger'
-
-const logger = new Logger('cache')
-
-type CacheItem<T> = {
-  data: T
-  timestamp: number
-  ttl: number
-}
-
-const cache: Record<string, CacheItem<unknown> | undefined> = {}
+import type { ILogger } from '@/interfaces/logger.interface'
+import { CacheService, type ICacheAdapter } from './cache-service'
 
 // Default TTL Times (Time To Live)
 export const SEC_30 = 30 * 1000
@@ -19,25 +10,34 @@ export const MIN_5 = 5 * 60 * 1000
 export const MIN_10 = 10 * 60 * 1000
 export const MIN_15 = 15 * 60 * 1000
 
+export class MemoryAdapter implements ICacheAdapter {
+  private cache = new Map<string, unknown>()
 
-export function get(key: string) {
-  const cachedItem = cache[key]
-  if (cachedItem) {
-    if (Date.now() - cachedItem.timestamp > cachedItem.ttl) {
-      delete cache[key]
-    } else {
-      logger.log('Cache hit:', key)
-      return cachedItem.data
-    }
+  get<T>(key: string): T | undefined {
+    return this.cache.get(key) as T
+  }
+
+  set<T>(key: string, value: T): void {
+    this.cache.set(key, value)
+  }
+
+  delete(key: string): void {
+    this.cache.delete(key)
+  }
+
+  clear(): void {
+    this.cache.clear()
   }
 }
 
-export function set(key: string, value: unknown, ttl = MIN_5): void {
-  cache[key] = {
-    data: value,
-    timestamp: Date.now(),
-    ttl: ttl ?? MIN_5
-  }
+const memoryCacheInstance = new CacheService(new MemoryAdapter())
+
+export async function get(key: string): Promise<unknown | undefined> {
+  return memoryCacheInstance.get(key)
+}
+
+export async function set(key: string, value: unknown, ttl = MIN_5): Promise<void> {
+  await memoryCacheInstance.set(key, value, ttl)
 }
 
 type CacheOptions = {
@@ -53,22 +53,22 @@ export function withCache<T, A extends unknown[]>(
   originalFunc: (...args: A) => Promise<T>,
   options: CacheOptions = {}
 ): (...args: A) => Promise<T> {
-  const defaultTTL = 5 * 60 * 1000 // 5 minutes
+  const defaultTTL = MIN_5
 
   // Return a new function that expects the actual async function
-  const cachedFunction = async <T>(...args: A): Promise<T> => {
+  const cachedFunction = async (...args: A): Promise<T> => {
     const cacheKey = options?.key ?? originalFunc.name
     const cacheTTL = options?.ttl ?? defaultTTL
 
     // Attempt to get from cache
-    const cachedData = get(cacheKey)
+    const cachedData = await get(cacheKey)
     if (cachedData !== undefined) {
       return cachedData as T
     }
 
     // Otherwise, call the original function, then store and return its result
     const result = (await originalFunc(...args)) as T
-    set(cacheKey, result, cacheTTL)
+    await set(cacheKey, result, cacheTTL)
     return result
   }
 
@@ -77,26 +77,13 @@ export function withCache<T, A extends unknown[]>(
 
 export class MemoryCache implements ILogger {
   logger = new Logger('MemoryCache')
-  private cache: Record<string, CacheItem<unknown> | undefined> = {}
+  private cache = new CacheService(new MemoryAdapter())
 
-  get<T>(key: string): T | undefined {
-    const cachedItem = this.cache[key]
-    if (!cachedItem) {
-      return
-    }
-    
-    if (Date.now() - cachedItem.timestamp > cachedItem.ttl) {
-      delete this.cache[key]
-    } else {
-      return cachedItem.data as T
-    }
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.cache.get<T>(key)
   }
-  
-  set(key: string, value: unknown, ttl = MIN_5) {
-    this.cache[key] = {
-      data: value,
-      timestamp: Date.now(), // store insertion time
-      ttl: ttl ?? MIN_5
-    }
+
+  async set(key: string, value: unknown, ttl = MIN_5): Promise<void> {
+    await this.cache.set(key, value, ttl)
   }
 }

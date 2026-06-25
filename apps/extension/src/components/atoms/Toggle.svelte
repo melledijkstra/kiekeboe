@@ -4,7 +4,7 @@
   type ToggleProps = {
     label: string;
     checked: boolean;
-    parentClass: string;
+    parentClass?: string;
   } & HTMLInputAttributes
 
   let { label, checked = $bindable(), parentClass = '', ...props }: ToggleProps = $props()

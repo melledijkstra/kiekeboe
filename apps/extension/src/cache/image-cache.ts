@@ -1,7 +1,8 @@
-import browser from 'webextension-polyfill'
 import { DAILY_IMAGE_KEY, NEXT_IMAGE_KEY } from '@/constants'
 import { Logger } from '@/logger'
 import type { ILogger } from '@/interfaces/logger.interface'
+import { CacheService } from './cache-service'
+import { ExtensionStorageAdapter } from './browser-extension'
 
 export type ImageInfo = {
   id: string
@@ -11,43 +12,39 @@ export type ImageInfo = {
 
 export class ImageCache implements ILogger {
   logger = new Logger('ImageCache')
+  private cache = new CacheService(new ExtensionStorageAdapter())
 
   async getDailyImageInfo(): Promise<ImageInfo | undefined> {
-    const { [DAILY_IMAGE_KEY]: storedImage } = (await browser.storage.local.get(
-      DAILY_IMAGE_KEY
-    )) as { [DAILY_IMAGE_KEY]?: ImageInfo }
-    return storedImage
+    return this.cache.get<ImageInfo>(DAILY_IMAGE_KEY)
   }
 
   async setDailyImageInfo(info: ImageInfo): Promise<void> {
-    await browser.storage.local.set({ [DAILY_IMAGE_KEY]: info })
+    await this.cache.set(DAILY_IMAGE_KEY, info)
     this.logger.log('stored daily image', info)
   }
 
   async getNextImageInfo(): Promise<ImageInfo | undefined> {
-    const { [NEXT_IMAGE_KEY]: storedNext } = (await browser.storage.local.get(
-      NEXT_IMAGE_KEY
-    )) as { [NEXT_IMAGE_KEY]?: ImageInfo }
-    return storedNext
+    return this.cache.get<ImageInfo>(NEXT_IMAGE_KEY)
   }
 
   async setNextImageInfo(info: ImageInfo): Promise<void> {
-    await browser.storage.local.set({ [NEXT_IMAGE_KEY]: info })
+    await this.cache.set(NEXT_IMAGE_KEY, info)
     this.logger.log('stored next image', info)
   }
 
   async clearDailyImage(): Promise<void> {
-    await browser.storage.local.remove(DAILY_IMAGE_KEY)
+    await this.cache.delete(DAILY_IMAGE_KEY)
     this.logger.log('Daily image cleared from storage')
   }
 
-  async clearNextImage() {
-    await browser.storage.local.remove(NEXT_IMAGE_KEY)
+  async clearNextImage(): Promise<void> {
+    await this.cache.delete(NEXT_IMAGE_KEY)
     this.logger.log('Next image cleared from storage')
   }
 
-  async clearImageCache() {
-    await browser.storage.local.remove([DAILY_IMAGE_KEY, NEXT_IMAGE_KEY])
+  async clearImageCache(): Promise<void> {
+    await this.cache.delete(DAILY_IMAGE_KEY)
+    await this.cache.delete(NEXT_IMAGE_KEY)
     this.logger.log('Daily and next images cleared from storage')
   }
 }

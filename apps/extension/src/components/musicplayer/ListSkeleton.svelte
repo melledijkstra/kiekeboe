@@ -21,7 +21,7 @@
   {/each}
 </div>
 
-<style>
+<style lang="postcss">
   @reference '../../app.css';
 
   .mask {

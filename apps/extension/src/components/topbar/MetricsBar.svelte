@@ -1,5 +1,5 @@
 <script lang="ts">
-  import lscache from 'lscache'
+  import { CacheService } from '@/cache/cache-service'
   import {
   getIsSleepMetricEnabled,
     setIsSleepMetricEnabled,
@@ -15,6 +15,9 @@
   import { AuthClient } from '@/oauth2/auth'
   import { FitbitAuthProvider } from '@/oauth2/providers'
   import { FitbitClient } from '@/api/fitbit'
+  import { LocalStorageAdapter } from '@/cache/localstorage'
+
+  const cache = new CacheService(new LocalStorageAdapter())
 
   type Metric = CountDown | WorldClock | Counter
 
@@ -55,7 +58,7 @@
       client = new FitbitClient(token)
     }
     sleepMinutes = await client.getSleep()
-    lscache.set(STORAGE_KEY, sleepMinutes, 60 * 1) // Cache for 1 hour
+    await cache.set(STORAGE_KEY, sleepMinutes, 60 * 60 * 1000) // Cache for 1 hour
   }
 
   async function authenticate() {
@@ -72,10 +75,10 @@
       return
     }
 
-    const cacheSleepMinutes = lscache.get(STORAGE_KEY)
+    const cacheSleepMinutes = await cache.get<number>(STORAGE_KEY)
 
     // if we have cached sleep minutes, use them
-    if (cacheSleepMinutes) {
+    if (cacheSleepMinutes !== undefined && cacheSleepMinutes !== null) {
       sleepMinutes = cacheSleepMinutes
       return
     }
