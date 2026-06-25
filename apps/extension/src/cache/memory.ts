@@ -56,7 +56,7 @@ export function withCache<T, A extends unknown[]>(
   const defaultTTL = MIN_5
 
   // Return a new function that expects the actual async function
-  const cachedFunction = async <T>(...args: A): Promise<T> => {
+  const cachedFunction = async (...args: A): Promise<T> => {
     const cacheKey = options?.key ?? originalFunc.name
     const cacheTTL = options?.ttl ?? defaultTTL
 
