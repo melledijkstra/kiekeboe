@@ -36,7 +36,6 @@ const DEFAULT_MODULE_SETTINGS: { [key in ModuleID]: boolean } = {
   google_tasks: false,
   notes: false,
   spotify: false,
-  time_tools: false,
   habits: false
 }
 
