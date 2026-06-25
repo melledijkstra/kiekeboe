@@ -5,6 +5,7 @@ import type { AuthClient } from "@/oauth2/auth";
 export class SpotifyPlayerService {
   private logger = new Logger('SpotifyPlayerService');
   private player?: Spotify.Player;
+  private initializingPromise?: Promise<void>;
   private onStateChangedCb?: (state: Spotify.PlaybackState | null) => void;
   private onReadyCb?: (deviceId: string) => void;
   private onNotReadyCb?: (deviceId: string) => void;
@@ -26,37 +27,57 @@ export class SpotifyPlayerService {
 
   async initialize() {
     if (this.player) return;
+    if (this.initializingPromise) return this.initializingPromise;
 
-    const initVolume = this.initialVolume / 100;
-    this.player = await initSDKPlayer(this.authClient, initVolume);
+    this.initializingPromise = (async () => {
+      const initVolume = this.initialVolume / 100;
+      const player = await initSDKPlayer(this.authClient, initVolume);
 
-    this.player.addListener('ready', async ({ device_id }) => {
-      this.logger.log(`Ready with Device ID: %c${device_id}`, 'font-style: italic; color: lightgreen;');
-      this.onReadyCb?.(device_id);
-    });
+      player.addListener('ready', async ({ device_id }) => {
+        this.logger.log(`Ready with Device ID: %c${device_id}`, 'font-style: italic; color: lightgreen;');
+        this.onReadyCb?.(device_id);
+      });
 
-    this.player.addListener('not_ready', ({ device_id }) => {
-      this.logger.log('device ID has gone offline', device_id);
-      this.onNotReadyCb?.(device_id);
-    });
+      player.addListener('not_ready', ({ device_id }) => {
+        this.logger.log('Device ID has gone offline', device_id);
+        this.onNotReadyCb?.(device_id);
+      });
 
-    this.player.addListener('player_state_changed', (state) => {
-      this.onStateChangedCb?.(state);
-    });
+      player.addListener('player_state_changed', (state) => {
+        this.onStateChangedCb?.(state);
+      });
 
-    this.player.addListener('playback_error', ({ message }) => {
-      this.logger.error('Playback error', message);
-    });
+      player.addListener('playback_error', ({ message }) => {
+        this.logger.error('Playback error', message);
+      });
 
-    const success = await this.player.connect();
-    if (success) {
-      this.logger.log('Connected to Spotify Web Playback SDK');
-    } else {
-      throw new Error('Failed to connect');
+      try {
+        const success = await player.connect();
+        if (success) {
+          this.logger.log('Connected to Spotify Web Playback SDK');
+          if (this.initializingPromise) {
+            this.player = player;
+          } else {
+            player.disconnect();
+          }
+        } else {
+          throw new Error('Failed to connect to Spotify Web Playback SDK');
+        }
+      } catch (error) {
+        player.disconnect();
+        throw error;
+      }
+    })();
+
+    try {
+      await this.initializingPromise;
+    } finally {
+      this.initializingPromise = undefined;
     }
   }
 
   disconnect() {
+    this.initializingPromise = undefined;
     if (this.player) {
       this.player.disconnect();
       this.player = undefined;

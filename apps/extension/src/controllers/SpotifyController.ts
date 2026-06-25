@@ -55,14 +55,14 @@ export class SpotifyController extends BaseMusicController implements ILogger {
       return;
     }
 
+    this.initialized = true;
+
     spotifyState.isAuthenticated = await this.authClient.isAuthenticated();
     browser.storage.local.onChanged.addListener(this.handleStorageChange);
 
     if (spotifyState.isAuthenticated) {
       await this.playerService.initialize();
     }
-
-    this.initialized = true;
   }
 
   destroy() {
