@@ -2,12 +2,15 @@
   "name": "@odysea/n8n",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Local n8n workspace for automation, integrated with Docker and Git version control",
   "scripts": {
     "up": "docker compose up --detach",
     "down": "docker compose down",
     "logs": "docker compose logs --follow",
     "backup": "bash scripts/backup.sh",
-    "restore": "bash scripts/restore.sh"
+    "restore": "bash scripts/restore.sh",
+    "install": "launchctl load com.odysea.n8n.plist",
+    "uninstall": "launchctl unload com.odysea.n8n.plist"
   }
 }

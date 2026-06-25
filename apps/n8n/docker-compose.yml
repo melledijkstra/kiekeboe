@@ -10,6 +10,8 @@ services:
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - N8N_TELEMETRY_ENABLED=false
       - N8N_BADGE_LINK=false
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
     volumes:
       - ./data:/home/node/.n8n
       - ./workflows:/backup

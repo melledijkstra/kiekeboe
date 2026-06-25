@@ -92,32 +92,13 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "3c51aa58-590f-44e4-b996-a0c8f5c4126e",
+  "versionId": "4312371f-d7f7-40a8-b32d-d8a0731765d9",
   "activeVersionId": null,
   "versionCounter": 30,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": [],
-  "shared": [
-    {
-      "updatedAt": "2026-06-21T20:31:49.049Z",
-      "createdAt": "2026-06-21T20:31:49.049Z",
-      "role": "workflow:owner",
-      "workflowId": "uPVV9KL8uss3mhaA",
-      "projectId": "bdH07oHC8ewhqNYG",
-      "project": {
-        "updatedAt": "2026-06-21T20:19:53.179Z",
-        "createdAt": "2026-06-21T20:17:52.552Z",
-        "id": "bdH07oHC8ewhqNYG",
-        "name": "Melle Dijkstra <melle.dykstra@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "customTelemetryTags": [],
-        "creatorId": "153debab-f28e-4136-a1ee-d4aa917aec50"
-      }
-    }
-  ],
+  "shared": [],
   "versionMetadata": {
     "name": null,
     "description": null

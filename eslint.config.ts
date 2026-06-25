@@ -11,12 +11,15 @@ export default ts.config([
   ...ts.configs.recommended,
   ...svelte.configs.recommended,
   globalIgnores([
+    // generated files
     "**/node_modules/",
     "**/dist/",
     "**/.dist/",
     "**/coverage/",
+    "**/storybook-static",
+    // build files
     "apps/extension/public",
-    "**/storybook-static"
+    "apps/n8n/" // n8n is excluded, not a JS project
   ]),
   {
     languageOptions: {
