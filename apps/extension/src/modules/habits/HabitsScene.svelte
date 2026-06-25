@@ -61,7 +61,7 @@
 <form onsubmit={(event) => {
   event.preventDefault()
   if (newHabit?.id) {
-    habits.update(newHabit)
+    habits.update(newHabit as Habit & { id: string })
   } else {
     habits.add(newHabit)
   }

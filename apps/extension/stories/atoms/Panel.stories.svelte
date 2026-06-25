@@ -17,7 +17,7 @@
   <div class="flex flex-col gap-2">
     <h1 class="text-2xl font-bold">Hello, world!</h1>
     <p class="text-base">This is a panel component.</p>
-    <Toggle parentClass="mt-2" label="Test Label" />
+    <Toggle checked={false} parentClass="mt-2" label="Test Label" />
   </div>
 </Story>
 

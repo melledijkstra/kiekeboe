@@ -1,9 +1,10 @@
 <script lang="ts">
   import { Tooltip } from 'bits-ui'
-  import { type Snippet } from 'svelte'
+  import type { Snippet } from 'svelte'
 
   export type TooltipProps = Tooltip.RootProps & {
     trigger: Snippet
+    children?: Snippet
     triggerProps?: Tooltip.TriggerProps
   }
 
@@ -27,7 +28,9 @@
         sideOffset={4}
       >
         <Tooltip.Arrow class="text-black/50" />
-        {@render children?.()}
+        {#if children}
+          {@render children()}
+        {/if}
       </Tooltip.Content>
     </Tooltip.Portal>
   </Tooltip.Root>
