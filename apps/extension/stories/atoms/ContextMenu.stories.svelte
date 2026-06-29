@@ -3,7 +3,7 @@
   import ContextMenu from '@/components/atoms/ContextMenu.svelte'
 
   // set this to true to keep the menu open during development
-  const keepOpen = true;
+  const keepOpen = true
 
   const onSelect = (label: string) => {
     console.log('onSelect', label)
@@ -14,7 +14,7 @@
     component: ContextMenu,
     args: {
       contentProps: {
-        forceMount: keepOpen
+        forceMount: keepOpen,
       },
       items: [
         {
@@ -29,8 +29,8 @@
           label: 'Open Project',
           onSelect,
         },
-      ]
-    }
+      ],
+    },
   })
 </script>
 

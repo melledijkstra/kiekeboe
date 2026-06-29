@@ -17,6 +17,7 @@ export class GoogleAuthProvider implements AuthProvider {
   get clientId() {
     return settingsStore.apiKeys.google || ''
   }
+
   scopes = manifest.oauth2.scopes
   authEndpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
   tokenEndpoint = 'https://oauth2.googleapis.com/token'
@@ -27,13 +28,15 @@ export class SpotifyAuthProvider implements AuthProvider {
   get clientId() {
     return settingsStore.apiKeys.spotify || ''
   }
+
   scopes = [
     'streaming',
     'app-remote-control',
     'user-read-playback-state',
     'user-modify-playback-state',
-    'playlist-read-private'
+    'playlist-read-private',
   ]
+
   authEndpoint = 'https://accounts.spotify.com/authorize'
   tokenEndpoint = 'https://accounts.spotify.com/api/token'
 }
@@ -43,8 +46,8 @@ export class FitbitAuthProvider implements AuthProvider {
   get clientId() {
     return settingsStore.apiKeys.fitbit || ''
   }
+
   scopes = ['sleep', 'activity']
   authEndpoint = 'https://www.fitbit.com/oauth2/authorize'
   tokenEndpoint = 'https://api.fitbit.com/oauth2/token'
 }
-

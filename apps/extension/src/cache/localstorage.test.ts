@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest"
-import { LocalStorageAdapter } from "./localstorage"
+import { describe, expect, it } from 'vitest'
+import { LocalStorageAdapter } from './localstorage'
 
 describe('LocalStorageAdapter', () => {
   it('should set and get parsed values', () => {

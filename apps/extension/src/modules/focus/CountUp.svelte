@@ -11,8 +11,8 @@
   let timer = $state(
     new Timer({
       duration: Infinity,
-      interval: 1000
-    })
+      interval: 1000,
+    }),
   )
 
   function start() {

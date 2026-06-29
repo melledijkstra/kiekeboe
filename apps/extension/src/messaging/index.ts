@@ -9,7 +9,7 @@ type Message = {
 }
 
 type Handler<Request, Response> = (
-  request: Request
+  request: Request,
 ) => Response | Promise<Response>
 
 const isMessage = (msg: unknown): msg is Message => {
@@ -22,7 +22,7 @@ export function createMessage<Request = void, Response = void>(identifier: strin
       logger.log(identifier, 'sender data:', data)
       const response = await browser.runtime.sendMessage<Message, Response>({
         identifier,
-        data
+        data,
       })
       logger.log(identifier, 'sender response:', response)
       return response
@@ -40,8 +40,8 @@ export function createMessage<Request = void, Response = void>(identifier: strin
             return true
           }
           return true
-        }
+        },
       )
-    }
+    },
   }
 }
