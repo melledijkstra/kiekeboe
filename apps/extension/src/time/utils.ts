@@ -41,7 +41,7 @@ export function renderTimezone(timezone: string) {
   const browserLocale = getBrowserLocale()
   return new Date().toLocaleString(browserLocale, {
     timeStyle: 'short',
-    timeZone: timezone
+    timeZone: timezone,
   })
 }
 
@@ -61,7 +61,7 @@ export function getTime(): string {
   const date = new Date()
   return date.toLocaleTimeString(locale, {
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
@@ -81,7 +81,7 @@ export function getTimePercentage(): string {
 export function playbackLoop(
   callback: (position: number) => void,
   interval: number,
-  initialPosition: number = 0
+  initialPosition: number = 0,
 ): () => void {
   let position = initialPosition
 

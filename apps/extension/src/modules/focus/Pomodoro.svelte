@@ -8,7 +8,7 @@
     startPomodoro,
     stateUpdate,
     stopPomodoro,
-    switchMode as switchPomodoroMode
+    switchMode as switchPomodoroMode,
   } from './messages'
   import type { PomodoroState } from './types'
   import { resetTitle, setTitle } from '@/app-state.svelte'
@@ -19,7 +19,7 @@
     mode: 'work',
     timeRemaining: 0,
     duration: 0,
-    isRunning: false
+    isRunning: false,
   })
   let audio = $state<HTMLAudioElement>(new Audio())
   let timeLeft = $derived(Timer.formatRemainingTime(pState.timeRemaining))
@@ -27,9 +27,10 @@
   $effect(() => {
     if (pState.isRunning) {
       setTitle(
-        `${Timer.formatRemainingTime(pState.timeRemaining)} - ${pState.mode}`
+        `${Timer.formatRemainingTime(pState.timeRemaining)} - ${pState.mode}`,
       )
-    } else {
+    }
+    else {
       resetTitle()
     }
   })
@@ -60,7 +61,8 @@
   function switchMode() {
     if (pState.mode === 'work') {
       switchPomodoroMode.send('break')
-    } else {
+    }
+    else {
       switchPomodoroMode.send('work')
     }
   }

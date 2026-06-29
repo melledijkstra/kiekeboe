@@ -9,7 +9,7 @@ const config = {
   trailingComma: 'none',
   printWidth: 80,
   svelteSortOrder: 'scripts-styles-markup',
-  plugins: ['prettier-plugin-tailwindcss']
+  plugins: ['prettier-plugin-tailwindcss'],
 }
 
 export default config

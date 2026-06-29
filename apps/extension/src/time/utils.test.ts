@@ -48,7 +48,7 @@ describe('time/utils.ts', () => {
       // 0.364583... * 100 = 36.4583... -> 36%
       vi.setSystemTime(new Date(2024, 0, 1, 8, 45))
       expect(getTimePercentage()).toBe('36%')
-    });
+    })
   })
 
   describe('formatSeconds', () => {

@@ -5,7 +5,7 @@
   const { tracks, onTrackSelected }: {
     tracks: Track[]
     onTrackSelected: (track: Track) => void
-  } = $props();
+  } = $props()
 </script>
 
 {#snippet trackItem(track: Track)}
