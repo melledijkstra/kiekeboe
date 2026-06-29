@@ -5,11 +5,17 @@ import svelteParser from "svelte-eslint-parser";
 import tsParser from "@typescript-eslint/parser";
 import { globalIgnores } from 'eslint/config';
 import globals from 'globals';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default ts.config([
   js.configs.recommended,
   ...ts.configs.recommended,
   ...svelte.configs.recommended,
+  stylistic.configs.customize({
+    flat: true,
+    semi: false, // Disable semicolons
+    indent: 2, // Indent with 2 spaces
+  }),
   globalIgnores([
     "**/node_modules/",
     "**/dist/",
